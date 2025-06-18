@@ -1,6 +1,6 @@
 "use client";
 
-import type { Metadata } from "next";
+// import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
 import React, { useEffect, useState, useRef } from "react";
@@ -37,17 +37,30 @@ export default function RootLayout({
   ];
   const [font, setFont] = useState("noto");
   useEffect(() => {
-    document.body.classList.remove("font-noto", "font-pretendard", "font-system");
-    document.body.classList.add(fonts.find((f) => f.key === font)?.className || "font-noto");
-  }, [font]);
+    document.body.classList.remove(
+      "font-noto",
+      "font-pretendard",
+      "font-system"
+    );
+    document.body.classList.add(
+      fonts.find((f) => f.key === font)?.className || "font-noto"
+    );
+  }, [font, fonts]);
 
   const [theme, setTheme] = useState("light");
   useEffect(() => {
-    document.body.classList.remove("theme-dark", "theme-dracula", "theme-pastel", "theme-ci");
+    document.body.classList.remove(
+      "theme-dark",
+      "theme-dracula",
+      "theme-pastel",
+      "theme-ci"
+    );
     if (theme !== "light") {
-      document.body.classList.add(themes.find((t) => t.key === theme)?.className || "");
+      document.body.classList.add(
+        themes.find((t) => t.key === theme)?.className || ""
+      );
     }
-  }, [theme]);
+  }, [theme, themes]);
 
   const [radius, setRadius] = useState(8);
   useEffect(() => {
@@ -86,7 +99,10 @@ export default function RootLayout({
   // 바깥 클릭 시 닫기
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
+      if (
+        widgetRef.current &&
+        !widgetRef.current.contains(event.target as Node)
+      ) {
         setOpen(false);
       }
     }
@@ -102,7 +118,9 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <div className="flex flex-row min-h-screen">
           <main className="flex-1 min-h-screen bg-background">{children}</main>
           {/* 오른쪽 아래 고정 플로팅 버튼 */}
@@ -123,8 +141,14 @@ export default function RootLayout({
               aria-modal="true"
             >
               <div className="flex justify-between items-center mb-md">
-                <span className="font-heading text-base text-primary">디자인 퀵 설정</span>
-                <button className="text-lg text-body hover:text-danger transition" aria-label="닫기" onClick={() => setOpen(false)}>
+                <span className="font-heading text-base text-primary">
+                  디자인 퀵 설정
+                </span>
+                <button
+                  className="text-lg text-body hover:text-danger transition"
+                  aria-label="닫기"
+                  onClick={() => setOpen(false)}
+                >
                   ×
                 </button>
               </div>
@@ -136,7 +160,9 @@ export default function RootLayout({
                     <button
                       key={t.key}
                       className={`px-sm py-xs rounded border text-sm font-medium transition ${
-                        theme === t.key ? "bg-primary text-white border-primary" : "bg-surface border-border hover:bg-primary/10"
+                        theme === t.key
+                          ? "bg-primary text-white border-primary"
+                          : "bg-surface border-border hover:bg-primary/10"
                       }`}
                       onClick={() => setTheme(t.key)}
                     >
@@ -153,7 +179,9 @@ export default function RootLayout({
                     <button
                       key={f.key}
                       className={`px-sm py-xs rounded border text-sm font-medium transition ${
-                        font === f.key ? "bg-primary text-white border-primary" : "bg-surface border-border hover:bg-primary/10"
+                        font === f.key
+                          ? "bg-primary text-white border-primary"
+                          : "bg-surface border-border hover:bg-primary/10"
                       }`}
                       onClick={() => setFont(f.key)}
                     >
@@ -165,31 +193,62 @@ export default function RootLayout({
               {/* 라운드, 폰트크기, 스페이싱 */}
               <div className="mb-md flex gap-md">
                 <div>
-                  <label className="block text-sm font-medium mb-xs">라운드</label>
-                  <input type="range" min={0} max={32} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-20" />
+                  <label className="block text-sm font-medium mb-xs">
+                    라운드
+                  </label>
+                  <input
+                    type="range"
+                    min={0}
+                    max={32}
+                    value={radius}
+                    onChange={(e) => setRadius(Number(e.target.value))}
+                    className="w-20"
+                  />
                   <span className="ml-xs text-xs">{radius}px</span>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-xs">폰트크기</label>
-                  <input type="range" min={12} max={24} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-20" />
+                  <label className="block text-sm font-medium mb-xs">
+                    폰트크기
+                  </label>
+                  <input
+                    type="range"
+                    min={12}
+                    max={24}
+                    value={fontSize}
+                    onChange={(e) => setFontSize(Number(e.target.value))}
+                    className="w-20"
+                  />
                   <span className="ml-xs text-xs">{fontSize}px</span>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-xs">기본 Spacing</label>
+                <label className="block text-sm font-medium mb-xs">
+                  기본 Spacing
+                </label>
                 <input
                   type="range"
                   min={2}
                   max={32}
                   value={spacing.md}
-                  onChange={(e) => setSpacing({ ...spacing, md: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setSpacing({ ...spacing, md: Number(e.target.value) })
+                  }
                   className="w-32"
                 />
                 <span className="ml-xs text-xs">{spacing.md}px</span>
               </div>
               <div className="mt-md">
-                <label className="block text-sm font-medium mb-xs">Grid Gap (갭)</label>
-                <input type="range" min={0} max={64} value={gap} onChange={(e) => setGap(Number(e.target.value))} className="w-32" />
+                <label className="block text-sm font-medium mb-xs">
+                  Grid Gap (갭)
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={64}
+                  value={gap}
+                  onChange={(e) => setGap(Number(e.target.value))}
+                  className="w-32"
+                />
                 <span className="ml-xs text-xs">{gap}px</span>
               </div>
             </div>
