@@ -14,7 +14,26 @@ const singleColors = [
   { name: "border", className: "bg-border", text: "text-onSurface border border-border" },
 ];
 
-const paletteColors = ["neutral", "gray", "blue", "red", "green", "yellow", "orange", "purple", "pink", "teal", "cyan", "indigo", "lime"];
+const paletteColors = [
+  "neutral",
+  "gray",
+  "blue",
+  "red",
+  "green",
+  "yellow",
+  "orange",
+  "purple",
+  "pink",
+  "teal",
+  "cyan",
+  "indigo",
+  "lime",
+  "amber",
+  "emerald",
+  "violet",
+  "fuchsia",
+  "rose",
+];
 const paletteSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 
 function PalettePreview({ name }: { name: string }) {
@@ -32,7 +51,7 @@ function PalettePreview({ name }: { name: string }) {
   );
 }
 
-function DesignTokensPreview() {
+function DesignTokensPreview({ theme }: { theme?: string }) {
   const fonts = [
     { key: "noto", label: "Noto Sans KR", className: "font-noto" },
     { key: "pretendard", label: "Pretendard", className: "font-pretendard" },
@@ -71,7 +90,11 @@ function DesignTokensPreview() {
             <div
               key={color.name}
               className={`h-16 flex flex-col items-center justify-center rounded-md ${color.className} ${color.text} ${
-                color.name === "warning" || color.name === "success" ? "text-[var(--foreground-inverse)]" : "text-foreground"
+                color.name === "warning" || color.name === "success"
+                  ? theme === "dracula"
+                    ? "text-foreground"
+                    : "text-[var(--foreground-inverse)]"
+                  : "text-foreground"
               }`}
             >
               <span className="text-xs font-mono opacity-80">{color.name}</span>
@@ -197,7 +220,7 @@ export default function Home() {
         <input id="radius-range" type="range" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-32" />
         <input type="number" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-14 border rounded px-1 text-xs" />
       </div>
-      <DesignTokensPreview />
+      <DesignTokensPreview theme={theme} />
     </div>
   );
 }

@@ -3,9 +3,26 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   safelist: [
-    ...["neutral", "gray", "blue", "red", "green", "yellow", "orange", "purple", "pink", "teal", "cyan", "indigo", "lime"].flatMap((color) =>
-      [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((step) => `bg-${color}-${step}`)
-    ),
+    ...[
+      "neutral",
+      "gray",
+      "blue",
+      "red",
+      "green",
+      "yellow",
+      "orange",
+      "purple",
+      "pink",
+      "teal",
+      "cyan",
+      "indigo",
+      "lime",
+      "amber",
+      "emerald",
+      "violet",
+      "fuchsia",
+      "rose",
+    ].flatMap((color) => [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((step) => `bg-${color}-${step}`)),
   ],
   theme: {
     extend: {
