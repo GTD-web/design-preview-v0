@@ -250,7 +250,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
+        sans: ["Noto Sans KR", "Pretendard", "Inter", "sans-serif"],
         heading: ["Montserrat", "sans-serif"],
         mono: ["Fira Mono", "monospace"],
       },

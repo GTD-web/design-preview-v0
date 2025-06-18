@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 
 const singleColors = [
   { name: "primary", className: "bg-primary", text: "onPrimary" },
@@ -33,9 +34,9 @@ function PalettePreview({ name }: { name: string }) {
 
 function DesignTokensPreview() {
   const fonts = [
-    { name: "sans", className: "font-sans" },
-    { name: "heading", className: "font-heading" },
-    { name: "mono", className: "font-mono" },
+    { key: "noto", label: "Noto Sans KR", className: "font-noto" },
+    { key: "pretendard", label: "Pretendard", className: "font-pretendard" },
+    { key: "system", label: "System Sans", className: "font-system" },
   ];
 
   const spacings = [
@@ -83,8 +84,8 @@ function DesignTokensPreview() {
         <h3 className="text-lg font-semibold mb-2">Font Family</h3>
         <div className="flex gap-6">
           {fonts.map((font) => (
-            <div key={font.name} className="flex flex-col items-center">
-              <span className={`text-lg ${font.className}`}>{font.name}</span>
+            <div key={font.key} className="flex flex-col items-center">
+              <span className={`text-lg ${font.className}`}>{font.label}</span>
               <span className="text-xs text-gray-500">.{font.className}</span>
             </div>
           ))}
@@ -126,6 +127,18 @@ function DesignTokensPreview() {
 }
 
 export default function Home() {
+  // 글꼴 선택 관련
+  const fonts = [
+    { key: "noto", label: "Noto Sans KR", className: "font-noto" },
+    { key: "pretendard", label: "Pretendard", className: "font-pretendard" },
+    { key: "system", label: "System Sans", className: "font-system" },
+  ];
+  const [font, setFont] = useState("noto");
+  useEffect(() => {
+    document.body.classList.remove("font-noto", "font-pretendard", "font-system");
+    document.body.classList.add(fonts.find((f) => f.key === font)?.className || "font-noto");
+  }, [font]);
+
   // 다크 테마 토글 함수
   function toggleDarkTheme() {
     if (typeof document !== "undefined") {
@@ -135,6 +148,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="fixed top-4 left-4 flex gap-2 z-50">
+        {fonts.map((f) => (
+          <button
+            key={f.key}
+            onClick={() => setFont(f.key)}
+            className={`px-3 py-1 rounded border ${font === f.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
       <button onClick={toggleDarkTheme} className="fixed top-4 right-4 px-4 py-2 rounded bg-primary text-white shadow">
         다크 테마 토글
       </button>
