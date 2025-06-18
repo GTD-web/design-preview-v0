@@ -1,3 +1,5 @@
+"use client";
+
 const singleColors = [
   { name: "primary", className: "bg-primary", text: "onPrimary" },
   { name: "secondary", className: "bg-secondary", text: "onSecondary" },
@@ -124,8 +126,18 @@ function DesignTokensPreview() {
 }
 
 export default function Home() {
+  // 다크 테마 토글 함수
+  function toggleDarkTheme() {
+    if (typeof document !== "undefined") {
+      document.body.classList.toggle("theme-dark");
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
+      <button onClick={toggleDarkTheme} className="fixed top-4 right-4 px-4 py-2 rounded bg-primary text-white shadow">
+        다크 테마 토글
+      </button>
       <DesignTokensPreview />
     </div>
   );

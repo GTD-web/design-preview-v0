@@ -10,16 +10,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#1d4ed8",
-        secondary: "#64748b",
-        accent: "#f59e42",
-        success: "#22c55e",
-        warning: "#facc15",
-        danger: "#ef4444",
-        info: "#0ea5e9",
-        surface: "#ffffff",
-        background: "#f9fafb",
-        border: "#e5e7eb",
+        primary: "var(--color-primary)",
+        secondary: "var(--color-secondary)",
+        accent: "var(--color-accent)",
+        success: "var(--color-success)",
+        warning: "var(--color-warning)",
+        danger: "var(--color-danger)",
+        info: "var(--color-info)",
+        surface: "var(--color-surface)",
+        background: "var(--color-background)",
+        border: "var(--color-border)",
         neutral: {
           50: "#fafafa",
           100: "#f5f5f5",
