@@ -92,6 +92,34 @@ body {
   --foreground: #5b6478;
 }
 
+.theme-ci {
+  --color-primary: #00a0e9;
+  --color-secondary: #65127e;
+  --color-accent: #7de3f7;
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
+  --color-danger: #ef4444;
+  --color-info: #bae6fd;
+  --color-surface: #f8fafc;
+  --color-background: #f8fafc;
+  --color-border: #e0e7eb;
+  --foreground: #000000;
+}
+
+.theme-ci.theme-dark {
+  --color-primary: #00a0e9;
+  --color-secondary: #65127e;
+  --color-accent: #7de3f7;
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
+  --color-danger: #ef4444;
+  --color-info: #bae6fd;
+  --color-surface: #23272f;
+  --color-background: #18181b;
+  --color-border: #334155;
+  --foreground: #f8fafc;
+}
+
 .font-noto {
   font-family: "Noto Sans KR", "Pretendard", Arial, Helvetica, sans-serif;
 }

@@ -145,10 +145,11 @@ export default function Home() {
     { key: "dark", label: "다크", className: "theme-dark" },
     { key: "dracula", label: "드라큘라", className: "theme-dracula" },
     { key: "pastel", label: "파스텔", className: "theme-pastel" },
+    { key: "ci", label: "CI 테마", className: "theme-ci" },
   ];
   const [theme, setTheme] = useState("light");
   useEffect(() => {
-    document.body.classList.remove("theme-dark", "theme-dracula", "theme-pastel");
+    document.body.classList.remove("theme-dark", "theme-dracula", "theme-pastel", "theme-ci");
     if (theme !== "light") {
       document.body.classList.add(themes.find((t) => t.key === theme)?.className || "");
     }
