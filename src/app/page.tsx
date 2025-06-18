@@ -197,48 +197,81 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="fixed top-4 left-4 flex gap-2 z-50">
-        {fonts.map((f) => (
-          <button
-            key={f.key}
-            onClick={() => setFont(f.key)}
-            className={`px-3 py-1 rounded border ${font === f.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-      <div className="fixed top-4 right-4 flex gap-2 z-50">
-        {themes.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setTheme(t.key)}
-            className={`px-3 py-1 rounded border ${theme === t.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-      <div className="fixed top-16 left-4 z-50 flex items-center gap-2 bg-white/80 p-2 rounded shadow">
-        <label htmlFor="radius-range" className="text-xs text-foreground">
-          둥글기: {radius}px
-        </label>
-        <input id="radius-range" type="range" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-32" />
-        <input type="number" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-14 border rounded px-1 text-xs" />
-      </div>
-      <div className="fixed top-28 left-4 z-50 flex items-center gap-2 bg-white/80 p-2 rounded shadow">
-        <label htmlFor="font-size-range" className="text-xs text-foreground">
-          글꼴 크기: {fontSize}px
-        </label>
-        <input id="font-size-range" type="range" min={12} max={32} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-32" />
-        <input
-          type="number"
-          min={12}
-          max={32}
-          value={fontSize}
-          onChange={(e) => setFontSize(Number(e.target.value))}
-          className="w-14 border rounded px-1 text-xs"
-        />
+      <div className="fixed top-0 right-0 h-full w-64 bg-white/80 dark:bg-background/80 shadow-lg z-50 p-6 flex flex-col gap-6">
+        {/* 테마 선택 */}
+        <div>
+          <div className="font-bold mb-2 text-foreground">테마</div>
+          <div className="flex flex-wrap gap-2">
+            {themes.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTheme(t.key)}
+                className={`px-3 py-1 rounded border ${theme === t.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* 글꼴 선택 */}
+        <div>
+          <div className="font-bold mb-2 text-foreground">글꼴</div>
+          <div className="flex flex-wrap gap-2">
+            {fonts.map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFont(f.key)}
+                className={`px-3 py-1 rounded border ${font === f.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* 보더 라운드 조절 */}
+        <div>
+          <div className="font-bold mb-2 text-foreground">모서리 둥글기</div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="radius-range" className="text-xs text-foreground">
+              {radius}px
+            </label>
+            <input id="radius-range" type="range" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-32" />
+            <input
+              type="number"
+              min={0}
+              max={64}
+              value={radius}
+              onChange={(e) => setRadius(Number(e.target.value))}
+              className="w-14 border rounded px-1 text-xs"
+            />
+          </div>
+        </div>
+        {/* 글꼴 크기 조절 */}
+        <div>
+          <div className="font-bold mb-2 text-foreground">글꼴 크기</div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="font-size-range" className="text-xs text-foreground">
+              {fontSize}px
+            </label>
+            <input
+              id="font-size-range"
+              type="range"
+              min={12}
+              max={32}
+              value={fontSize}
+              onChange={(e) => setFontSize(Number(e.target.value))}
+              className="w-32"
+            />
+            <input
+              type="number"
+              min={12}
+              max={32}
+              value={fontSize}
+              onChange={(e) => setFontSize(Number(e.target.value))}
+              className="w-14 border rounded px-1 text-xs"
+            />
+          </div>
+        </div>
       </div>
       <DesignTokensPreview theme={theme} />
     </div>
