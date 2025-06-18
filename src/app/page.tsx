@@ -1,101 +1,132 @@
-import Image from "next/image";
+const singleColors = [
+  { name: "primary", className: "bg-primary", text: "onPrimary" },
+  { name: "secondary", className: "bg-secondary", text: "onSecondary" },
+  { name: "accent", className: "bg-accent", text: "onAccent" },
+  { name: "success", className: "bg-success", text: "onSuccess" },
+  { name: "warning", className: "bg-warning", text: "onWarning" },
+  { name: "danger", className: "bg-danger", text: "onDanger" },
+  { name: "info", className: "bg-info", text: "onInfo" },
+  { name: "surface", className: "bg-surface", text: "onSurface border border-border" },
+  { name: "background", className: "bg-background", text: "onBackground border border-border" },
+  { name: "border", className: "bg-border", text: "text-onSurface border border-border" },
+];
+
+const paletteColors = ["neutral", "gray", "blue", "red", "green", "yellow", "orange", "purple", "pink", "teal", "cyan", "indigo", "lime"];
+const paletteSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+function PalettePreview({ name }: { name: string }) {
+  return (
+    <div className="mb-8">
+      <h4 className="font-semibold mb-2 capitalize">{name}</h4>
+      <div className="flex flex-wrap gap-2">
+        {paletteSteps.map((step) => (
+          <div key={step} className={`w-16 h-16 flex flex-col items-center justify-center rounded bg-${name}-${step} border`}>
+            <span className="text-xs font-mono bg-white/70 rounded px-1 py-0.5 mt-8 -mb-2">{step}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DesignTokensPreview() {
+  const fonts = [
+    { name: "sans", className: "font-sans" },
+    { name: "heading", className: "font-heading" },
+    { name: "mono", className: "font-mono" },
+  ];
+
+  const spacings = [
+    { name: "xs", size: "xs" },
+    { name: "sm", size: "sm" },
+    { name: "md", size: "md" },
+    { name: "lg", size: "lg" },
+    { name: "xl", size: "xl" },
+  ];
+
+  const radii = [
+    { name: "sm", className: "rounded-sm" },
+    { name: "md", className: "rounded-md" },
+    { name: "lg", className: "rounded-lg" },
+    { name: "xl", className: "rounded-xl" },
+    { name: "full", className: "rounded-full" },
+  ];
+
+  const shadows = [
+    { name: "sm", className: "shadow-sm" },
+    { name: "md", className: "shadow-md" },
+    { name: "lg", className: "shadow-lg" },
+  ];
+
+  return (
+    <section className="w-full max-w-5xl mx-auto mt-20">
+      <h2 className="text-2xl font-bold mb-6">디자인 시스템 컬러 프리뷰</h2>
+      <div className="mb-12">
+        <h3 className="text-lg font-semibold mb-2">Single Colors</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          {singleColors.map((color) => (
+            <div key={color.name} className={`h-16 flex flex-col items-center justify-center rounded-md ${color.className} ${color.text}`}>
+              <span className="text-xs font-mono opacity-80">{color.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mb-12">
+        <h3 className="text-lg font-semibold mb-2">Palette Colors</h3>
+        {paletteColors.map((name) => (
+          <PalettePreview key={name} name={name} />
+        ))}
+      </div>
+      <div className="mb-10">
+        <h3 className="text-lg font-semibold mb-2">Font Family</h3>
+        <div className="flex gap-6">
+          {fonts.map((font) => (
+            <div key={font.name} className="flex flex-col items-center">
+              <span className={`text-lg ${font.className}`}>{font.name}</span>
+              <span className="text-xs text-gray-500">.{font.className}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mb-10">
+        <h3 className="text-lg font-semibold mb-2">Spacing</h3>
+        <div className="flex gap-4 items-end">
+          {spacings.map((sp) => (
+            <div key={sp.name} className="flex flex-col items-center">
+              <div className={`bg-primary/30 w-8`} style={{ height: `var(--spacing-${sp.size}, 1rem)` }} />
+              <span className="text-xs mt-1">{sp.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mb-10">
+        <h3 className="text-lg font-semibold mb-2">Border Radius</h3>
+        <div className="flex gap-4">
+          {radii.map((r) => (
+            <div key={r.name} className={`w-12 h-12 bg-primary/30 border border-primary ${r.className} flex items-center justify-center`}>
+              <span className="text-xs text-primary font-mono">{r.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mb-10">
+        <h3 className="text-lg font-semibold mb-2">Box Shadow</h3>
+        <div className="flex gap-4">
+          {shadows.map((s) => (
+            <div key={s.name} className={`w-20 h-12 bg-white border border-gray-200 flex items-center justify-center ${s.className}`}>
+              <span className="text-xs text-gray-700 font-mono">{s.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <DesignTokensPreview />
     </div>
   );
 }

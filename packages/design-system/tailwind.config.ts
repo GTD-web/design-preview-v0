@@ -2,23 +2,27 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
-  safelist: [
-    ...["neutral", "gray", "blue", "red", "green", "yellow", "orange", "purple", "pink", "teal", "cyan", "indigo", "lime"].flatMap((color) =>
-      [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((step) => `bg-${color}-${step}`)
-    ),
-  ],
   theme: {
     extend: {
       colors: {
         primary: "#1d4ed8",
+        onPrimary: "#ffffff",
         secondary: "#64748b",
+        onSecondary: "#ffffff",
         accent: "#f59e42",
+        onAccent: "#ffffff",
         success: "#22c55e",
+        onSuccess: "#ffffff",
         warning: "#facc15",
+        onWarning: "#1f2937",
         danger: "#ef4444",
+        onDanger: "#ffffff",
         info: "#0ea5e9",
+        onInfo: "#ffffff",
         surface: "#ffffff",
+        onSurface: "#1f2937",
         background: "#f9fafb",
+        onBackground: "#1f2937",
         border: "#e5e7eb",
         neutral: {
           50: "#fafafa",
@@ -34,14 +38,23 @@ const config: Config = {
         },
         dark: {
           primary: "#60a5fa",
+          onPrimary: "#1e293b",
           secondary: "#94a3b8",
+          onSecondary: "#1e293b",
           accent: "#fdba74",
+          onAccent: "#1e293b",
           success: "#4ade80",
+          onSuccess: "#1e293b",
           warning: "#fde047",
+          onWarning: "#1e293b",
           danger: "#f87171",
+          onDanger: "#1e293b",
           info: "#38bdf8",
+          onInfo: "#1e293b",
           surface: "#1e293b",
+          onSurface: "#f1f5f9",
           background: "#0f172a",
+          onBackground: "#f1f5f9",
           border: "#334155",
         },
         gray: {

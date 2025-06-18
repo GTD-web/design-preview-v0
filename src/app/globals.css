@@ -1,3 +1,4 @@
+/* @import "@lumir-company/design-system-v0/styles/tailwind.css"; */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
