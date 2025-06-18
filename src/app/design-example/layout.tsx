@@ -74,6 +74,11 @@ export default function RootLayout({
     document.body.style.setProperty("--spacing-xl", `${spacing.xl / 16}rem`);
   }, [spacing]);
 
+  const [gap, setGap] = useState(24); // px 단위, 기본값 24px(1.5rem)
+  useEffect(() => {
+    document.body.style.setProperty("--grid-gutter", `${gap / 16}rem`);
+  }, [gap]);
+
   // 위젯 상태
   const [open, setOpen] = useState(false);
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -181,6 +186,11 @@ export default function RootLayout({
                   className="w-32"
                 />
                 <span className="ml-xs text-xs">{spacing.md}px</span>
+              </div>
+              <div className="mt-md">
+                <label className="block text-sm font-medium mb-xs">Grid Gap (갭)</label>
+                <input type="range" min={0} max={64} value={gap} onChange={(e) => setGap(Number(e.target.value))} className="w-32" />
+                <span className="ml-xs text-xs">{gap}px</span>
               </div>
             </div>
           )}

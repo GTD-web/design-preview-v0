@@ -1,6 +1,6 @@
 import React from "react";
 
-export function Sidebar({ font, setFont, fonts, theme, setTheme, themes, radius, setRadius, fontSize, setFontSize }: any) {
+export function Sidebar({ font, setFont, fonts, theme, setTheme, themes, radius, setRadius, fontSize, setFontSize, gap, setGap }: any) {
   return (
     <div className="fixed top-0 left-0 h-full w-80 bg-white/80 dark:bg-background/80 shadow-lg z-50 p-6 flex flex-col gap-6 overflow-y-auto">
       {/* 테마 선택 */}
@@ -67,6 +67,17 @@ export function Sidebar({ font, setFont, fonts, theme, setTheme, themes, radius,
             onChange={(e) => setFontSize(Number(e.target.value))}
             className="w-14 border rounded px-1 text-xs"
           />
+        </div>
+      </div>
+      {/* 갭(Gap) 조절 */}
+      <div>
+        <div className="font-bold mb-2 text-foreground">Grid Gap (갭)</div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="gap-range" className="text-xs text-foreground">
+            {gap}px
+          </label>
+          <input id="gap-range" type="range" min={0} max={64} value={gap} onChange={(e) => setGap(Number(e.target.value))} className="w-32" />
+          <input type="number" min={0} max={64} value={gap} onChange={(e) => setGap(Number(e.target.value))} className="w-14 border rounded px-1 text-xs" />
         </div>
       </div>
     </div>

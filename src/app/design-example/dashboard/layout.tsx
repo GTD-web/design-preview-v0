@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [lastScroll]);
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans p-6">
+    <div className="min-h-screen bg-[var(--color-background)] p-6">
       <div className="relative">
         <div
           style={{

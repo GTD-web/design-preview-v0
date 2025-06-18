@@ -5,6 +5,7 @@ import { Card } from "@/packages/design-system/components/Card";
 import TextLabel from "@/packages/design-system/components/TextLabel";
 import TextValue from "@/packages/design-system/components/TextValue";
 import TextHeading from "@/packages/design-system/components/TextHeading";
+import Badge from "../../../../packages/design-system/components/Badge";
 
 export default function DashboardPage() {
   // 예시 조직도 데이터
@@ -69,14 +70,13 @@ export default function DashboardPage() {
     const isOpen = openMap[path] ?? false;
     // 스타일 프리셋
     const paddings = ["pl-0", "pl-4", "pl-8", "pl-12", "pl-16"]; // depth별 인덴트
-    const fontStyles = ["font-semibold text-gray-700", "font-semibold text-gray-600", "font-semibold text-gray-500", "text-gray-500 text-sm"];
     return (
       <div key={path} className={`${paddings[depth] || "pl-16"}`}>
-        <div className={`flex items-center min-h-[44px] py-2 ${fontStyles[depth] || fontStyles[3]} border-b border-gray-100`}>
+        <div className={`flex items-center min-h-[44px] py-2 border-b border-gray-100`}>
           {hasChildren && (
             <button
               type="button"
-              className="mr-1 flex items-center justify-center w-5 h-5 text-gray-300 hover:bg-gray-100 rounded transition-colors focus:outline-none"
+              className="mr-2 flex items-center justify-center w-5 h-5 text-gray-300 hover:bg-gray-100 rounded transition-colors focus:outline-none"
               onClick={() => setOpenMap((prev) => ({ ...prev, [path]: !isOpen }))}
               aria-label={isOpen ? "접기" : "펼치기"}
               tabIndex={0}
@@ -94,8 +94,12 @@ export default function DashboardPage() {
           )}
           {/* 하위(Squad)면 불릿 */}
           {!hasChildren && <span className="inline-block w-4 text-center text-gray-200 select-none">•</span>}
-          <span>{node.name}</span>
-          {node.count !== undefined && <span className="text-xs text-gray-300 font-normal ml-1">{node.count}</span>}
+          <TextValue className="ml-0.5 flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{node.name}</TextValue>
+          {node.count !== undefined && (
+            <TextValue size="xs" weight="normal" className="ml-1 text-gray-300">
+              {node.count}
+            </TextValue>
+          )}
         </div>
         {hasChildren && isOpen && <div>{node.children.map((child: any, idx: number) => renderTree(child, `${path}-${idx}`, depth + 1))}</div>}
       </div>
@@ -103,8 +107,8 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-5rem)]">
+    <div className="min-h-screen p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-layout h-[calc(100vh-5rem)]">
         {/* 좌측: 변경내역/사이드바 */}
         <Card className="flex flex-col gap-lg h-full bg-surface p-lg rounded-lg">
           {/* 조직도 변경내역 섹션 */}
@@ -113,13 +117,13 @@ export default function DashboardPage() {
             <ul className="flex flex-col gap-md">
               <li className="flex flex-col gap-1">
                 <TextLabel>
-                  2024년 1월 15일 <span className="ml-xs px-sm py-0.5 rounded bg-warning/10 text-warning text-2xs font-medium">예약</span>
+                  2024년 1월 15일 <Badge color="warning">예약</Badge>
                 </TextLabel>
                 <TextValue>김경훈 · Core Squad 외 10건 변경</TextValue>
               </li>
               <li className="flex flex-col gap-1 bg-primary/5 rounded-lg p-sm border border-primary/20">
                 <TextLabel>
-                  2024년 1월 1일 <span className="ml-xs px-sm py-0.5 rounded bg-primary/10 text-primary text-2xs font-medium">현재</span>
+                  2024년 1월 1일 <Badge color="primary">현재</Badge>
                 </TextLabel>
                 <TextValue>김경훈 · Review Squad 변경</TextValue>
               </li>
@@ -150,13 +154,11 @@ export default function DashboardPage() {
                 <TextHeading>지급 내역</TextHeading>
                 <TextLabel className="mt-xs">2024. 12. 1 - 2024. 12. 31</TextLabel>
               </div>
-              <div className="text-xl font-semibold text-gray-600">4,287,676원</div>
+              <TextValue size="xl" weight="semibold">
+                4,287,676원
+              </TextValue>
             </div>
             <div className="w-full">
-              <div className="flex items-center justify-between text-xs text-gray-500 mb-xs">
-                <TextLabel>합계</TextLabel>
-                <TextLabel>4,287,676원</TextLabel>
-              </div>
               <ul className="divide-y divide-border">
                 <li className="flex items-center justify-between py-sm">
                   <TextLabel>기본급</TextLabel>
@@ -172,25 +174,25 @@ export default function DashboardPage() {
                 </li>
                 <li className="flex items-center justify-between py-sm">
                   <TextLabel>
-                    초과근무수당 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">고정</span>
+                    초과근무수당 <Badge color="gray">고정</Badge>
                   </TextLabel>
                   <TextValue>456,780원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
                   <TextLabel>
-                    식비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">비과세</span>
+                    식비 <Badge color="gray">비과세</Badge>
                   </TextLabel>
                   <TextValue>100,000원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
                   <TextLabel>
-                    인재추천비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">1명 추천</span>
+                    인재추천비 <Badge color="gray">1명 추천</Badge>
                   </TextLabel>
                   <TextValue>500,000원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
                   <TextLabel>
-                    인재추천비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">비과세</span>
+                    인재추천비 <Badge color="gray">비과세</Badge>
                   </TextLabel>
                   <TextValue>500,000원</TextValue>
                 </li>
@@ -202,8 +204,10 @@ export default function DashboardPage() {
         <main className="col-span-2 flex flex-col gap-8 h-full">
           <Card className="mb-4">
             <div className="flex items-center gap-4 mb-lg">
-              <div className="text-2xl font-bold text-gray-600">2024년 1월 1일 조직도</div>
-              <TextLabel className="font-medium text-gray-400">2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함</TextLabel>
+              <TextHeading size="2xl" weight="semibold">
+                2024년 1월 1일 조직도
+              </TextHeading>
+              <TextLabel>2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함</TextLabel>
             </div>
             <div className="flex items-center justify-between mb-sm gap-4">
               {/* 왼쪽: 전체(56) */}
@@ -212,7 +216,7 @@ export default function DashboardPage() {
               <div className="flex-1 flex justify-end">
                 <div className="relative w-full max-w-xs">
                   <input
-                    className="w-full border border-border rounded px-3 py-1 text-sm bg-gray-50 focus:outline-none focus:border-primary pr-8"
+                    className="w-full border border-[var(--color-border)] rounded px-3 py-1 text-sm bg-[var(--color-surface)] text-[var(--foreground)] placeholder-[var(--foreground)] focus:outline-none pr-8"
                     placeholder="검색"
                   />
                   <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
