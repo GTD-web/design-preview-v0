@@ -89,9 +89,9 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         paddingRight: "var(--grid-gutter)",
       }}
     >
-      <h2 className="text-2xl font-bold mb-6 text-foreground">디자인 시스템 컬러 프리뷰</h2>
+      <h2 className="text-h1 font-heading leading-heading tracking-heading mb-6 text-foreground">디자인 시스템 컬러 프리뷰</h2>
       <div className="mb-12">
-        <h3 className="text-lg font-semibold mb-2 text-foreground">Single Colors</h3>
+        <h3 className="text-h2 font-heading leading-heading tracking-heading mb-2 text-foreground">Single Colors</h3>
         <div className="grid grid-cols-layout gap-layout">
           {singleColors.map((color) => (
             <div
@@ -110,7 +110,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         </div>
       </div>
       <div className="mb-12">
-        <h3 className="text-lg font-semibold mb-2 text-foreground">Palette Colors</h3>
+        <h3 className="text-h2 font-heading leading-heading tracking-heading mb-2 text-foreground">Palette Colors</h3>
         <div className="grid grid-cols-layout gap-layout">
           {paletteColors.map((name) => (
             <PalettePreview key={name} name={name} />
@@ -118,7 +118,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         </div>
       </div>
       <div className="mb-10">
-        <h3 className="text-lg font-semibold mb-2">Font Family</h3>
+        <h3 className="text-h3 font-heading leading-heading tracking-heading mb-2">Font Family</h3>
         <div className="flex gap-lg">
           {fonts.map((font) => (
             <div key={font.key} className="flex flex-col items-center">
@@ -129,7 +129,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         </div>
       </div>
       <div className="mb-10">
-        <h3 className="text-lg font-semibold mb-2">Spacing</h3>
+        <h3 className="text-h3 font-heading leading-heading tracking-heading mb-2">Spacing</h3>
         <div className="flex gap-lg items-end">
           {spacings.map((sp) => (
             <div key={sp.name} className="flex flex-col items-center">
@@ -140,7 +140,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         </div>
       </div>
       <div className="mb-10">
-        <h3 className="text-lg font-semibold mb-2">Border Radius</h3>
+        <h3 className="text-h3 font-heading leading-heading tracking-heading mb-2">Border Radius</h3>
         <div className="flex gap-lg">
           {radii.map((r) => (
             <div key={r.name} className={`w-12 h-12 bg-primary/30 border border-primary ${r.className} flex items-center justify-center`}>
@@ -150,7 +150,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         </div>
       </div>
       <div className="mb-10">
-        <h3 className="text-lg font-semibold mb-2">Box Shadow</h3>
+        <h3 className="text-h3 font-heading leading-heading tracking-heading mb-2">Box Shadow</h3>
         <div className="flex gap-lg">
           {shadows.map((s) => (
             <div key={s.name} className={`w-20 h-12 bg-white border border-gray-200 flex items-center justify-center ${s.className}`}>
@@ -160,6 +160,107 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         </div>
       </div>
     </section>
+  );
+}
+
+// 사이드바 컴포넌트 분리
+export function Sidebar({ font, setFont, fonts, theme, setTheme, themes, radius, setRadius, fontSize, setFontSize, spacing, setSpacing }: any) {
+  return (
+    <div className="fixed top-0 left-0 h-full w-80 bg-white/80 dark:bg-background/80 shadow-lg z-50 p-6 flex flex-col gap-6 overflow-y-auto">
+      {/* 테마 선택 */}
+      <div>
+        <div className="font-bold mb-2 text-foreground">테마</div>
+        <div className="flex flex-wrap gap-2">
+          {themes.map((t: any) => (
+            <button
+              key={t.key}
+              onClick={() => setTheme(t.key)}
+              className={`px-3 py-1 rounded border ${theme === t.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* 글꼴 선택 */}
+      <div>
+        <div className="font-bold mb-2 text-foreground">글꼴</div>
+        <div className="flex gap-flex flexDirection-custom items-custom justify-custom flex-wrap">
+          {fonts.map((f: any) => (
+            <button
+              key={f.key}
+              onClick={() => setFont(f.key)}
+              className={`px-3 py-1 rounded border ${font === f.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* 보더 라운드 조절 */}
+      <div>
+        <div className="font-bold mb-2 text-foreground">모서리 둥글기</div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="radius-range" className="text-xs text-foreground">
+            {radius}px
+          </label>
+          <input id="radius-range" type="range" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-32" />
+          <input
+            type="number"
+            min={0}
+            max={64}
+            value={radius}
+            onChange={(e) => setRadius(Number(e.target.value))}
+            className="w-14 border rounded px-1 text-xs"
+          />
+        </div>
+      </div>
+      {/* 글꼴 크기 조절 */}
+      <div>
+        <div className="font-bold mb-2 text-foreground">글꼴 크기</div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="font-size-range" className="text-xs text-foreground">
+            {fontSize}px
+          </label>
+          <input id="font-size-range" type="range" min={12} max={32} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-32" />
+          <input
+            type="number"
+            min={12}
+            max={32}
+            value={fontSize}
+            onChange={(e) => setFontSize(Number(e.target.value))}
+            className="w-14 border rounded px-1 text-xs"
+          />
+        </div>
+      </div>
+      {/* 스페이싱 조절 */}
+      <div>
+        <div className="font-bold mb-2 text-foreground">스페이싱</div>
+        {Object.entries(spacing).map(([key, value]: any) => (
+          <div key={key} className="mb-2">
+            <div className="mb-1 text-xs text-foreground">
+              {key}: {value}px
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={128}
+              value={value}
+              onChange={(e) => setSpacing((s: any) => ({ ...s, [key]: Number(e.target.value) }))}
+              className="w-full mb-1"
+            />
+            <input
+              type="number"
+              min={0}
+              max={128}
+              value={value}
+              onChange={(e) => setSpacing((s: any) => ({ ...s, [key]: Number(e.target.value) }))}
+              className="w-full border rounded px-1 text-xs"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -221,110 +322,7 @@ export default function Home() {
   }, [spacing]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="fixed top-0 right-0 h-full w-64 bg-white/80 dark:bg-background/80 shadow-lg z-50 p-6 flex flex-col gap-6 overflow-y-auto">
-        {/* 테마 선택 */}
-        <div>
-          <div className="font-bold mb-2 text-foreground">테마</div>
-          <div className="flex flex-wrap gap-2">
-            {themes.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTheme(t.key)}
-                className={`px-3 py-1 rounded border ${theme === t.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* 글꼴 선택 */}
-        <div>
-          <div className="font-bold mb-2 text-foreground">글꼴</div>
-          <div className="flex flex-wrap gap-2">
-            {fonts.map((f) => (
-              <button
-                key={f.key}
-                onClick={() => setFont(f.key)}
-                className={`px-3 py-1 rounded border ${font === f.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* 보더 라운드 조절 */}
-        <div>
-          <div className="font-bold mb-2 text-foreground">모서리 둥글기</div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="radius-range" className="text-xs text-foreground">
-              {radius}px
-            </label>
-            <input id="radius-range" type="range" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-32" />
-            <input
-              type="number"
-              min={0}
-              max={64}
-              value={radius}
-              onChange={(e) => setRadius(Number(e.target.value))}
-              className="w-14 border rounded px-1 text-xs"
-            />
-          </div>
-        </div>
-        {/* 글꼴 크기 조절 */}
-        <div>
-          <div className="font-bold mb-2 text-foreground">글꼴 크기</div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="font-size-range" className="text-xs text-foreground">
-              {fontSize}px
-            </label>
-            <input
-              id="font-size-range"
-              type="range"
-              min={12}
-              max={32}
-              value={fontSize}
-              onChange={(e) => setFontSize(Number(e.target.value))}
-              className="w-32"
-            />
-            <input
-              type="number"
-              min={12}
-              max={32}
-              value={fontSize}
-              onChange={(e) => setFontSize(Number(e.target.value))}
-              className="w-14 border rounded px-1 text-xs"
-            />
-          </div>
-        </div>
-        {/* 스페이싱 조절 */}
-        <div>
-          <div className="font-bold mb-2 text-foreground">스페이싱</div>
-          {Object.entries(spacing).map(([key, value]) => (
-            <div key={key} className="mb-2">
-              <div className="mb-1 text-xs text-foreground">
-                {key}: {value}px
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={128}
-                value={value}
-                onChange={(e) => setSpacing((s) => ({ ...s, [key]: Number(e.target.value) }))}
-                className="w-full mb-1"
-              />
-              <input
-                type="number"
-                min={0}
-                max={128}
-                value={value}
-                onChange={(e) => setSpacing((s) => ({ ...s, [key]: Number(e.target.value) }))}
-                className="w-full border rounded px-1 text-xs"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-background" style={{ marginLeft: "320px" }}>
       <DesignTokensPreview theme={theme} />
     </div>
   );

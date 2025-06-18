@@ -332,6 +332,10 @@ const config: Config = {
         "4xl": ["2.25rem", { lineHeight: "2.5rem" }],
         "5xl": ["3rem", { lineHeight: "1" }],
         "6xl": ["3.75rem", { lineHeight: "1" }],
+        h1: "var(--font-size-h1, 2.25rem)",
+        h2: "var(--font-size-h2, 1.5rem)",
+        h3: "var(--font-size-h3, 1.25rem)",
+        body: "var(--font-size-body, 1rem)",
       },
       lineHeight: {
         none: "1",
@@ -340,6 +344,8 @@ const config: Config = {
         normal: "1.5",
         relaxed: "1.625",
         loose: "2",
+        heading: "var(--line-height-heading, 1.2)",
+        body: "var(--line-height-body, 1.5)",
       },
       letterSpacing: {
         tighter: "-0.05em",
@@ -348,6 +354,8 @@ const config: Config = {
         wide: "0.025em",
         wider: "0.05em",
         widest: "0.1em",
+        heading: "var(--letter-spacing-heading, -0.01em)",
+        body: "var(--letter-spacing-body, 0em)",
       },
       fontWeight: {
         thin: "100",
@@ -359,6 +367,8 @@ const config: Config = {
         bold: "700",
         extrabold: "800",
         black: "900",
+        heading: "var(--font-weight-heading, 700)",
+        body: "var(--font-weight-body, 400)",
       },
       container: {
         center: true,
@@ -398,6 +408,16 @@ const config: Config = {
       },
       gap: {
         layout: "var(--grid-gutter, 1.5rem)",
+        flex: "var(--flex-gap, 1rem)",
+      },
+      flexDirection: {
+        custom: "var(--flex-direction, row)",
+      },
+      alignItems: {
+        custom: "var(--flex-align, center)",
+      },
+      justifyContent: {
+        custom: "var(--flex-justify, flex-start)",
       },
       aspectRatio: {
         square: "1 / 1",

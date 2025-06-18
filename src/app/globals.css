@@ -30,6 +30,24 @@
   --grid-columns: 12;
   --grid-gutter: 1.5rem;
   --grid-max-width: 1200px;
+  --flex-gap: 1rem;
+  --flex-direction: row;
+  --flex-align: center;
+  --flex-justify: flex-start;
+  --font-size-h1: 2.25rem;
+  --font-size-h2: 1.5rem;
+  --font-size-h3: 1.25rem;
+  --font-size-body: 1rem;
+  --font-weight-heading: 700;
+  --font-weight-body: 400;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --letter-spacing-heading: -0.01em;
+  --letter-spacing-body: 0em;
+  --scrollbar-bg: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
+  --scrollbar-width: 8px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,6 +65,9 @@
     --color-surface: #1e293b;
     --color-background: #0f172a;
     --color-border: #334155;
+    --scrollbar-bg: #18181b;
+    --scrollbar-thumb: #334155;
+    --scrollbar-thumb-hover: #64748b;
   }
 }
 
@@ -156,4 +177,28 @@ body {
 }
 .radius-xl {
   --radius: 32px;
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+  background: var(--scrollbar-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-bg);
+}
+
+/* Firefox용 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
 }
