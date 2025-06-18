@@ -81,11 +81,18 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
   ];
 
   return (
-    <section className="w-full max-w-5xl mx-auto mt-20">
+    <section
+      className="mx-auto mt-20 p-md gap-layout max-w-layout"
+      style={{
+        maxWidth: "var(--grid-max-width)",
+        paddingLeft: "var(--grid-gutter)",
+        paddingRight: "var(--grid-gutter)",
+      }}
+    >
       <h2 className="text-2xl font-bold mb-6 text-foreground">디자인 시스템 컬러 프리뷰</h2>
       <div className="mb-12">
         <h3 className="text-lg font-semibold mb-2 text-foreground">Single Colors</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <div className="grid grid-cols-layout gap-layout">
           {singleColors.map((color) => (
             <div
               key={color.name}
@@ -103,14 +110,16 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
         </div>
       </div>
       <div className="mb-12">
-        <h3 className="text-lg font-semibold mb-2">Palette Colors</h3>
-        {paletteColors.map((name) => (
-          <PalettePreview key={name} name={name} />
-        ))}
+        <h3 className="text-lg font-semibold mb-2 text-foreground">Palette Colors</h3>
+        <div className="grid grid-cols-layout gap-layout">
+          {paletteColors.map((name) => (
+            <PalettePreview key={name} name={name} />
+          ))}
+        </div>
       </div>
       <div className="mb-10">
         <h3 className="text-lg font-semibold mb-2">Font Family</h3>
-        <div className="flex gap-6">
+        <div className="flex gap-lg">
           {fonts.map((font) => (
             <div key={font.key} className="flex flex-col items-center">
               <span className={`text-lg ${font.className}`}>{font.label}</span>
@@ -121,7 +130,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
       </div>
       <div className="mb-10">
         <h3 className="text-lg font-semibold mb-2">Spacing</h3>
-        <div className="flex gap-4 items-end">
+        <div className="flex gap-lg items-end">
           {spacings.map((sp) => (
             <div key={sp.name} className="flex flex-col items-center">
               <div className={`bg-primary/30 w-8`} style={{ height: `var(--spacing-${sp.size}, 1rem)` }} />
@@ -132,7 +141,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
       </div>
       <div className="mb-10">
         <h3 className="text-lg font-semibold mb-2">Border Radius</h3>
-        <div className="flex gap-4">
+        <div className="flex gap-lg">
           {radii.map((r) => (
             <div key={r.name} className={`w-12 h-12 bg-primary/30 border border-primary ${r.className} flex items-center justify-center`}>
               <span className="text-xs text-primary font-mono">{r.name}</span>
@@ -142,7 +151,7 @@ function DesignTokensPreview({ theme }: { theme?: string }) {
       </div>
       <div className="mb-10">
         <h3 className="text-lg font-semibold mb-2">Box Shadow</h3>
-        <div className="flex gap-4">
+        <div className="flex gap-lg">
           {shadows.map((s) => (
             <div key={s.name} className={`w-20 h-12 bg-white border border-gray-200 flex items-center justify-center ${s.className}`}>
               <span className="text-xs text-gray-700 font-mono">{s.name}</span>
@@ -195,9 +204,25 @@ export default function Home() {
     document.body.style.setProperty("--font-size-base", `${fontSize}px`);
   }, [fontSize]);
 
+  // 세밀한 스페이싱 조절
+  const [spacing, setSpacing] = useState({
+    xs: 4, // px
+    sm: 8,
+    md: 16,
+    lg: 32,
+    xl: 64,
+  });
+  useEffect(() => {
+    document.body.style.setProperty("--spacing-xs", `${spacing.xs / 16}rem`);
+    document.body.style.setProperty("--spacing-sm", `${spacing.sm / 16}rem`);
+    document.body.style.setProperty("--spacing-md", `${spacing.md / 16}rem`);
+    document.body.style.setProperty("--spacing-lg", `${spacing.lg / 16}rem`);
+    document.body.style.setProperty("--spacing-xl", `${spacing.xl / 16}rem`);
+  }, [spacing]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="fixed top-0 right-0 h-full w-64 bg-white/80 dark:bg-background/80 shadow-lg z-50 p-6 flex flex-col gap-6">
+      <div className="fixed top-0 right-0 h-full w-64 bg-white/80 dark:bg-background/80 shadow-lg z-50 p-6 flex flex-col gap-6 overflow-y-auto">
         {/* 테마 선택 */}
         <div>
           <div className="font-bold mb-2 text-foreground">테마</div>
@@ -271,6 +296,33 @@ export default function Home() {
               className="w-14 border rounded px-1 text-xs"
             />
           </div>
+        </div>
+        {/* 스페이싱 조절 */}
+        <div>
+          <div className="font-bold mb-2 text-foreground">스페이싱</div>
+          {Object.entries(spacing).map(([key, value]) => (
+            <div key={key} className="mb-2">
+              <div className="mb-1 text-xs text-foreground">
+                {key}: {value}px
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={128}
+                value={value}
+                onChange={(e) => setSpacing((s) => ({ ...s, [key]: Number(e.target.value) }))}
+                className="w-full mb-1"
+              />
+              <input
+                type="number"
+                min={0}
+                max={128}
+                value={value}
+                onChange={(e) => setSpacing((s) => ({ ...s, [key]: Number(e.target.value) }))}
+                className="w-full border rounded px-1 text-xs"
+              />
+            </div>
+          ))}
         </div>
       </div>
       <DesignTokensPreview theme={theme} />

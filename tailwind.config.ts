@@ -272,11 +272,11 @@ const config: Config = {
         mono: ["Fira Mono", "monospace"],
       },
       spacing: {
-        xs: "0.25rem",
-        sm: "0.5rem",
-        md: "1rem",
-        lg: "2rem",
-        xl: "4rem",
+        xs: "var(--spacing-xs, 0.25rem)",
+        sm: "var(--spacing-sm, 0.5rem)",
+        md: "var(--spacing-md, 1rem)",
+        lg: "var(--spacing-lg, 2rem)",
+        xl: "var(--spacing-xl, 4rem)",
         "2xl": "8rem",
         "3xl": "16rem",
         "4xl": "32rem",
@@ -382,6 +382,7 @@ const config: Config = {
         "5xl": "64rem",
         "6xl": "72rem",
         "7xl": "80rem",
+        layout: "var(--grid-max-width, 1200px)",
       },
       screens: {
         xs: "400px",
@@ -392,8 +393,11 @@ const config: Config = {
         "2xl": "1536px",
       },
       gridTemplateColumns: {
-        layout: "200px 1fr",
+        layout: "repeat(var(--grid-columns, 12), minmax(0, 1fr))",
         dashboard: "300px 1fr 300px",
+      },
+      gap: {
+        layout: "var(--grid-gutter, 1.5rem)",
       },
       aspectRatio: {
         square: "1 / 1",
