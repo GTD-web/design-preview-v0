@@ -139,12 +139,19 @@ export default function Home() {
     document.body.classList.add(fonts.find((f) => f.key === font)?.className || "font-noto");
   }, [font]);
 
-  // 다크 테마 토글 함수
-  function toggleDarkTheme() {
-    if (typeof document !== "undefined") {
-      document.body.classList.toggle("theme-dark");
+  // 테마 선택 관련
+  const themes = [
+    { key: "light", label: "라이트", className: "" },
+    { key: "dark", label: "다크", className: "theme-dark" },
+    { key: "dracula", label: "드라큘라", className: "theme-dracula" },
+  ];
+  const [theme, setTheme] = useState("light");
+  useEffect(() => {
+    document.body.classList.remove("theme-dark", "theme-dracula");
+    if (theme !== "light") {
+      document.body.classList.add(themes.find((t) => t.key === theme)?.className || "");
     }
-  }
+  }, [theme]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -159,9 +166,17 @@ export default function Home() {
           </button>
         ))}
       </div>
-      <button onClick={toggleDarkTheme} className="fixed top-4 right-4 px-4 py-2 rounded bg-primary text-white shadow">
-        다크 테마 토글
-      </button>
+      <div className="fixed top-4 right-4 flex gap-2 z-50">
+        {themes.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTheme(t.key)}
+            className={`px-3 py-1 rounded border ${theme === t.key ? "bg-primary text-white" : "bg-surface text-foreground"}`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
       <DesignTokensPreview />
     </div>
   );

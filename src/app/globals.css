@@ -64,6 +64,20 @@ body {
   --foreground: #ffffff;
 }
 
+.theme-dracula {
+  --color-primary: #bd93f9;
+  --color-secondary: #6272a4;
+  --color-accent: #ff79c6;
+  --color-success: #50fa7b;
+  --color-warning: #f1fa8c;
+  --color-danger: #ff5555;
+  --color-info: #8be9fd;
+  --color-surface: #44475a;
+  --color-background: #282a36;
+  --color-border: #6272a4;
+  --foreground: #f8f8f2;
+}
+
 .font-noto {
   font-family: "Noto Sans KR", "Pretendard", Arial, Helvetica, sans-serif;
 }
