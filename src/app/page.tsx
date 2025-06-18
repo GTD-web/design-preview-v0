@@ -63,12 +63,17 @@ function DesignTokensPreview() {
 
   return (
     <section className="w-full max-w-5xl mx-auto mt-20">
-      <h2 className="text-2xl font-bold mb-6">디자인 시스템 컬러 프리뷰</h2>
+      <h2 className="text-2xl font-bold mb-6 text-foreground">디자인 시스템 컬러 프리뷰</h2>
       <div className="mb-12">
-        <h3 className="text-lg font-semibold mb-2">Single Colors</h3>
+        <h3 className="text-lg font-semibold mb-2 text-foreground">Single Colors</h3>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {singleColors.map((color) => (
-            <div key={color.name} className={`h-16 flex flex-col items-center justify-center rounded-md ${color.className} ${color.text}`}>
+            <div
+              key={color.name}
+              className={`h-16 flex flex-col items-center justify-center rounded-md ${color.className} ${color.text} ${
+                color.name === "warning" || color.name === "success" ? "text-[var(--foreground-inverse)]" : "text-foreground"
+              }`}
+            >
               <span className="text-xs font-mono opacity-80">{color.name}</span>
             </div>
           ))}
