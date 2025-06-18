@@ -3,6 +3,9 @@
 import React, { useState } from "react";
 import { Card } from "@/packages/design-system/components/Card";
 import DashboardHeader from "./DashboardHeader";
+import TextLabel from "./TextLabel";
+import TextValue from "./TextValue";
+import TextHeading from "./TextHeading";
 
 export default function DashboardPage() {
   // 예시 조직도 데이터
@@ -107,35 +110,35 @@ export default function DashboardPage() {
         <Card className="flex flex-col gap-lg h-full bg-surface p-lg rounded-lg">
           {/* 조직도 변경내역 섹션 */}
           <div>
-            <div className="text-base font-heading font-semibold text-gray-600 mb-md">조직도 변경내역</div>
+            <TextHeading className="mb-md">조직도 변경내역</TextHeading>
             <ul className="flex flex-col gap-md">
               <li className="flex flex-col gap-1">
-                <span className="text-xs text-gray-500 font-normal">
+                <TextLabel>
                   2024년 1월 15일 <span className="ml-xs px-sm py-0.5 rounded bg-warning/10 text-warning text-2xs font-medium">예약</span>
-                </span>
-                <span className="text-sm text-gray-600 font-medium">김경훈 · Core Squad 외 10건 변경</span>
+                </TextLabel>
+                <TextValue>김경훈 · Core Squad 외 10건 변경</TextValue>
               </li>
               <li className="flex flex-col gap-1 bg-primary/5 rounded-lg p-sm border border-primary/20">
-                <span className="text-xs text-gray-500 font-normal">
+                <TextLabel>
                   2024년 1월 1일 <span className="ml-xs px-sm py-0.5 rounded bg-primary/10 text-primary text-2xs font-medium">현재</span>
-                </span>
-                <span className="text-sm text-gray-600 font-medium">김경훈 · Review Squad 변경</span>
+                </TextLabel>
+                <TextValue>김경훈 · Review Squad 변경</TextValue>
               </li>
               <li className="flex flex-col gap-1">
-                <span className="text-xs text-gray-500 font-normal">2023년 10월 20일</span>
-                <span className="text-sm text-gray-600 font-medium">김경훈 · Product Group 변경</span>
+                <TextLabel>2023년 10월 20일</TextLabel>
+                <TextValue>김경훈 · Product Group 변경</TextValue>
               </li>
               <li className="flex flex-col gap-1">
-                <span className="text-xs text-gray-500 font-normal">2023년 10월 15일</span>
-                <span className="text-sm text-gray-600 font-medium">이지나 · AI Lovable TF 외 3건 변경</span>
+                <TextLabel>2023년 10월 15일</TextLabel>
+                <TextValue>이지나 · AI Lovable TF 외 3건 변경</TextValue>
               </li>
               <li className="flex flex-col gap-1">
-                <span className="text-xs text-gray-500 font-normal">2023년 8월 1일</span>
-                <span className="text-sm text-gray-600 font-medium">이지나 · Data Engineering Team 변경</span>
+                <TextLabel>2023년 8월 1일</TextLabel>
+                <TextValue>이지나 · Data Engineering Team 변경</TextValue>
               </li>
               <li className="flex flex-col gap-1">
-                <span className="text-xs text-gray-500 font-normal">2023년 7월 30일</span>
-                <span className="text-sm text-gray-600 font-medium">이지나 · Security Dev Team 변경</span>
+                <TextLabel>2023년 7월 30일</TextLabel>
+                <TextValue>이지나 · Security Dev Team 변경</TextValue>
               </li>
             </ul>
           </div>
@@ -145,52 +148,52 @@ export default function DashboardPage() {
           <div>
             <div className="flex items-end justify-between mb-md">
               <div>
-                <div className="text-base font-heading font-semibold text-gray-600">지급 내역</div>
-                <div className="text-xs text-gray-500 mt-xs">2024. 12. 1 - 2024. 12. 31</div>
+                <TextHeading>지급 내역</TextHeading>
+                <TextLabel className="mt-xs">2024. 12. 1 - 2024. 12. 31</TextLabel>
               </div>
               <div className="text-xl font-semibold text-gray-600">4,287,676원</div>
             </div>
             <div className="w-full">
               <div className="flex items-center justify-between text-xs text-gray-500 mb-xs">
-                <span>합계</span>
-                <span>4,287,676원</span>
+                <TextLabel>합계</TextLabel>
+                <TextLabel>4,287,676원</TextLabel>
               </div>
               <ul className="divide-y divide-border">
                 <li className="flex items-center justify-between py-sm">
-                  <span className="text-sm text-gray-500 font-normal">기본급</span>
-                  <span className="text-sm text-gray-600 font-medium">4,000,000원</span>
+                  <TextLabel>기본급</TextLabel>
+                  <TextValue>4,000,000원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
-                  <span className="text-sm text-gray-500 font-normal">근무미달차감금</span>
-                  <span className="text-sm text-gray-600 font-medium">-200,000원</span>
+                  <TextLabel>근무미달차감금</TextLabel>
+                  <TextValue>-200,000원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
-                  <span className="text-sm text-gray-500 font-normal">초과근무수당</span>
-                  <span className="text-sm text-gray-600 font-medium">1,326,270원</span>
+                  <TextLabel>초과근무수당</TextLabel>
+                  <TextValue>1,326,270원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
-                  <span className="text-sm text-gray-500 font-normal">
+                  <TextLabel>
                     초과근무수당 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">고정</span>
-                  </span>
-                  <span className="text-sm text-gray-600 font-medium">456,780원</span>
+                  </TextLabel>
+                  <TextValue>456,780원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
-                  <span className="text-sm text-gray-500 font-normal">
+                  <TextLabel>
                     식비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">비과세</span>
-                  </span>
-                  <span className="text-sm text-gray-600 font-medium">100,000원</span>
+                  </TextLabel>
+                  <TextValue>100,000원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
-                  <span className="text-sm text-gray-500 font-normal">
+                  <TextLabel>
                     인재추천비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">1명 추천</span>
-                  </span>
-                  <span className="text-sm text-gray-600 font-medium">500,000원</span>
+                  </TextLabel>
+                  <TextValue>500,000원</TextValue>
                 </li>
                 <li className="flex items-center justify-between py-sm">
-                  <span className="text-sm text-gray-500 font-normal">
+                  <TextLabel>
                     인재추천비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">비과세</span>
-                  </span>
-                  <span className="text-sm text-gray-600 font-medium">500,000원</span>
+                  </TextLabel>
+                  <TextValue>500,000원</TextValue>
                 </li>
               </ul>
             </div>
@@ -201,7 +204,7 @@ export default function DashboardPage() {
           <Card className="mb-4">
             <div className="flex items-center gap-4 mb-lg">
               <div className="text-2xl font-bold text-gray-600">2024년 1월 1일 조직도</div>
-              <span className="text-xs text-gray-400 font-medium">2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함</span>
+              <TextLabel className="font-medium text-gray-400">2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함</TextLabel>
             </div>
             <div className="flex items-center justify-between mb-sm gap-4">
               {/* 왼쪽: 전체(56) */}
