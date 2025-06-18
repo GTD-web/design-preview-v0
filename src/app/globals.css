@@ -78,6 +78,20 @@ body {
   --foreground: #f8f8f2;
 }
 
+.theme-pastel {
+  --color-primary: #a5b4fc;
+  --color-secondary: #fbcfe8;
+  --color-accent: #f9a8d4;
+  --color-success: #bbf7d0;
+  --color-warning: #fde68a;
+  --color-danger: #fca5a5;
+  --color-info: #a5f3fc;
+  --color-surface: #fdf6fb;
+  --color-background: #f8fafc;
+  --color-border: #e0e7ff;
+  --foreground: #5b6478;
+}
+
 .font-noto {
   font-family: "Noto Sans KR", "Pretendard", Arial, Helvetica, sans-serif;
 }
