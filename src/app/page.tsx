@@ -189,6 +189,12 @@ export default function Home() {
     document.body.style.setProperty("--radius", `${radius}px`);
   }, [radius]);
 
+  // 세밀한 글꼴 사이즈 조절
+  const [fontSize, setFontSize] = useState(16);
+  useEffect(() => {
+    document.body.style.setProperty("--font-size-base", `${fontSize}px`);
+  }, [fontSize]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="fixed top-4 left-4 flex gap-2 z-50">
@@ -219,6 +225,20 @@ export default function Home() {
         </label>
         <input id="radius-range" type="range" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-32" />
         <input type="number" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-14 border rounded px-1 text-xs" />
+      </div>
+      <div className="fixed top-28 left-4 z-50 flex items-center gap-2 bg-white/80 p-2 rounded shadow">
+        <label htmlFor="font-size-range" className="text-xs text-foreground">
+          글꼴 크기: {fontSize}px
+        </label>
+        <input id="font-size-range" type="range" min={12} max={32} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-32" />
+        <input
+          type="number"
+          min={12}
+          max={32}
+          value={fontSize}
+          onChange={(e) => setFontSize(Number(e.target.value))}
+          className="w-14 border rounded px-1 text-xs"
+        />
       </div>
       <DesignTokensPreview theme={theme} />
     </div>
