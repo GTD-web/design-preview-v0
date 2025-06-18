@@ -1,1 +1,204 @@
+/* @import "@lumir-company/design-system-v0/styles/tailwind.css"; */
+@tailwind base;
+@tailwind components;
 @tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+
+:root {
+  --background: #f1f5f9;
+  --foreground: #111827;
+  --foreground-inverse: #f8f8f2;
+  --color-primary: #2563eb;
+  --color-secondary: #334155;
+  --color-accent: #22d3ee;
+  --color-success: #16a34a;
+  --color-warning: #fbbf24;
+  --color-danger: #ef4444;
+  --color-info: #0ea5e9;
+  --color-surface: #f8fafc;
+  --color-background: #f1f5f9;
+  --color-border: #cbd5e1;
+  --radius: 8px;
+  --font-size-base: 1rem;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 4rem;
+  --grid-columns: 12;
+  --grid-gutter: 1.5rem;
+  --grid-max-width: 1200px;
+  --flex-gap: 1rem;
+  --flex-direction: row;
+  --flex-align: center;
+  --flex-justify: flex-start;
+  --font-size-h1: 2.25rem;
+  --font-size-h2: 1.5rem;
+  --font-size-h3: 1.25rem;
+  --font-size-body: 1rem;
+  --font-weight-heading: 700;
+  --font-weight-body: 400;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --letter-spacing-heading: -0.01em;
+  --letter-spacing-body: 0em;
+  --scrollbar-bg: #f1f5f9;
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-thumb-hover: #94a3b8;
+  --scrollbar-width: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --foreground-inverse: #111827;
+    --color-primary: #60a5fa;
+    --color-secondary: #94a3b8;
+    --color-accent: #fdba74;
+    --color-success: #4ade80;
+    --color-warning: #fde047;
+    --color-danger: #f87171;
+    --color-info: #38bdf8;
+    --color-surface: #1e293b;
+    --color-background: #0f172a;
+    --color-border: #334155;
+    --scrollbar-bg: #18181b;
+    --scrollbar-thumb: #334155;
+    --scrollbar-thumb-hover: #64748b;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: "Noto Sans KR", "Pretendard", Arial, Helvetica, sans-serif;
+  font-size: var(--font-size-base);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.theme-dark {
+  --color-primary: #60a5fa;
+  --color-secondary: #64748b;
+  --color-accent: #22d3ee;
+  --color-success: #4ade80;
+  --color-warning: #fde047;
+  --color-danger: #f87171;
+  --color-info: #38bdf8;
+  --color-surface: #23272f;
+  --color-background: #1e222a;
+  --color-border: #475569;
+  --foreground: #f8f8f2;
+  --foreground-inverse: #111827;
+}
+
+.theme-dracula {
+  --color-primary: #bd93f9;
+  --color-secondary: #6272a4;
+  --color-accent: #ff79c6;
+  --color-success: #50fa7b;
+  --color-warning: #f1fa8c;
+  --color-danger: #ff5555;
+  --color-info: #8be9fd;
+  --color-surface: #44475a;
+  --color-background: #282a36;
+  --color-border: #6272a4;
+  --foreground: #f8f8f2;
+  --foreground-inverse: #282a36;
+}
+
+.theme-pastel {
+  --color-primary: #818cf8;
+  --color-secondary: #f472b6;
+  --color-accent: #a5b4fc;
+  --color-success: #6ee7b7;
+  --color-warning: #fde68a;
+  --color-danger: #fca5a5;
+  --color-info: #7dd3fc;
+  --color-surface: #f3f4f6;
+  --color-background: #f8fafc;
+  --color-border: #c7d2fe;
+  --foreground: #374151;
+}
+
+.theme-ci {
+  --color-primary: #00a0e9;
+  --color-secondary: #65127e;
+  --color-accent: #7de3f7;
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
+  --color-danger: #ef4444;
+  --color-info: #bae6fd;
+  --color-surface: #f8fafc;
+  --color-background: #f8fafc;
+  --color-border: #e0e7eb;
+  --foreground: #000000;
+}
+
+.theme-ci.theme-dark {
+  --color-primary: #00a0e9;
+  --color-secondary: #65127e;
+  --color-accent: #7de3f7;
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
+  --color-danger: #ef4444;
+  --color-info: #bae6fd;
+  --color-surface: #23272f;
+  --color-background: #18181b;
+  --color-border: #334155;
+  --foreground: #f8fafc;
+}
+
+.font-noto {
+  font-family: "Noto Sans KR", "Pretendard", Arial, Helvetica, sans-serif;
+}
+.font-pretendard {
+  font-family: "Pretendard", "Noto Sans KR", Arial, Helvetica, sans-serif;
+}
+.font-system {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.radius-sm {
+  --radius: 4px;
+}
+.radius-md {
+  --radius: 8px;
+}
+.radius-lg {
+  --radius: 16px;
+}
+.radius-xl {
+  --radius: 32px;
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+  background: var(--scrollbar-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-bg);
+}
+
+/* Firefox용 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-bg);
+}

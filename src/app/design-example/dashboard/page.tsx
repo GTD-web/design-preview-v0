@@ -2,10 +2,9 @@
 
 import React, { useState } from "react";
 import { Card } from "@/packages/design-system/components/Card";
-import DashboardHeader from "./DashboardHeader";
-import TextLabel from "./TextLabel";
-import TextValue from "./TextValue";
-import TextHeading from "./TextHeading";
+import TextLabel from "@/packages/design-system/components/TextLabel";
+import TextValue from "@/packages/design-system/components/TextValue";
+import TextHeading from "@/packages/design-system/components/TextHeading";
 
 export default function DashboardPage() {
   // 예시 조직도 데이터
