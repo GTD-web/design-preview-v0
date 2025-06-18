@@ -265,10 +265,11 @@ const config: Config = {
         "4xl": "32rem",
       },
       borderRadius: {
-        sm: "4px",
-        md: "8px",
-        lg: "16px",
-        xl: "32px",
+        DEFAULT: "var(--radius, 8px)",
+        sm: "var(--radius, 4px)",
+        md: "var(--radius, 8px)",
+        lg: "var(--radius, 16px)",
+        xl: "var(--radius, 32px)",
         full: "9999px",
       },
       zIndex: {

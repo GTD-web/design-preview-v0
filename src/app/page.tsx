@@ -155,6 +155,12 @@ export default function Home() {
     }
   }, [theme]);
 
+  // 세밀한 보더 라운드 조절
+  const [radius, setRadius] = useState(8);
+  useEffect(() => {
+    document.body.style.setProperty("--radius", `${radius}px`);
+  }, [radius]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="fixed top-4 left-4 flex gap-2 z-50">
@@ -178,6 +184,13 @@ export default function Home() {
             {t.label}
           </button>
         ))}
+      </div>
+      <div className="fixed top-16 left-4 z-50 flex items-center gap-2 bg-white/80 p-2 rounded shadow">
+        <label htmlFor="radius-range" className="text-xs text-foreground">
+          둥글기: {radius}px
+        </label>
+        <input id="radius-range" type="range" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-32" />
+        <input type="number" min={0} max={64} value={radius} onChange={(e) => setRadius(Number(e.target.value))} className="w-14 border rounded px-1 text-xs" />
       </div>
       <DesignTokensPreview />
     </div>

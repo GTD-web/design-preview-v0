@@ -19,6 +19,7 @@
   --color-surface: #f8fafc;
   --color-background: #f1f5f9;
   --color-border: #cbd5e1;
+  --radius: 8px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -79,17 +80,17 @@ body {
 }
 
 .theme-pastel {
-  --color-primary: #a5b4fc;
-  --color-secondary: #fbcfe8;
-  --color-accent: #f9a8d4;
-  --color-success: #bbf7d0;
+  --color-primary: #818cf8;
+  --color-secondary: #f472b6;
+  --color-accent: #a5b4fc;
+  --color-success: #6ee7b7;
   --color-warning: #fde68a;
   --color-danger: #fca5a5;
-  --color-info: #a5f3fc;
-  --color-surface: #fdf6fb;
+  --color-info: #7dd3fc;
+  --color-surface: #f3f4f6;
   --color-background: #f8fafc;
-  --color-border: #e0e7ff;
-  --foreground: #5b6478;
+  --color-border: #c7d2fe;
+  --foreground: #374151;
 }
 
 .theme-ci {
@@ -128,4 +129,17 @@ body {
 }
 .font-system {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.radius-sm {
+  --radius: 4px;
+}
+.radius-md {
+  --radius: 8px;
+}
+.radius-lg {
+  --radius: 16px;
+}
+.radius-xl {
+  --radius: 32px;
 }
