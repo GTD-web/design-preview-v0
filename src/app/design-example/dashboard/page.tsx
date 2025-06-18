@@ -1,132 +1,243 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import { Card } from "@/packages/design-system/components/Card";
+import DashboardHeader from "./DashboardHeader";
 
 export default function DashboardPage() {
+  // 예시 조직도 데이터
+  const orgData = [
+    {
+      name: "대표",
+      children: [
+        {
+          name: "Product Group",
+          count: 12,
+          children: [
+            {
+              name: "LX Tribe",
+              count: 12,
+              children: [
+                { name: "Time Tracking Squad A", count: 12 },
+                { name: "Time Tracking Squad B", count: 12 },
+                { name: "Time Tracking Squad C", count: 12 },
+              ],
+            },
+            {
+              name: "Data Platform Tribe",
+              count: 8,
+              children: [
+                { name: "Data Infra Squad", count: 4 },
+                { name: "Data Analytics Squad", count: 4 },
+              ],
+            },
+          ],
+        },
+        {
+          name: "Business Group",
+          count: 7,
+          children: [
+            {
+              name: "Sales Tribe",
+              count: 7,
+              children: [
+                { name: "Domestic Sales Squad", count: 3 },
+                { name: "Global Sales Squad", count: 4 },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  // 각 계층별 open/close 상태 관리 (key: 경로 문자열)
+  const [openMap, setOpenMap] = useState<{ [key: string]: boolean }>({
+    "0": true,
+    "0-0": true,
+    "0-0-0": true,
+    "0-0-1": false,
+    "0-1": false,
+    "0-1-0": false,
+  });
+
+  // 트리 렌더 함수
+  const renderTree = (node: any, path: string, depth = 0) => {
+    const hasChildren = node.children && node.children.length > 0;
+    const isOpen = openMap[path] ?? false;
+    // 스타일 프리셋
+    const paddings = ["pl-0", "pl-4", "pl-8", "pl-12", "pl-16"]; // depth별 인덴트
+    const fontStyles = ["font-semibold text-gray-700", "font-semibold text-gray-600", "font-semibold text-gray-500", "text-gray-500 text-sm"];
+    return (
+      <div key={path} className={`${paddings[depth] || "pl-16"}`}>
+        <div className={`flex items-center min-h-[44px] py-2 ${fontStyles[depth] || fontStyles[3]} border-b border-gray-100`}>
+          {hasChildren && (
+            <button
+              type="button"
+              className="mr-1 flex items-center justify-center w-5 h-5 text-gray-300 hover:bg-gray-100 rounded transition-colors focus:outline-none"
+              onClick={() => setOpenMap((prev) => ({ ...prev, [path]: !isOpen }))}
+              aria-label={isOpen ? "접기" : "펼치기"}
+              tabIndex={0}
+            >
+              {isOpen ? (
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                  <path d="M6 8l4 4 4-4" stroke="#bdbdbd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                  <path d="M8 6l4 4-4 4" stroke="#bdbdbd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+          )}
+          {/* 하위(Squad)면 불릿 */}
+          {!hasChildren && <span className="inline-block w-4 text-center text-gray-200 select-none">•</span>}
+          <span>{node.name}</span>
+          {node.count !== undefined && <span className="text-xs text-gray-300 font-normal ml-1">{node.count}</span>}
+        </div>
+        {hasChildren && isOpen && <div>{node.children.map((child: any, idx: number) => renderTree(child, `${path}-${idx}`, depth + 1))}</div>}
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-background font-sans">
-      {/* 헤더 */}
-      <header className="w-full h-16 flex items-center justify-between px-lg bg-primary/80 text-white font-heading text-2xl shadow-lg backdrop-blur-md z-modal sticky top-0">
-        <div className="flex items-center gap-sm">
-          <span className="text-3xl">🎨</span>
-          <span className="ml-sm">Design Dashboard</span>
-        </div>
-        <div className="flex items-center gap-md">
-          <button className="relative">
-            <span className="text-2xl">🔔</span>
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-danger rounded-full border-2 border-primary"></span>
-          </button>
-          <div className="w-9 h-9 rounded-full bg-surface flex items-center justify-center shadow-md border border-border">
-            <span className="text-lg">👤</span>
-          </div>
-        </div>
-      </header>
-      {/* 3단 그리드 레이아웃 */}
-      <div className="grid grid-cols-1 lg:grid-cols-dashboard gap-layout px-lg py-lg transition-all">
-        {/* 사이드바 */}
-        <aside className="bg-surface/80 rounded-2xl shadow-lg p-lg flex flex-col gap-md min-h-[60vh] backdrop-blur-md border border-border">
-          <nav className="flex flex-col gap-sm">
-            <span className="text-heading text-lg font-bold mb-sm tracking-wide">메뉴</span>
-            <a
-              href="#"
-              className="flex items-center gap-xs text-body py-xs px-md rounded-lg hover:bg-primary/10 hover:text-primary transition font-medium group active:bg-primary/20"
-            >
-              <span className="text-xl">🏠</span>
-              <span>대시보드</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-xs text-body py-xs px-md rounded-lg hover:bg-primary/10 hover:text-primary transition font-medium group"
-            >
-              <span className="text-xl">📁</span>
-              <span>프로젝트</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-xs text-body py-xs px-md rounded-lg hover:bg-primary/10 hover:text-primary transition font-medium group"
-            >
-              <span className="text-xl">⚙️</span>
-              <span>설정</span>
-            </a>
-          </nav>
-        </aside>
-        {/* 메인 */}
-        <main className="flex flex-col gap-lg">
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-lg">
-            {/* 카드 위젯 */}
-            <div className="relative bg-gradient-to-br from-success/20 to-success/5 border border-success rounded-2xl p-xl shadow-lg overflow-hidden group transition hover:scale-[1.02] hover:shadow-xl">
-              <div className="flex items-center gap-md mb-md">
-                <span className="text-3xl">✅</span>
-                <div className="text-success font-heading text-xl">완료된 작업</div>
-              </div>
-              <div className="text-4xl font-bold mb-xs">24</div>
-              <div className="text-body text-sm opacity-70">이번 주 완료</div>
-              <div className="absolute right-4 bottom-4 opacity-10 text-7xl select-none">✔️</div>
-            </div>
-            <div className="relative bg-gradient-to-br from-warning/20 to-warning/5 border border-warning rounded-2xl p-xl shadow-lg overflow-hidden group transition hover:scale-[1.02] hover:shadow-xl">
-              <div className="flex items-center gap-md mb-md">
-                <span className="text-3xl">🚧</span>
-                <div className="text-warning font-heading text-xl">진행 중</div>
-              </div>
-              <div className="text-4xl font-bold mb-xs">5</div>
-              <div className="text-body text-sm opacity-70">현재 진행</div>
-              <div className="absolute right-4 bottom-4 opacity-10 text-7xl select-none">⏳</div>
-            </div>
-            <div className="relative bg-gradient-to-br from-info/20 to-info/5 border border-info rounded-2xl p-xl shadow-lg overflow-hidden group transition hover:scale-[1.02] hover:shadow-xl">
-              <div className="flex items-center gap-md mb-md">
-                <span className="text-3xl">📢</span>
-                <div className="text-info font-heading text-xl">알림</div>
-              </div>
-              <div className="text-4xl font-bold mb-xs">3</div>
-              <div className="text-body text-sm opacity-70">새로운 알림</div>
-              <div className="absolute right-4 bottom-4 opacity-10 text-7xl select-none">🔔</div>
-            </div>
-            <div className="relative bg-gradient-to-br from-danger/20 to-danger/5 border border-danger rounded-2xl p-xl shadow-lg overflow-hidden group transition hover:scale-[1.02] hover:shadow-xl">
-              <div className="flex items-center gap-md mb-md">
-                <span className="text-3xl">❗</span>
-                <div className="text-danger font-heading text-xl">이슈</div>
-              </div>
-              <div className="text-4xl font-bold mb-xs">1</div>
-              <div className="text-body text-sm opacity-70">긴급 확인</div>
-              <div className="absolute right-4 bottom-4 opacity-10 text-7xl select-none">⚠️</div>
-            </div>
-          </section>
-          {/* 최근 활동 */}
-          <section className="bg-surface/80 rounded-2xl shadow-lg p-xl backdrop-blur-md border border-border">
-            <div className="font-heading text-lg mb-md flex items-center gap-xs">
-              <span className="text-xl">🕒</span>
-              최근 활동
-            </div>
-            <ul className="list-none pl-0 text-body divide-y divide-border">
-              <li className="py-sm flex items-center gap-xs">
-                <span className="text-success">●</span> 새로운 프로젝트가 생성되었습니다.
+    <div className="min-h-screen bg-gray-50 font-sans p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-5rem)]">
+        {/* 좌측: 변경내역/사이드바 */}
+        <Card className="flex flex-col gap-lg h-full bg-surface p-lg rounded-lg">
+          {/* 조직도 변경내역 섹션 */}
+          <div>
+            <div className="text-base font-heading font-semibold text-gray-600 mb-md">조직도 변경내역</div>
+            <ul className="flex flex-col gap-md">
+              <li className="flex flex-col gap-1">
+                <span className="text-xs text-gray-500 font-normal">
+                  2024년 1월 15일 <span className="ml-xs px-sm py-0.5 rounded bg-warning/10 text-warning text-2xs font-medium">예약</span>
+                </span>
+                <span className="text-sm text-gray-600 font-medium">김경훈 · Core Squad 외 10건 변경</span>
               </li>
-              <li className="py-sm flex items-center gap-xs">
-                <span className="text-success">●</span> 작업 3건이 완료되었습니다.
+              <li className="flex flex-col gap-1 bg-primary/5 rounded-lg p-sm border border-primary/20">
+                <span className="text-xs text-gray-500 font-normal">
+                  2024년 1월 1일 <span className="ml-xs px-sm py-0.5 rounded bg-primary/10 text-primary text-2xs font-medium">현재</span>
+                </span>
+                <span className="text-sm text-gray-600 font-medium">김경훈 · Review Squad 변경</span>
               </li>
-              <li className="py-sm flex items-center gap-xs">
-                <span className="text-info">●</span> 알림 1건이 도착했습니다.
+              <li className="flex flex-col gap-1">
+                <span className="text-xs text-gray-500 font-normal">2023년 10월 20일</span>
+                <span className="text-sm text-gray-600 font-medium">김경훈 · Product Group 변경</span>
+              </li>
+              <li className="flex flex-col gap-1">
+                <span className="text-xs text-gray-500 font-normal">2023년 10월 15일</span>
+                <span className="text-sm text-gray-600 font-medium">이지나 · AI Lovable TF 외 3건 변경</span>
+              </li>
+              <li className="flex flex-col gap-1">
+                <span className="text-xs text-gray-500 font-normal">2023년 8월 1일</span>
+                <span className="text-sm text-gray-600 font-medium">이지나 · Data Engineering Team 변경</span>
+              </li>
+              <li className="flex flex-col gap-1">
+                <span className="text-xs text-gray-500 font-normal">2023년 7월 30일</span>
+                <span className="text-sm text-gray-600 font-medium">이지나 · Security Dev Team 변경</span>
               </li>
             </ul>
-          </section>
+          </div>
+          {/* 섹션 구분선 */}
+          <div className="border-t border-border/40 my-lg" />
+          {/* 지급 내역 섹션 */}
+          <div>
+            <div className="flex items-end justify-between mb-md">
+              <div>
+                <div className="text-base font-heading font-semibold text-gray-600">지급 내역</div>
+                <div className="text-xs text-gray-500 mt-xs">2024. 12. 1 - 2024. 12. 31</div>
+              </div>
+              <div className="text-xl font-semibold text-gray-600">4,287,676원</div>
+            </div>
+            <div className="w-full">
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-xs">
+                <span>합계</span>
+                <span>4,287,676원</span>
+              </div>
+              <ul className="divide-y divide-border">
+                <li className="flex items-center justify-between py-sm">
+                  <span className="text-sm text-gray-500 font-normal">기본급</span>
+                  <span className="text-sm text-gray-600 font-medium">4,000,000원</span>
+                </li>
+                <li className="flex items-center justify-between py-sm">
+                  <span className="text-sm text-gray-500 font-normal">근무미달차감금</span>
+                  <span className="text-sm text-gray-600 font-medium">-200,000원</span>
+                </li>
+                <li className="flex items-center justify-between py-sm">
+                  <span className="text-sm text-gray-500 font-normal">초과근무수당</span>
+                  <span className="text-sm text-gray-600 font-medium">1,326,270원</span>
+                </li>
+                <li className="flex items-center justify-between py-sm">
+                  <span className="text-sm text-gray-500 font-normal">
+                    초과근무수당 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">고정</span>
+                  </span>
+                  <span className="text-sm text-gray-600 font-medium">456,780원</span>
+                </li>
+                <li className="flex items-center justify-between py-sm">
+                  <span className="text-sm text-gray-500 font-normal">
+                    식비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">비과세</span>
+                  </span>
+                  <span className="text-sm text-gray-600 font-medium">100,000원</span>
+                </li>
+                <li className="flex items-center justify-between py-sm">
+                  <span className="text-sm text-gray-500 font-normal">
+                    인재추천비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">1명 추천</span>
+                  </span>
+                  <span className="text-sm text-gray-600 font-medium">500,000원</span>
+                </li>
+                <li className="flex items-center justify-between py-sm">
+                  <span className="text-sm text-gray-500 font-normal">
+                    인재추천비 <span className="text-xs bg-gray-100 text-gray-400 rounded px-sm py-0.5 ml-xs font-normal">비과세</span>
+                  </span>
+                  <span className="text-sm text-gray-600 font-medium">500,000원</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </Card>
+        {/* 중앙: 메인 섹션 */}
+        <main className="col-span-2 flex flex-col gap-8 h-full">
+          <Card className="mb-4">
+            <div className="flex items-center gap-4 mb-lg">
+              <div className="text-2xl font-bold text-gray-600">2024년 1월 1일 조직도</div>
+              <span className="text-xs text-gray-400 font-medium">2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함</span>
+            </div>
+            <div className="flex items-center justify-between mb-sm gap-4">
+              {/* 왼쪽: 전체(56) */}
+              <span className="text-sm text-gray-400">전체 (56)</span>
+              {/* 가운데: 검색 인풋 + 돋보기 */}
+              <div className="flex-1 flex justify-end">
+                <div className="relative w-full max-w-xs">
+                  <input
+                    className="w-full border border-border rounded px-3 py-1 text-sm bg-gray-50 focus:outline-none focus:border-primary pr-8"
+                    placeholder="검색"
+                  />
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-300 pointer-events-none">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
+                      <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" strokeWidth="1.2" />
+                      <path d="M13 13l-2-2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              {/* 오른쪽: 구분선 + 전체화면 버튼 */}
+              <div className="flex items-center gap-2">
+                <span className="mx-2 text-gray-200 select-none">|</span>
+                <button type="button" className="flex items-center justify-center w-8 h-8 rounded hover:bg-gray-100 transition" aria-label="전체화면">
+                  {/* 화살표 4개 아이콘 */}
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                    <path d="M3 8V3h5" stroke="#bdbdbd" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M17 8V3h-5" stroke="#bdbdbd" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M3 12v5h5" stroke="#bdbdbd" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M17 12v5h-5" stroke="#bdbdbd" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col gap-md">{orgData.map((node, idx) => renderTree(node, `${idx}`))}</div>
+          </Card>
         </main>
-        {/* 보조 패널 */}
-        <aside className="bg-surface/80 rounded-2xl shadow-lg p-lg flex flex-col gap-md min-h-[60vh] backdrop-blur-md border border-border">
-          <div className="font-heading text-lg mb-md flex items-center gap-xs">
-            <span className="text-xl">🔔</span>
-            알림
-          </div>
-          <div className="bg-info/10 border-l-4 border-info p-md rounded-lg mb-md shadow-sm">
-            <div className="text-info font-bold flex items-center gap-xs">
-              시스템 점검 예정 <span className="text-base">🛠️</span>
-            </div>
-            <div className="text-body text-sm">6월 10일 02:00~04:00</div>
-          </div>
-          <div className="bg-warning/10 border-l-4 border-warning p-md rounded-lg shadow-sm">
-            <div className="text-warning font-bold flex items-center gap-xs">
-              업데이트 필요 <span className="text-base">⚡</span>
-            </div>
-            <div className="text-body text-sm">프로필 정보를 확인하세요.</div>
-          </div>
-        </aside>
       </div>
     </div>
   );

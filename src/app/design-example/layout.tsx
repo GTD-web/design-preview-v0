@@ -99,9 +99,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="flex flex-row min-h-screen">
-          <main className="flex-1 min-h-screen flex items-center justify-center bg-background" style={{ marginLeft: 0 }}>
-            {children}
-          </main>
+          <main className="flex-1 min-h-screen bg-background">{children}</main>
           {/* 오른쪽 아래 고정 플로팅 버튼 */}
           <button
             className="fixed bottom-6 right-6 z-[1200] w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center text-3xl hover:bg-primary/90 transition"
