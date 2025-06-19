@@ -65,10 +65,6 @@ function PalettePreview({ name }: { name: string }) {
   );
 }
 
-interface DesignTokensPreviewProps {
-  theme?: string;
-}
-
 export function DesignTokensPreview() {
   const fonts = [
     { key: "noto", label: "Noto Sans KR", className: "font-noto" },

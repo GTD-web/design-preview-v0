@@ -3,7 +3,7 @@
 // import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 // import { Sidebar } from "./Sidebar";
 
 const geistSans = localFont({
@@ -23,18 +23,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // page.tsx에서 사용하던 상태를 이곳으로 이동
-  const fonts = [
-    { key: "noto", label: "Noto Sans KR", className: "font-noto" },
-    { key: "pretendard", label: "Pretendard", className: "font-pretendard" },
-    { key: "system", label: "System Sans", className: "font-system" },
-  ];
-  const themes = [
-    { key: "light", label: "라이트", className: "" },
-    { key: "dark", label: "다크", className: "theme-dark" },
-    { key: "dracula", label: "드라큘라", className: "theme-dracula" },
-    { key: "pastel", label: "파스텔", className: "theme-pastel" },
-    { key: "ci", label: "CI 테마", className: "theme-ci" },
-  ];
+  const fonts = useMemo(
+    () => [
+      { key: "noto", label: "Noto Sans KR", className: "font-noto" },
+      { key: "pretendard", label: "Pretendard", className: "font-pretendard" },
+      { key: "system", label: "System Sans", className: "font-system" },
+    ],
+    []
+  );
+
+  const themes = useMemo(
+    () => [
+      { key: "light", label: "라이트", className: "" },
+      { key: "dark", label: "다크", className: "theme-dark" },
+      { key: "dracula", label: "드라큘라", className: "theme-dracula" },
+      { key: "pastel", label: "파스텔", className: "theme-pastel" },
+      { key: "ci", label: "CI 테마", className: "theme-ci" },
+    ],
+    []
+  );
   const [font, setFont] = useState("noto");
   useEffect(() => {
     document.body.classList.remove(
