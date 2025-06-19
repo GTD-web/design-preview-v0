@@ -2,14 +2,14 @@
 
 import React, { useState } from "react";
 import { Card } from "@/packages/design-system/components/Card";
-import TextLabel from "@/packages/design-system/components/TextLabel";
-import TextValue from "@/packages/design-system/components/TextValue";
-import TextHeading from "@/packages/design-system/components/TextHeading";
+import { TextLabel, TextValue, TextHeading, TextSpan } from "@/packages/design-system/components/Text";
 import Badge from "../../../../packages/design-system/components/Badge";
 import { Button } from "@/packages/design-system/components/Button";
 import { Select } from "@/packages/design-system/components/Select";
-import { HStack, VStack } from "@/packages/design-system/components/Stack";
-import { VSpace } from "@/packages/design-system/components/Space";
+import { Input } from "@/packages/design-system/components/Input";
+import { HStack, VStack, VSpace } from "@/packages/design-system/components/Stack";
+import { Grid, GridItem } from "@/packages/design-system/components/Grid";
+import { Flex1MinW0, Icon } from "@/packages/design-system/components/Box";
 
 // 상품 데이터
 const products = [
@@ -109,64 +109,66 @@ export default function EcommercePage() {
 
   return (
     <div className="min-h-screen p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-layout">
+      <Grid cols={4} gap="layout" className="grid-cols-1 lg:grid-cols-4">
         {/* 좌측 사이드바 */}
-        <VSpace size="lg" className="lg:col-span-1">
-          {/* 통계 카드 */}
-          <Card className="p-lg">
-            <TextHeading size="lg" className="mb-md">
-              상점 통계
-            </TextHeading>
-            <VSpace size="md">
-              <HStack justify="between" align="center">
-                <TextLabel>총 매출</TextLabel>
-                <TextValue size="lg" weight="semibold" className="text-primary">
-                  {totalRevenue.toLocaleString()}원
-                </TextValue>
-              </HStack>
-              <HStack justify="between" align="center">
-                <TextLabel>총 상품</TextLabel>
-                <TextValue>{totalProducts}개</TextValue>
-              </HStack>
-              <HStack justify="between" align="center">
-                <TextLabel>판매중</TextLabel>
-                <TextValue>{activeProducts}개</TextValue>
-              </HStack>
-            </VSpace>
-          </Card>
+        <GridItem span={1} className="lg:col-span-1">
+          <VSpace gap="lg">
+            {/* 통계 카드 */}
+            <Card className="p-lg">
+              <TextHeading size="lg" className="mb-md">
+                상점 통계
+              </TextHeading>
+              <VSpace gap="md">
+                <HStack justify="between" align="center">
+                  <TextLabel>총 매출</TextLabel>
+                  <TextValue size="lg" weight="semibold" className="text-primary">
+                    {totalRevenue.toLocaleString()}원
+                  </TextValue>
+                </HStack>
+                <HStack justify="between" align="center">
+                  <TextLabel>총 상품</TextLabel>
+                  <TextValue>{totalProducts}개</TextValue>
+                </HStack>
+                <HStack justify="between" align="center">
+                  <TextLabel>판매중</TextLabel>
+                  <TextValue>{activeProducts}개</TextValue>
+                </HStack>
+              </VSpace>
+            </Card>
 
-          {/* 필터 */}
-          <Card className="p-lg">
-            <TextHeading size="lg" className="mb-md">
-              필터
-            </TextHeading>
-            <VStack gap="md">
-              <Select
-                label="카테고리"
-                value={selectedCategory}
-                onChange={(value) => setSelectedCategory(value)}
-                options={categories.map((category) => ({
-                  value: category,
-                  label: category,
-                }))}
-                width="240px"
-              />
-              <Select
-                label="상태"
-                value={selectedStatus}
-                onChange={(value) => setSelectedStatus(value)}
-                options={statuses.map((status) => ({
-                  value: status,
-                  label: status,
-                }))}
-                width="240px"
-              />
-            </VStack>
-          </Card>
-        </VSpace>
+            {/* 필터 */}
+            <Card className="p-lg">
+              <TextHeading size="lg" className="mb-md">
+                필터
+              </TextHeading>
+              <VStack gap="md">
+                <Select
+                  label="카테고리"
+                  value={selectedCategory}
+                  onChange={(value) => setSelectedCategory(value)}
+                  options={categories.map((category) => ({
+                    value: category,
+                    label: category,
+                  }))}
+                  width="240px"
+                />
+                <Select
+                  label="상태"
+                  value={selectedStatus}
+                  onChange={(value) => setSelectedStatus(value)}
+                  options={statuses.map((status) => ({
+                    value: status,
+                    label: status,
+                  }))}
+                  width="240px"
+                />
+              </VStack>
+            </Card>
+          </VSpace>
+        </GridItem>
 
         {/* 메인 콘텐츠 */}
-        <div className="lg:col-span-3">
+        <GridItem span={3} className="lg:col-span-3">
           <Card className="p-lg">
             {/* 헤더 */}
             <HStack justify="between" align="center" className="mb-lg">
@@ -181,18 +183,21 @@ export default function EcommercePage() {
 
             {/* 검색 및 정렬 */}
             <HStack gap="md" className="mb-lg">
-              <div className="flex-1 relative">
-                <input
-                  type="text"
-                  placeholder="상품명으로 검색..."
-                  className="w-full border border-border rounded-lg px-4 py-2 pl-10 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
+              <Input
+                type="text"
+                placeholder="상품명으로 검색..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                leftIcon={
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                }
+                clearable="button"
+                clearText="초기화"
+                onClear={() => setSearchQuery("")}
+                className="flex-1"
+              />
               <Select
                 value={sortBy}
                 onChange={(value) => setSortBy(value)}
@@ -210,8 +215,8 @@ export default function EcommercePage() {
             <VStack gap="md">
               {sortedProducts.map((product) => (
                 <HStack gap="md" align="center" className="p-4 border border-border rounded-lg hover:bg-surface/50 transition-colors">
-                  <div className="text-2xl">{product.image}</div>
-                  <div className="flex-1 min-w-0">
+                  <Icon size="2xl">{product.image}</Icon>
+                  <Flex1MinW0>
                     <HStack gap="sm" align="center" className="mb-1">
                       <TextValue weight="semibold" className="truncate">
                         {product.name}
@@ -219,16 +224,24 @@ export default function EcommercePage() {
                       {product.status === "out_of_stock" && <Badge color="danger">품절</Badge>}
                     </HStack>
                     <HStack gap="md" align="center" className="text-sm text-gray-600">
-                      <span>{product.category}</span>
-                      <span>⭐ {product.rating}</span>
-                      <span>판매 {product.sales}개</span>
+                      <TextSpan size="sm" color="muted">
+                        {product.category}
+                      </TextSpan>
+                      <TextSpan size="sm" color="muted">
+                        ⭐ {product.rating}
+                      </TextSpan>
+                      <TextSpan size="sm" color="muted">
+                        판매 {product.sales}개
+                      </TextSpan>
                     </HStack>
-                  </div>
+                  </Flex1MinW0>
                   <div className="text-right">
                     <TextValue weight="semibold" className="text-primary">
                       {product.price.toLocaleString()}원
                     </TextValue>
-                    <div className="text-sm text-gray-600">재고: {product.stock}개</div>
+                    <TextSpan size="sm" color="muted">
+                      재고: {product.stock}개
+                    </TextSpan>
                   </div>
                   <HStack gap="sm">
                     <Button variant="ghost" size="sm">
@@ -249,8 +262,8 @@ export default function EcommercePage() {
               </div>
             )}
           </Card>
-        </div>
-      </div>
+        </GridItem>
+      </Grid>
     </div>
   );
 }

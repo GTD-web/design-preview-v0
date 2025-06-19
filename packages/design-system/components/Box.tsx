@@ -110,6 +110,32 @@ export const Flex1MinW0 = forwardRef<HTMLDivElement, Omit<FlexProps, "flex" | "m
 
 export const Relative = forwardRef<HTMLDivElement, Omit<ContainerProps, "position">>((props, ref) => <Container ref={ref} position="relative" {...props} />);
 
+interface IconProps extends HTMLAttributes<HTMLDivElement> {
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+  children: React.ReactNode;
+}
+
+const iconSizeClasses = {
+  xs: "text-xs",
+  sm: "text-sm",
+  md: "text-base",
+  lg: "text-lg",
+  xl: "text-xl",
+  "2xl": "text-2xl",
+  "3xl": "text-3xl",
+  "4xl": "text-4xl",
+};
+
+export const Icon = forwardRef<HTMLDivElement, IconProps>(({ size = "md", className = "", children, ...props }, ref) => {
+  const classes = [iconSizeClasses[size], "flex items-center justify-center", className].filter(Boolean).join(" ");
+
+  return (
+    <div ref={ref} className={classes} {...props}>
+      {children}
+    </div>
+  );
+});
+
 // 컴포넌트 이름 지정
 Box.displayName = "Box";
 Flex.displayName = "Flex";
@@ -118,3 +144,4 @@ Flex1.displayName = "Flex1";
 Flex1Relative.displayName = "Flex1Relative";
 Flex1MinW0.displayName = "Flex1MinW0";
 Relative.displayName = "Relative";
+Icon.displayName = "Icon";
