@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ButtonHTMLAttributes, ReactNode, useState, useRef, useEffect } from "react";
+import { HStack } from "./Stack";
 
 export interface SelectOption {
   value: string;
@@ -84,7 +85,7 @@ export function Select({
   return (
     <div className={`${width ? "" : "w-full"}`} style={{ width: width }} ref={dropdownRef}>
       {label && (
-        <div className="w-full flex items-center justify-between mb-sm">
+        <HStack justify="between" className="mb-sm">
           <label className="text-sm font-medium text-foreground whitespace-nowrap">{label}</label>
           <div className="relative" style={{ width: "160px" }}>
             <button type="button" className={buttonClasses} onClick={() => setIsOpen(!isOpen)} {...props}>
@@ -112,7 +113,7 @@ export function Select({
               </div>
             )}
           </div>
-        </div>
+        </HStack>
       )}
       {!label && (
         <div className="relative">

@@ -407,6 +407,13 @@ const config: Config = {
         dashboard: "300px 1fr 300px",
       },
       gap: {
+        xs: "var(--spacing-xs, 0.25rem)",
+        sm: "var(--spacing-sm, 0.5rem)",
+        md: "var(--spacing-md, 1rem)",
+        lg: "var(--spacing-lg, 2rem)",
+        xl: "var(--spacing-xl, 4rem)",
+        "2xl": "8rem",
+        "3xl": "16rem",
         layout: "var(--grid-gutter, 1.5rem)",
         flex: "var(--flex-gap, 1rem)",
       },

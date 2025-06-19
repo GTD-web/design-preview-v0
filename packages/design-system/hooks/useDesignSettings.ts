@@ -99,6 +99,9 @@ export function useDesignSettings() {
   const [gap, setGap] = useState(24); // px 단위, 기본값 24px(1.5rem)
   useEffect(() => {
     document.body.style.setProperty("--grid-gutter", `${gap / 16}rem`);
+    document.body.style.setProperty("--flex-gap", `${gap / 16}rem`);
+    // 갭 변경 시 spacing-lg도 함께 업데이트 (사이드바 카드 간격용)
+    document.body.style.setProperty("--spacing-lg", `${gap / 16}rem`);
   }, [gap]);
 
   return {

@@ -8,6 +8,8 @@ import TextHeading from "@/packages/design-system/components/TextHeading";
 import Badge from "../../../../packages/design-system/components/Badge";
 import { Button } from "@/packages/design-system/components/Button";
 import { Select } from "@/packages/design-system/components/Select";
+import { HStack, VStack } from "@/packages/design-system/components/Stack";
+import { VSpace } from "@/packages/design-system/components/Space";
 
 // 상품 데이터
 const products = [
@@ -109,28 +111,28 @@ export default function EcommercePage() {
     <div className="min-h-screen p-6">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-layout">
         {/* 좌측 사이드바 */}
-        <div className="lg:col-span-1 space-y-6">
+        <VSpace size="lg" className="lg:col-span-1">
           {/* 통계 카드 */}
           <Card className="p-lg">
             <TextHeading size="lg" className="mb-md">
               상점 통계
             </TextHeading>
-            <div className="space-y-md">
-              <div className="flex justify-between items-center">
+            <VSpace size="md">
+              <HStack justify="between" align="center">
                 <TextLabel>총 매출</TextLabel>
                 <TextValue size="lg" weight="semibold" className="text-primary">
                   {totalRevenue.toLocaleString()}원
                 </TextValue>
-              </div>
-              <div className="flex justify-between items-center">
+              </HStack>
+              <HStack justify="between" align="center">
                 <TextLabel>총 상품</TextLabel>
                 <TextValue>{totalProducts}개</TextValue>
-              </div>
-              <div className="flex justify-between items-center">
+              </HStack>
+              <HStack justify="between" align="center">
                 <TextLabel>판매중</TextLabel>
                 <TextValue>{activeProducts}개</TextValue>
-              </div>
-            </div>
+              </HStack>
+            </VSpace>
           </Card>
 
           {/* 필터 */}
@@ -138,7 +140,7 @@ export default function EcommercePage() {
             <TextHeading size="lg" className="mb-md">
               필터
             </TextHeading>
-            <div className="flex flex-col space-y-4">
+            <VStack gap="md">
               <Select
                 label="카테고리"
                 value={selectedCategory}
@@ -159,15 +161,15 @@ export default function EcommercePage() {
                 }))}
                 width="240px"
               />
-            </div>
+            </VStack>
           </Card>
-        </div>
+        </VSpace>
 
         {/* 메인 콘텐츠 */}
         <div className="lg:col-span-3">
           <Card className="p-lg">
             {/* 헤더 */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-lg">
+            <HStack justify="between" align="center" className="mb-lg">
               <div>
                 <TextHeading size="2xl" weight="semibold">
                   상품 관리
@@ -175,10 +177,10 @@ export default function EcommercePage() {
                 <TextLabel className="mt-xs">총 {sortedProducts.length}개의 상품</TextLabel>
               </div>
               <Button className="w-fit">+ 새 상품 추가</Button>
-            </div>
+            </HStack>
 
             {/* 검색 및 정렬 */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-lg">
+            <HStack gap="md" className="mb-lg">
               <div className="flex-1 relative">
                 <input
                   type="text"
@@ -202,25 +204,25 @@ export default function EcommercePage() {
                 ]}
                 width="160px"
               />
-            </div>
+            </HStack>
 
             {/* 상품 목록 */}
-            <div className="space-y-4">
+            <VStack gap="md">
               {sortedProducts.map((product) => (
-                <div key={product.id} className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-surface/50 transition-colors">
+                <HStack gap="md" align="center" className="p-4 border border-border rounded-lg hover:bg-surface/50 transition-colors">
                   <div className="text-2xl">{product.image}</div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <HStack gap="sm" align="center" className="mb-1">
                       <TextValue weight="semibold" className="truncate">
                         {product.name}
                       </TextValue>
                       {product.status === "out_of_stock" && <Badge color="danger">품절</Badge>}
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                    </HStack>
+                    <HStack gap="md" align="center" className="text-sm text-gray-600">
                       <span>{product.category}</span>
                       <span>⭐ {product.rating}</span>
                       <span>판매 {product.sales}개</span>
-                    </div>
+                    </HStack>
                   </div>
                   <div className="text-right">
                     <TextValue weight="semibold" className="text-primary">
@@ -228,17 +230,17 @@ export default function EcommercePage() {
                     </TextValue>
                     <div className="text-sm text-gray-600">재고: {product.stock}개</div>
                   </div>
-                  <div className="flex gap-2">
+                  <HStack gap="sm">
                     <Button variant="ghost" size="sm">
                       수정
                     </Button>
                     <Button variant="ghost" size="sm">
                       삭제
                     </Button>
-                  </div>
-                </div>
+                  </HStack>
+                </HStack>
               ))}
-            </div>
+            </VStack>
 
             {sortedProducts.length === 0 && (
               <div className="text-center py-12 text-gray-500">
