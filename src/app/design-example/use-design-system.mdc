@@ -1,0 +1,301 @@
+---
+description: 
+globs: *.tsx
+alwaysApply: false
+---
+# 디자인 시스템 기반 컴포넌트 개발 가이드라인
+
+## 📋 개요
+이 문서는 `@lumir-company/design-system-v0` 패키지의 디자인 토큰과 컴포넌트를 활용한 일관된 UI 개발을 위한 가이드라인입니다.
+
+## 🎨 디자인 토큰 활용
+
+### 1. 색상 시스템
+```tsx
+// ✅ 권장: 디자인 토큰 사용
+<div className="bg-primary text-white">Primary 버튼</div>
+<div className="bg-secondary text-white">Secondary 버튼</div>
+<div className="bg-accent text-white">Accent 버튼</div>
+
+// ❌ 비권장: 하드코딩된 색상
+<div className="bg-blue-500 text-white">Primary 버튼</div>
+```
+
+**사용 가능한 색상 토큰:**
+- `primary`, `secondary`, `accent`
+- `success`, `warning`, `danger`, `info`
+- `surface`, `background`, `border`
+- 팔레트 색상: `gray-50` ~ `gray-900`, `blue-50` ~ `blue-900` 등
+
+### 2. 타이포그래피
+```tsx
+// ✅ 권장: 디자인 토큰 사용
+<h1 className="text-h1 font-heading font-weight-heading">제목</h1>
+<h2 className="text-h2 font-heading font-weight-heading">부제목</h2>
+<p className="text-body font-sans font-weight-body">본문</p>
+
+// ❌ 비권장: 하드코딩된 폰트
+<h1 className="text-2xl font-bold">제목</h1>
+```
+
+**사용 가능한 폰트 토큰:**
+- 폰트 패밀리: `font-sans`, `font-heading`, `font-mono`
+- 폰트 크기: `text-h1`, `text-h2`, `text-h3`, `text-body`
+- 폰트 굵기: `font-weight-heading`, `font-weight-body`
+
+### 3. 간격 및 레이아웃
+```tsx
+// ✅ 권장: 디자인 토큰 사용
+<div className="p-md m-lg">
+  <div className="gap-layout grid grid-cols-layout">
+    <div className="p-sm">아이템 1</div>
+    <div className="p-sm">아이템 2</div>
+  </div>
+</div>
+
+// ❌ 비권장: 하드코딩된 간격
+<div className="p-4 m-8">
+  <div className="gap-6 grid grid-cols-12">
+    <div className="p-2">아이템 1</div>
+    <div className="p-2">아이템 2</div>
+  </div>
+</div>
+```
+
+**사용 가능한 간격 토큰:**
+- 패딩/마진: `xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`, `4xl`
+- 그리드 간격: `gap-layout`, `gap-flex`
+- 그리드 컬럼: `grid-cols-layout`, `grid-cols-dashboard`
+
+### 4. 둥근 모서리 및 그림자
+```tsx
+// ✅ 권장: 디자인 토큰 사용
+<div className="rounded-lg shadow-md">카드</div>
+<div className="rounded-xl shadow-lg">모달</div>
+
+// ❌ 비권장: 하드코딩된 값
+<div className="rounded-2xl shadow-xl">카드</div>
+```
+
+**사용 가능한 토큰:**
+- 둥근 모서리: `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`
+- 그림자: `shadow-sm`, `shadow-md`, `shadow-lg`
+
+## 🧩 컴포넌트 개발 원칙
+
+### 1. 컴포넌트 구조
+```tsx
+// ✅ 권장: 일관된 구조
+interface ComponentProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'accent';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}
+
+export default function Component({ 
+  children, 
+  variant = 'primary', 
+  size = 'md', 
+  className = '' 
+}: ComponentProps) {
+  const baseClasses = "font-sans transition-colors";
+  const variantClasses = {
+    primary: "bg-primary text-white hover:bg-primary/90",
+    secondary: "bg-secondary text-white hover:bg-secondary/90",
+    accent: "bg-accent text-white hover:bg-accent/90"
+  };
+  const sizeClasses = {
+    sm: "px-sm py-xs text-sm",
+    md: "px-md py-sm text-base",
+    lg: "px-lg py-md text-lg"
+  };
+
+  return (
+    <div className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}>
+      {children}
+    </div>
+  );
+}
+```
+
+### 2. 반응형 디자인
+```tsx
+// ✅ 권장: 디자인 시스템의 브레이크포인트 사용
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-layout">
+  <div className="p-md">아이템</div>
+</div>
+
+// ❌ 비권장: 커스텀 브레이크포인트
+<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+  <div className="p-4">아이템</div>
+</div>
+```
+
+**사용 가능한 브레이크포인트:**
+- `xs`: 400px
+- `sm`: 640px
+- `md`: 768px
+- `lg`: 1024px
+- `xl`: 1280px
+- `2xl`: 1536px
+
+### 3. 접근성 고려
+```tsx
+// ✅ 권장: 접근성을 고려한 컴포넌트
+export default function Button({ 
+  children, 
+  onClick, 
+  disabled = false,
+  ariaLabel 
+}: ButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      className={`
+        font-sans font-weight-body
+        px-md py-sm rounded-md
+        transition-colors duration-fast
+        focus:outline-none focus:ring-2 focus:ring-primary
+        disabled:opacity-50 disabled:cursor-not-allowed
+        ${disabled ? 'bg-gray-300' : 'bg-primary hover:bg-primary/90 text-white'}
+      `}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+## 🎯 컴포넌트 예시
+
+### 1. 카드 컴포넌트
+```tsx
+interface CardProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'elevated' | 'outlined';
+  className?: string;
+}
+
+export default function Card({ 
+  children, 
+  variant = 'default', 
+  className = '' 
+}: CardProps) {
+  const variantClasses = {
+    default: "bg-surface border border-border",
+    elevated: "bg-surface shadow-md",
+    outlined: "bg-transparent border-2 border-border"
+  };
+
+  return (
+    <div className={`
+      rounded-lg p-md
+      transition-all duration-fast
+      ${variantClasses[variant]}
+      ${className}
+    `}>
+      {children}
+    </div>
+  );
+}
+```
+
+### 2. 배지 컴포넌트
+```tsx
+interface BadgeProps {
+  children: React.ReactNode;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}
+
+export default function Badge({ 
+  children, 
+  color = 'primary', 
+  size = 'md',
+  className = '' 
+}: BadgeProps) {
+  const colorClasses = {
+    primary: "bg-primary/10 text-primary",
+    secondary: "bg-secondary/10 text-secondary",
+    success: "bg-success/10 text-success",
+    warning: "bg-warning/10 text-warning",
+    danger: "bg-danger/10 text-danger"
+  };
+
+  const sizeClasses = {
+    sm: "text-xs px-xs py-0.5",
+    md: "text-sm px-sm py-xs",
+    lg: "text-base px-md py-sm"
+  };
+
+  return (
+    <span className={`
+      inline-flex items-center rounded-full font-medium
+      ${colorClasses[color]}
+      ${sizeClasses[size]}
+      ${className}
+    `}>
+      {children}
+    </span>
+  );
+}
+```
+
+## 🔧 유틸리티 함수
+
+### 1. 클래스명 조합 함수
+```tsx
+export function cn(...classes: (string | undefined | null | false)[]): string {
+  return classes.filter(Boolean).join(' ');
+}
+
+// 사용 예시
+<div className={cn(
+  "base-class",
+  variant === 'primary' && "primary-class",
+  size === 'lg' && "large-class",
+  className
+)}>
+```
+
+### 2. 변형 매핑 함수
+```tsx
+export const variantMap = {
+  primary: "bg-primary text-white hover:bg-primary/90",
+  secondary: "bg-secondary text-white hover:bg-secondary/90",
+  accent: "bg-accent text-white hover:bg-accent/90"
+} as const;
+
+export const sizeMap = {
+  sm: "px-sm py-xs text-sm",
+  md: "px-md py-sm text-base", 
+  lg: "px-lg py-md text-lg"
+} as const;
+```
+
+## 📝 체크리스트
+
+컴포넌트 개발 시 다음 사항을 확인하세요:
+
+- [ ] 디자인 토큰을 사용했는가?
+- [ ] 하드코딩된 값이 없는가?
+- [ ] 반응형 디자인을 고려했는가?
+- [ ] 접근성을 고려했는가?
+- [ ] TypeScript 타입을 정의했는가?
+- [ ] className prop을 통해 커스터마이징이 가능한가?
+- [ ] 일관된 네이밍 컨벤션을 따랐는가?
+- [ ] 적절한 기본값을 설정했는가?
+
+## 🚀 모범 사례
+
+1. **일관성 유지**: 모든 컴포넌트에서 동일한 디자인 토큰 사용
+2. **재사용성**: props를 통한 유연한 커스터마이징 지원
+3. **성능**: 불필요한 리렌더링 방지
+4. **테스트**: 컴포넌트 단위 테스트 작성
+5. **문서화**: Props 인터페이스와 사용 예시 제공
+
+이 가이드라인을 따라 개발하면 일관되고 유지보수하기 쉬운 UI 컴포넌트를 만들 수 있습니다.

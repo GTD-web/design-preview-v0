@@ -1,0 +1,256 @@
+"use client";
+
+import React, { useState } from "react";
+import { Card } from "@/packages/design-system/components/Card";
+import TextLabel from "@/packages/design-system/components/TextLabel";
+import TextValue from "@/packages/design-system/components/TextValue";
+import TextHeading from "@/packages/design-system/components/TextHeading";
+import Badge from "../../../../packages/design-system/components/Badge";
+import { Button } from "@/packages/design-system/components/Button";
+
+// 상품 데이터
+const products = [
+  {
+    id: 1,
+    name: "프리미엄 무선 이어폰",
+    category: "전자제품",
+    price: 129000,
+    stock: 45,
+    status: "active",
+    rating: 4.8,
+    sales: 1234,
+    image: "🎧",
+  },
+  {
+    id: 2,
+    name: "스마트 워치 Pro",
+    category: "웨어러블",
+    price: 299000,
+    stock: 12,
+    status: "active",
+    rating: 4.6,
+    sales: 856,
+    image: "⌚",
+  },
+  {
+    id: 3,
+    name: "노트북 스탠드",
+    category: "액세서리",
+    price: 45000,
+    stock: 0,
+    status: "out_of_stock",
+    rating: 4.2,
+    sales: 234,
+    image: "💻",
+  },
+  {
+    id: 4,
+    name: "블루투스 스피커",
+    category: "오디오",
+    price: 89000,
+    stock: 23,
+    status: "active",
+    rating: 4.5,
+    sales: 567,
+    image: "🔊",
+  },
+  {
+    id: 5,
+    name: "무선 충전기",
+    category: "액세서리",
+    price: 35000,
+    stock: 67,
+    status: "active",
+    rating: 4.3,
+    sales: 789,
+    image: "🔋",
+  },
+];
+
+const categories = ["전체", "전자제품", "웨어러블", "액세서리", "오디오"];
+const statuses = ["전체", "판매중", "품절"];
+
+export default function EcommercePage() {
+  const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [selectedStatus, setSelectedStatus] = useState("전체");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("name");
+
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory === "전체" || product.category === selectedCategory;
+    const matchesStatus =
+      selectedStatus === "전체" ||
+      (selectedStatus === "판매중" && product.status === "active") ||
+      (selectedStatus === "품절" && product.status === "out_of_stock");
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesCategory && matchesStatus && matchesSearch;
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case "price":
+        return a.price - b.price;
+      case "sales":
+        return b.sales - a.sales;
+      case "rating":
+        return b.rating - a.rating;
+      default:
+        return a.name.localeCompare(b.name);
+    }
+  });
+
+  const totalRevenue = products.reduce((sum, product) => sum + product.price * product.sales, 0);
+  const totalProducts = products.length;
+  const activeProducts = products.filter((p) => p.status === "active").length;
+
+  return (
+    <div className="min-h-screen p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-layout">
+        {/* 좌측 사이드바 */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* 통계 카드 */}
+          <Card className="p-lg">
+            <TextHeading size="lg" className="mb-md">
+              상점 통계
+            </TextHeading>
+            <div className="space-y-md">
+              <div className="flex justify-between items-center">
+                <TextLabel>총 매출</TextLabel>
+                <TextValue size="lg" weight="semibold" className="text-primary">
+                  {totalRevenue.toLocaleString()}원
+                </TextValue>
+              </div>
+              <div className="flex justify-between items-center">
+                <TextLabel>총 상품</TextLabel>
+                <TextValue>{totalProducts}개</TextValue>
+              </div>
+              <div className="flex justify-between items-center">
+                <TextLabel>판매중</TextLabel>
+                <TextValue>{activeProducts}개</TextValue>
+              </div>
+            </div>
+          </Card>
+
+          {/* 필터 */}
+          <Card className="p-lg">
+            <TextHeading size="lg" className="mb-md">
+              필터
+            </TextHeading>
+            <div className="space-y-md">
+              <div>
+                <TextLabel className="mb-sm">카테고리</TextLabel>
+                <select
+                  className="w-full border border-border rounded px-3 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  {categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <TextLabel className="mb-sm">상태</TextLabel>
+                <select
+                  className="w-full border border-border rounded px-3 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  {statuses.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* 메인 콘텐츠 */}
+        <div className="lg:col-span-3">
+          <Card className="p-lg">
+            {/* 헤더 */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-lg">
+              <div>
+                <TextHeading size="2xl" weight="semibold">
+                  상품 관리
+                </TextHeading>
+                <TextLabel className="mt-xs">총 {sortedProducts.length}개의 상품</TextLabel>
+              </div>
+              <Button className="w-fit">+ 새 상품 추가</Button>
+            </div>
+
+            {/* 검색 및 정렬 */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-lg">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  placeholder="상품명으로 검색..."
+                  className="w-full border border-border rounded-lg px-4 py-2 pl-10 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <select
+                className="border border-border rounded-lg px-4 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="name">이름순</option>
+                <option value="price">가격순</option>
+                <option value="sales">판매순</option>
+                <option value="rating">평점순</option>
+              </select>
+            </div>
+
+            {/* 상품 목록 */}
+            <div className="space-y-4">
+              {sortedProducts.map((product) => (
+                <div key={product.id} className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-surface/50 transition-colors">
+                  <div className="text-2xl">{product.image}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <TextValue weight="semibold" className="truncate">
+                        {product.name}
+                      </TextValue>
+                      {product.status === "out_of_stock" && <Badge color="danger">품절</Badge>}
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span>{product.category}</span>
+                      <span>⭐ {product.rating}</span>
+                      <span>판매 {product.sales}개</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <TextValue weight="semibold" className="text-primary">
+                      {product.price.toLocaleString()}원
+                    </TextValue>
+                    <div className="text-sm text-gray-600">재고: {product.stock}개</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="secondary">수정</Button>
+                    <Button variant="secondary">삭제</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {sortedProducts.length === 0 && (
+              <div className="text-center py-12 text-gray-500">
+                <div className="text-4xl mb-4">📦</div>
+                <TextValue>검색 결과가 없습니다.</TextValue>
+              </div>
+            )}
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
