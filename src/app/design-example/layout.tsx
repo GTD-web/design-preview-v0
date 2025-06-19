@@ -17,7 +17,7 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export default function RootLayout({
+export default function DesignExampleLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -26,26 +26,25 @@ export default function RootLayout({
   const { font, theme, radius, fontSize, spacing, gap, setFont, setTheme, setRadius, setFontSize, setSpacing, setGap } = useDesignSettings();
 
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex flex-row min-h-screen">
-          <main className="flex-1 min-h-screen bg-background">{children}</main>
-          <DesignSettings
-            onFontChange={setFont}
-            onThemeChange={setTheme}
-            onRadiusChange={setRadius}
-            onFontSizeChange={setFontSize}
-            onSpacingChange={setSpacing}
-            onGapChange={setGap}
-            currentFont={font}
-            currentTheme={theme}
-            currentRadius={radius}
-            currentFontSize={fontSize}
-            currentSpacing={spacing}
-            currentGap={gap}
-          />
-        </div>
-      </body>
-    </html>
+    <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <div className="flex flex-row min-h-screen">
+        <main className="flex-1 min-h-screen bg-background">{children}</main>
+      </div>
+
+      <DesignSettings
+        onFontChange={setFont}
+        onThemeChange={setTheme}
+        onRadiusChange={setRadius}
+        onFontSizeChange={setFontSize}
+        onSpacingChange={setSpacing}
+        onGapChange={setGap}
+        currentFont={font}
+        currentTheme={theme}
+        currentRadius={radius}
+        currentFontSize={fontSize}
+        currentSpacing={spacing}
+        currentGap={gap}
+      />
+    </div>
   );
 }

@@ -84,17 +84,25 @@ export function DesignSettings({
   currentSpacing,
   currentGap,
 }: DesignSettingsProps) {
-  // 위젯 열림/닫힘 상태 관리
+  // 위젯 열림/닫힘 상태 관리 (클라이언트 전용)
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // 위젯 DOM 요소 참조 (바깥 클릭 감지용)
   const widgetRef = useRef<HTMLDivElement>(null);
+
+  // 클라이언트 사이드에서만 마운트 상태를 true로 설정
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   /**
    * 바깥 영역 클릭 시 위젯을 닫는 이벤트 핸들러
    * 위젯이 열려있을 때만 이벤트 리스너를 등록/해제합니다.
    */
   useEffect(() => {
+    if (!mounted) return;
+
     function handleClickOutside(event: MouseEvent) {
       // 클릭된 요소가 위젯 내부가 아닌 경우 위젯을 닫음
       if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
@@ -113,7 +121,12 @@ export function DesignSettings({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [open]);
+  }, [open, mounted]);
+
+  // 서버 사이드 렌더링 중에는 아무것도 렌더링하지 않음
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <>

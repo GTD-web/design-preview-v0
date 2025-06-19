@@ -1,4 +1,4 @@
-import DesignTokensPreview from "../page";
+import { DesignTokensPreview } from "../components/DesignTokensPreview";
 
 export default function Home() {
   return (
