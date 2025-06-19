@@ -178,7 +178,9 @@ export default function EcommercePage() {
                 </TextHeading>
                 <TextLabel className="mt-xs">총 {sortedProducts.length}개의 상품</TextLabel>
               </div>
-              <Button className="w-fit">+ 새 상품 추가</Button>
+              <Button className="w-fit" gradient gradientType="primary">
+                + 새 상품 추가
+              </Button>
             </HStack>
 
             {/* 검색 및 정렬 */}

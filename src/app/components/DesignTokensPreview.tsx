@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Button } from "@/packages/design-system/components/Button";
 
 /**
  * 단일 색상 정의
@@ -59,6 +60,59 @@ function PalettePreview({ name }: { name: string }) {
         {paletteSteps.map((step) => (
           <div key={step} className={`w-16 h-16 flex flex-col items-center justify-center rounded bg-${name}-${step} border`}>
             <span className="text-xs font-mono bg-white/70 rounded px-1 py-0.5 mt-8 -mb-2">{step}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 그라데이션 버튼 예제 컴포넌트
+ */
+function GradientButtonExamples() {
+  const gradientTypes = [
+    "primary",
+    "secondary",
+    "accent",
+    "success",
+    "warning",
+    "danger",
+    "info",
+    "blue",
+    "purple",
+    "pink",
+    "green",
+    "orange",
+    "red",
+    "teal",
+    "cyan",
+    "indigo",
+    "violet",
+    "fuchsia",
+    "rose",
+    "sunset",
+    "ocean",
+    "forest",
+    "fire",
+    "aurora",
+    "cosmic",
+    "spring",
+    "summer",
+    "autumn",
+    "winter",
+  ];
+
+  return (
+    <div className="mb-10">
+      <h3 className="text-h3 font-heading leading-heading tracking-heading mb-4">Gradient Buttons</h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {gradientTypes.map((type) => (
+          <div key={type} className="flex flex-col items-center space-y-2">
+            <Button gradient gradientType={type as any} size="sm" className="w-full">
+              {type}
+            </Button>
+            <span className="text-xs text-gray-500 capitalize">{type}</span>
           </div>
         ))}
       </div>
@@ -210,6 +264,9 @@ export function DesignTokensPreview({ theme }: DesignTokensPreviewProps) {
           ))}
         </div>
       </div>
+
+      {/* 그라데이션 버튼 예제 섹션 */}
+      <GradientButtonExamples />
     </section>
   );
 }
