@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { Button } from "./Button";
 
 /**
  * 사용 가능한 폰트 옵션 정의
@@ -130,7 +131,23 @@ export function DesignSettings({
     <>
       {/* 플로팅 설정 버튼 - 우측 하단에 고정 */}
       <button
-        className="fixed bottom-6 right-6 z-[1200] w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center text-3xl hover:bg-primary/90 transition"
+        className="fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-full bg-blue-600 text-white shadow-lg flex items-center justify-center text-3xl hover:bg-blue-700 transition"
+        style={{
+          position: "fixed",
+          bottom: "24px",
+          right: "24px",
+          zIndex: 9999,
+          width: "56px",
+          height: "56px",
+          borderRadius: "50%",
+          backgroundColor: "#2563eb",
+          color: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "24px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+        }}
         aria-label="디자인 설정 열기"
         onClick={() => setOpen((v) => !v)}
       >
@@ -141,51 +158,47 @@ export function DesignSettings({
       {open && (
         <div
           ref={widgetRef}
-          className="fixed bottom-24 right-6 z-[1201] w-[320px] max-w-[90vw] bg-surface rounded-2xl shadow-2xl border border-border p-lg animate-widgetSlideIn"
-          style={{ transition: "all 0.2s cubic-bezier(.4,2,.6,1)" }}
+          className="fixed bottom-24 right-6 z-[9999] w-[320px] max-w-[90vw] bg-surface rounded-2xl shadow-2xl border border-border p-lg"
+          style={{
+            position: "fixed",
+            bottom: "96px",
+            right: "24px",
+            zIndex: 9999,
+            width: "320px",
+            maxWidth: "90vw",
+            transition: "all 0.2s cubic-bezier(.4,2,.6,1)",
+          }}
           role="dialog"
           aria-modal="true"
         >
           {/* 헤더 - 제목과 닫기 버튼 */}
           <div className="flex justify-between items-center mb-md">
-            <span className="font-heading text-base text-primary">디자인 퀵 설정</span>
-            <button className="text-lg text-body hover:text-danger transition" aria-label="닫기" onClick={() => setOpen(false)}>
+            <span className="font-heading text-base text-foreground">디자인 퀵 설정</span>
+            <Button variant="ghost" size="sm" className="text-lg p-1" aria-label="닫기" onClick={() => setOpen(false)}>
               ×
-            </button>
+            </Button>
           </div>
 
           {/* 테마 선택 섹션 */}
           <div className="mb-md">
-            <label className="block text-sm font-medium mb-xs">테마</label>
-            <div className="flex gap-xs flex-wrap">
+            <label className="block text-sm font-medium mb-xs text-foreground">테마</label>
+            <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
               {themes.map((t) => (
-                <button
-                  key={t.key}
-                  className={`px-sm py-xs rounded border text-sm font-medium transition ${
-                    currentTheme === t.key ? "bg-primary text-white border-primary" : "bg-surface border-border hover:bg-primary/10"
-                  }`}
-                  onClick={() => onThemeChange(t.key)}
-                >
+                <Button key={t.key} variant="toggle" size="sm" selected={currentTheme === t.key} onClick={() => onThemeChange(t.key)}>
                   {t.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
           {/* 폰트 선택 섹션 */}
           <div className="mb-md">
-            <label className="block text-sm font-medium mb-xs">폰트</label>
-            <div className="flex gap-xs flex-wrap">
+            <label className="block text-sm font-medium mb-xs text-foreground">폰트</label>
+            <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
               {fonts.map((f) => (
-                <button
-                  key={f.key}
-                  className={`px-sm py-xs rounded border text-sm font-medium transition ${
-                    currentFont === f.key ? "bg-primary text-white border-primary" : "bg-surface border-border hover:bg-primary/10"
-                  }`}
-                  onClick={() => onFontChange(f.key)}
-                >
+                <Button key={f.key} variant="toggle" size="sm" selected={currentFont === f.key} onClick={() => onFontChange(f.key)}>
                   {f.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -194,22 +207,22 @@ export function DesignSettings({
           <div className="mb-md flex gap-md">
             {/* 라운드 값 조정 */}
             <div>
-              <label className="block text-sm font-medium mb-xs">라운드</label>
+              <label className="block text-sm font-medium mb-xs text-foreground">라운드</label>
               <input type="range" min={0} max={32} value={currentRadius} onChange={(e) => onRadiusChange(Number(e.target.value))} className="w-20" />
-              <span className="ml-xs text-xs">{currentRadius}px</span>
+              <span className="ml-xs text-xs text-foreground">{currentRadius}px</span>
             </div>
 
             {/* 폰트 크기 조정 */}
             <div>
-              <label className="block text-sm font-medium mb-xs">폰트크기</label>
+              <label className="block text-sm font-medium mb-xs text-foreground">폰트크기</label>
               <input type="range" min={12} max={24} value={currentFontSize} onChange={(e) => onFontSizeChange(Number(e.target.value))} className="w-20" />
-              <span className="ml-xs text-xs">{currentFontSize}px</span>
+              <span className="ml-xs text-xs text-foreground">{currentFontSize}px</span>
             </div>
           </div>
 
           {/* 기본 스페이싱 조정 */}
           <div>
-            <label className="block text-sm font-medium mb-xs">기본 Spacing</label>
+            <label className="block text-sm font-medium mb-xs text-foreground">기본 Spacing</label>
             <input
               type="range"
               min={2}
@@ -218,14 +231,14 @@ export function DesignSettings({
               onChange={(e) => onSpacingChange({ ...currentSpacing, md: Number(e.target.value) })}
               className="w-32"
             />
-            <span className="ml-xs text-xs">{currentSpacing.md}px</span>
+            <span className="ml-xs text-xs text-foreground">{currentSpacing.md}px</span>
           </div>
 
           {/* 그리드 갭 조정 */}
           <div className="mt-md">
-            <label className="block text-sm font-medium mb-xs">Grid Gap (갭)</label>
+            <label className="block text-sm font-medium mb-xs text-foreground">Grid Gap (갭)</label>
             <input type="range" min={0} max={64} value={currentGap} onChange={(e) => onGapChange(Number(e.target.value))} className="w-32" />
-            <span className="ml-xs text-xs">{currentGap}px</span>
+            <span className="ml-xs text-xs text-foreground">{currentGap}px</span>
           </div>
         </div>
       )}
