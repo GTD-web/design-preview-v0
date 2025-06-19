@@ -181,7 +181,7 @@ export function DesignSettings({
 
           {/* 테마 선택 섹션 */}
           <div className="mb-md">
-            <label className="block text-sm font-medium mb-xs text-foreground">테마</label>
+            <label className="block text-sm font-medium mb-sm text-foreground">테마</label>
             <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
               {themes.map((t) => (
                 <Button key={t.key} variant="toggle" size="sm" selected={currentTheme === t.key} onClick={() => onThemeChange(t.key)}>
@@ -193,7 +193,7 @@ export function DesignSettings({
 
           {/* 폰트 선택 섹션 */}
           <div className="mb-md">
-            <label className="block text-sm font-medium mb-xs text-foreground">폰트</label>
+            <label className="block text-sm font-medium mb-sm text-foreground">폰트</label>
             <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
               {fonts.map((f) => (
                 <Button key={f.key} variant="toggle" size="sm" selected={currentFont === f.key} onClick={() => onFontChange(f.key)}>
@@ -207,14 +207,14 @@ export function DesignSettings({
           <div className="mb-md flex gap-md">
             {/* 라운드 값 조정 */}
             <div>
-              <label className="block text-sm font-medium mb-xs text-foreground">라운드</label>
+              <label className="block text-sm font-medium mb-sm text-foreground">라운드</label>
               <input type="range" min={0} max={32} value={currentRadius} onChange={(e) => onRadiusChange(Number(e.target.value))} className="w-20" />
               <span className="ml-xs text-xs text-foreground">{currentRadius}px</span>
             </div>
 
             {/* 폰트 크기 조정 */}
             <div>
-              <label className="block text-sm font-medium mb-xs text-foreground">폰트크기</label>
+              <label className="block text-sm font-medium mb-sm text-foreground">폰트크기</label>
               <input type="range" min={12} max={24} value={currentFontSize} onChange={(e) => onFontSizeChange(Number(e.target.value))} className="w-20" />
               <span className="ml-xs text-xs text-foreground">{currentFontSize}px</span>
             </div>
@@ -222,7 +222,7 @@ export function DesignSettings({
 
           {/* 기본 스페이싱 조정 */}
           <div>
-            <label className="block text-sm font-medium mb-xs text-foreground">기본 Spacing</label>
+            <label className="block text-sm font-medium mb-sm text-foreground">기본 Spacing</label>
             <input
               type="range"
               min={2}
@@ -236,7 +236,7 @@ export function DesignSettings({
 
           {/* 그리드 갭 조정 */}
           <div className="mt-md">
-            <label className="block text-sm font-medium mb-xs text-foreground">Grid Gap (갭)</label>
+            <label className="block text-sm font-medium mb-sm text-foreground">Grid Gap (갭)</label>
             <input type="range" min={0} max={64} value={currentGap} onChange={(e) => onGapChange(Number(e.target.value))} className="w-32" />
             <span className="ml-xs text-xs text-foreground">{currentGap}px</span>
           </div>

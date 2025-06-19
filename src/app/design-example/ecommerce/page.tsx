@@ -7,6 +7,7 @@ import TextValue from "@/packages/design-system/components/TextValue";
 import TextHeading from "@/packages/design-system/components/TextHeading";
 import Badge from "../../../../packages/design-system/components/Badge";
 import { Button } from "@/packages/design-system/components/Button";
+import { Select } from "@/packages/design-system/components/Select";
 
 // 상품 데이터
 const products = [
@@ -137,35 +138,27 @@ export default function EcommercePage() {
             <TextHeading size="lg" className="mb-md">
               필터
             </TextHeading>
-            <div className="space-y-md">
-              <div>
-                <TextLabel className="mb-sm">카테고리</TextLabel>
-                <select
-                  className="w-full border border-border rounded px-3 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <TextLabel className="mb-sm">상태</TextLabel>
-                <select
-                  className="w-full border border-border rounded px-3 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                >
-                  {statuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="flex flex-col space-y-4">
+              <Select
+                label="카테고리"
+                value={selectedCategory}
+                onChange={(value) => setSelectedCategory(value)}
+                options={categories.map((category) => ({
+                  value: category,
+                  label: category,
+                }))}
+                width="240px"
+              />
+              <Select
+                label="상태"
+                value={selectedStatus}
+                onChange={(value) => setSelectedStatus(value)}
+                options={statuses.map((status) => ({
+                  value: status,
+                  label: status,
+                }))}
+                width="240px"
+              />
             </div>
           </Card>
         </div>
@@ -198,16 +191,17 @@ export default function EcommercePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <select
-                className="border border-border rounded-lg px-4 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+              <Select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="name">이름순</option>
-                <option value="price">가격순</option>
-                <option value="sales">판매순</option>
-                <option value="rating">평점순</option>
-              </select>
+                onChange={(value) => setSortBy(value)}
+                options={[
+                  { value: "name", label: "이름순" },
+                  { value: "price", label: "가격순" },
+                  { value: "sales", label: "판매순" },
+                  { value: "rating", label: "평점순" },
+                ]}
+                width="160px"
+              />
             </div>
 
             {/* 상품 목록 */}
@@ -235,8 +229,12 @@ export default function EcommercePage() {
                     <div className="text-sm text-gray-600">재고: {product.stock}개</div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="secondary">수정</Button>
-                    <Button variant="secondary">삭제</Button>
+                    <Button variant="ghost" size="sm">
+                      수정
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      삭제
+                    </Button>
                   </div>
                 </div>
               ))}
