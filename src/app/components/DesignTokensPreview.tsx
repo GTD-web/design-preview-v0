@@ -230,7 +230,23 @@ export function DesignTokensPreview({ theme }: DesignTokensPreviewProps) {
         <div className="flex gap-lg items-end">
           {spacings.map((sp) => (
             <div key={sp.name} className="flex flex-col items-center">
-              <div className={`bg-primary w-8 rounded-sm`} style={{ height: `var(--spacing-${sp.size}, 1rem)` }} />
+              <div
+                className="bg-primary w-8 rounded-sm"
+                style={{
+                  height:
+                    sp.size === "xs"
+                      ? "0.25rem"
+                      : sp.size === "sm"
+                      ? "0.5rem"
+                      : sp.size === "md"
+                      ? "1rem"
+                      : sp.size === "lg"
+                      ? "2rem"
+                      : sp.size === "xl"
+                      ? "4rem"
+                      : "1rem",
+                }}
+              />
               <span className="text-xs mt-1 text-foreground">{sp.name}</span>
             </div>
           ))}

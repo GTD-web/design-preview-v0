@@ -50,6 +50,16 @@ interface SidebarProps {
   };
   /** 로그아웃 함수 */
   onLogout?: () => void;
+  /** 관리자 모드 여부 */
+  isAdminMode?: boolean;
+  /** 관리자/사용자 모드 전환 함수 */
+  onModeToggle?: () => void;
+  /** 화면 이동 버튼 표시 여부 */
+  showModeToggle?: boolean;
+  /** 알림 아이콘 표시 여부 */
+  showNotification?: boolean;
+  /** 설정 아이콘 표시 여부 */
+  showSettings?: boolean;
 }
 
 /**
@@ -61,7 +71,21 @@ interface SidebarProps {
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, width = "w-64", className = "", user, onLogout }: SidebarProps) {
+export function Sidebar({
+  isOpen = true,
+  onClose,
+  activePath = "",
+  menuGroups,
+  width = "w-64",
+  className = "",
+  user,
+  onLogout,
+  isAdminMode = false,
+  onModeToggle,
+  showModeToggle = true,
+  showNotification = true,
+  showSettings = true,
+}: SidebarProps) {
   const router = useRouter();
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
@@ -75,6 +99,10 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
       }
       return newSet;
     });
+  };
+
+  const handleModeToggle = () => {
+    onModeToggle?.();
   };
 
   return (
@@ -215,6 +243,25 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
             </VStack>
           </nav>
 
+          {/* 관리자/사용자 전환 영역 */}
+          {showModeToggle && (
+            <div className="p-4 border-t border-border">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group"
+                onClick={handleModeToggle}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-sm font-medium">{isAdminMode ? "사용자 화면으로 이동" : "관리자 화면으로 이동"}</span>
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" className="text-muted group-hover:text-primary transition-colors duration-200">
+                    <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+              </Button>
+            </div>
+          )}
+
           {/* 푸터 */}
           <div className="p-4 border-t border-border">
             <div className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-colors duration-200">
@@ -231,46 +278,50 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
                 {/* 액션 버튼들 - 간략화 */}
                 <div className="flex items-center gap-1">
                   {/* 알림 버튼 */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80"
-                    onClick={() => {
-                      console.log("알림 클릭");
-                    }}
-                    title="알림"
-                  >
-                    <svg width="16" height="16" fill="none" viewBox="0 0 20 20">
-                      <path
-                        d="M10 18a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2Zm6-4V9a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </Button>
+                  {showNotification && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80"
+                      onClick={() => {
+                        console.log("알림 클릭");
+                      }}
+                      title="알림"
+                    >
+                      <svg width="16" height="16" fill="none" viewBox="0 0 20 20">
+                        <path
+                          d="M10 18a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2Zm6-4V9a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Button>
+                  )}
 
                   {/* 설정 버튼 */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80"
-                    onClick={() => {
-                      console.log("설정 클릭");
-                    }}
-                    title="설정"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </Button>
+                  {showSettings && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80"
+                      onClick={() => {
+                        console.log("설정 클릭");
+                      }}
+                      title="설정"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </Button>
+                  )}
 
                   {/* 로그아웃 버튼 */}
                   <Button

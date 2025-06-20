@@ -26,7 +26,26 @@ const geistMono = localFont({
 // 사이드바 메뉴 데이터 정의
 const sidebarMenuGroups = [
   {
-    title: "대시보드",
+    title: "디자인시스템",
+    items: [
+      {
+        title: "디자인토큰",
+        path: "/design-example",
+        icon: (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"
+            />
+          </svg>
+        ),
+      },
+    ],
+  },
+  {
+    title: "예시페이지",
     items: [
       {
         title: "대시보드",
@@ -38,13 +57,8 @@ const sidebarMenuGroups = [
           </svg>
         ),
       },
-    ],
-  },
-  {
-    title: "E-commerce",
-    items: [
       {
-        title: "E-commerce",
+        title: "이커머스",
         path: "/design-example/ecommerce",
         icon: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,13 +66,8 @@ const sidebarMenuGroups = [
           </svg>
         ),
       },
-    ],
-  },
-  {
-    title: "Analytics",
-    items: [
       {
-        title: "Analytics",
+        title: "분석",
         path: "/design-example/analytics",
         icon: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,13 +80,8 @@ const sidebarMenuGroups = [
           </svg>
         ),
       },
-    ],
-  },
-  {
-    title: "Task Management",
-    items: [
       {
-        title: "Task Management",
+        title: "업무관리",
         path: "/design-example/task-management",
         icon: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,13 +94,8 @@ const sidebarMenuGroups = [
           </svg>
         ),
       },
-    ],
-  },
-  {
-    title: "User Profile",
-    items: [
       {
-        title: "User Profile",
+        title: "사용자 프로필",
         path: "/design-example/user-profile",
         icon: (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,6 +117,9 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
+  // 관리자/사용자 화면 상태 관리
+  const [isAdminMode, setIsAdminMode] = useState(false);
+
   // 사용자 정보 (실제로는 인증 상태에서 가져와야 함)
   const user = {
     name: "김디자이너",
@@ -133,6 +135,21 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     alert("로그아웃되었습니다.");
   };
 
+  // 관리자/사용자 화면 전환 함수
+  const handleModeToggle = () => {
+    setIsAdminMode(!isAdminMode);
+    console.log(`${!isAdminMode ? "관리자" : "사용자"} 모드로 전환`);
+
+    // 페이지 이동 로직 (예시)
+    if (!isAdminMode) {
+      // 관리자 모드로 전환 시 관리자 페이지로 이동
+      window.location.href = "/design-example/admin";
+    } else {
+      // 사용자 모드로 전환 시 사용자 페이지로 이동
+      window.location.href = "/design-example/dashboard";
+    }
+  };
+
   return (
     <ClientOnly fallback={<Loading />}>
       {/* 사이드바 */}
@@ -143,6 +160,11 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
         menuGroups={sidebarMenuGroups}
         user={user}
         onLogout={handleLogout}
+        isAdminMode={isAdminMode}
+        onModeToggle={handleModeToggle}
+        showModeToggle={true}
+        showNotification={true}
+        showSettings={true}
       />
 
       {/* 메인 콘텐츠 */}
