@@ -162,11 +162,11 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">총 매출</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">총 매출</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {totalRevenue.toLocaleString()}원
                 </TextValue>
-                <TextLabel className="text-success text-sm">+8.2% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">+8.2%</TextLabel>
               </div>
               <div className="text-3xl">💰</div>
             </div>
@@ -175,11 +175,11 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">총 상품</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">총 상품</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {totalProducts}개
                 </TextValue>
-                <TextLabel className="text-success text-sm">+5.3% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">+5.3%</TextLabel>
               </div>
               <div className="text-3xl">📦</div>
             </div>
@@ -188,11 +188,11 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">판매중</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">판매중</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {activeProducts}개
                 </TextValue>
-                <TextLabel className="text-success text-sm">+12.5% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">+12.5%</TextLabel>
               </div>
               <div className="text-3xl">✅</div>
             </div>
@@ -201,11 +201,11 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">총 판매량</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">총 판매량</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {totalSales.toLocaleString()}개
                 </TextValue>
-                <TextLabel className="text-success text-sm">+15.7% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">+15.7%</TextLabel>
               </div>
               <div className="text-3xl">📊</div>
             </div>
@@ -284,7 +284,7 @@ export default function EcommercePage() {
                 {sortedProducts.map((product) => (
                   <tr
                     key={product.id}
-                    className="border-b border-border/50 hover:bg-surface/50 transition-colors cursor-pointer"
+                    className="border-b border-border hover:bg-surface/50 transition-colors cursor-pointer"
                     onClick={() => handleProductClick(product)}
                   >
                     <td className="py-3 px-4">
