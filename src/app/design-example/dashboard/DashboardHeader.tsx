@@ -21,7 +21,7 @@ export default function DashboardHeader() {
   };
 
   return (
-    <Card className="w-full h-14 flex items-center justify-between mb-8" style={{ paddingTop: 0, paddingBottom: 0 }}>
+    <Card className="w-full h-14 flex items-center justify-between" style={{ paddingTop: 0, paddingBottom: 0 }}>
       <header className="w-full flex items-center justify-between" id="dashboard-header">
         <div className="flex items-center gap-md">
           <span className="text-xl font-bold text-heading">사내 포털 대시보드</span>
