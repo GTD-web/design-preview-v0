@@ -129,6 +129,7 @@ export default function EcommercePage() {
   const totalRevenue = products.reduce((sum, product) => sum + product.price * product.sales, 0);
   const totalProducts = products.length;
   const activeProducts = products.filter((p) => p.status === "active").length;
+  const totalSales = products.reduce((sum, product) => sum + product.sales, 0);
 
   const handleProductClick = (product: any) => {
     setSelectedProduct(product);
@@ -141,87 +142,80 @@ export default function EcommercePage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <Grid cols={4} gap="layout" className="grid-cols-1 lg:grid-cols-4">
-        {/* 좌측 사이드바 */}
-        <GridItem span={1} className="lg:col-span-1">
-          <VSpace gap="lg">
-            {/* 통계 카드 */}
-            <Card className="p-lg">
-              <TextHeading size="lg" className="mb-md">
-                상점 통계
-              </TextHeading>
-              <VSpace gap="md">
-                <HStack justify="between" align="center">
-                  <TextLabel>총 매출</TextLabel>
-                  <TextValue size="lg" weight="semibold" className="text-primary">
-                    {totalRevenue.toLocaleString()}원
-                  </TextValue>
-                </HStack>
-                <HStack justify="between" align="center">
-                  <TextLabel>총 상품</TextLabel>
-                  <TextValue>{totalProducts}개</TextValue>
-                </HStack>
-                <HStack justify="between" align="center">
-                  <TextLabel>판매중</TextLabel>
-                  <TextValue>{activeProducts}개</TextValue>
-                </HStack>
-              </VSpace>
-            </Card>
+    <div className="min-h-screen p-6">
+      <div className="space-y-6">
+        {/* 헤더 */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <TextHeading size="2xl" weight="semibold">
+              상품 관리
+            </TextHeading>
+            <TextLabel className="mt-xs">총 {sortedProducts.length}개의 상품</TextLabel>
+          </div>
+          <Button className="w-fit" gradient gradientType="primary">
+            + 새 상품 추가
+          </Button>
+        </div>
 
-            {/* 필터 */}
-            <Card className="p-lg">
-              <TextHeading size="lg" className="mb-md">
-                필터
-              </TextHeading>
-              <VStack gap="md">
-                <HStack justify="between" align="center">
-                  <TextLabel>카테고리</TextLabel>
-                  <Select
-                    value={selectedCategory}
-                    onChange={(value) => setSelectedCategory(value)}
-                    options={categories.map((category) => ({
-                      value: category,
-                      label: category,
-                    }))}
-                    width="160px"
-                  />
-                </HStack>
-                <HStack justify="between" align="center">
-                  <TextLabel>상태</TextLabel>
-                  <Select
-                    value={selectedStatus}
-                    onChange={(value) => setSelectedStatus(value)}
-                    options={statuses.map((status) => ({
-                      value: status,
-                      label: status,
-                    }))}
-                    width="160px"
-                  />
-                </HStack>
-              </VStack>
-            </Card>
-          </VSpace>
-        </GridItem>
-
-        {/* 메인 콘텐츠 */}
-        <GridItem span={3} className="lg:col-span-3">
+        {/* 통계 카드 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="p-lg">
-            {/* 헤더 */}
-            <HStack justify="between" align="center" className="mb-lg">
+            <div className="flex items-center justify-between">
               <div>
-                <TextHeading size="2xl" weight="semibold">
-                  상품 관리
-                </TextHeading>
-                <TextLabel className="mt-xs">총 {sortedProducts.length}개의 상품</TextLabel>
+                <TextLabel className="text-gray-600">총 매출</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl">
+                  {totalRevenue.toLocaleString()}원
+                </TextValue>
+                <TextLabel className="text-success text-sm">+8.2% 지난 달 대비</TextLabel>
               </div>
-              <Button className="w-fit" gradient gradientType="primary">
-                + 새 상품 추가
-              </Button>
-            </HStack>
+              <div className="text-3xl">💰</div>
+            </div>
+          </Card>
 
-            {/* 검색 및 정렬 */}
-            <HStack gap="md" className="mb-lg">
+          <Card className="p-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <TextLabel className="text-gray-600">총 상품</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl">
+                  {totalProducts}개
+                </TextValue>
+                <TextLabel className="text-success text-sm">+5.3% 지난 달 대비</TextLabel>
+              </div>
+              <div className="text-3xl">📦</div>
+            </div>
+          </Card>
+
+          <Card className="p-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <TextLabel className="text-gray-600">판매중</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl">
+                  {activeProducts}개
+                </TextValue>
+                <TextLabel className="text-success text-sm">+12.5% 지난 달 대비</TextLabel>
+              </div>
+              <div className="text-3xl">✅</div>
+            </div>
+          </Card>
+
+          <Card className="p-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <TextLabel className="text-gray-600">총 판매량</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl">
+                  {totalSales.toLocaleString()}개
+                </TextValue>
+                <TextLabel className="text-success text-sm">+15.7% 지난 달 대비</TextLabel>
+              </div>
+              <div className="text-3xl">📊</div>
+            </div>
+          </Card>
+        </div>
+
+        {/* 필터 및 검색 */}
+        <Card className="p-lg">
+          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-4 flex-1">
               <Input
                 type="text"
                 placeholder="상품명으로 검색..."
@@ -238,118 +232,138 @@ export default function EcommercePage() {
                 className="flex-1"
               />
               <Select
-                value={sortBy}
-                onChange={(value) => setSortBy(value)}
-                options={[
-                  { value: "name", label: "이름순" },
-                  { value: "price", label: "가격순" },
-                  { value: "sales", label: "판매순" },
-                  { value: "rating", label: "평점순" },
-                ]}
+                value={selectedCategory}
+                onChange={(value) => setSelectedCategory(value)}
+                options={categories.map((category) => ({
+                  value: category,
+                  label: category,
+                }))}
                 width="160px"
               />
-            </HStack>
-
-            {/* 상품 목록 테이블 */}
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-3 px-4 font-medium text-sm text-muted">상품</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm text-muted">카테고리</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm text-muted">가격</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm text-muted">재고</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm text-muted">상태</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm text-muted">평점</th>
-                    <th className="text-left py-3 px-4 font-medium text-sm text-muted">판매량</th>
-                    <th className="text-right py-3 px-4 font-medium text-sm text-muted">액션</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sortedProducts.map((product) => (
-                    <tr
-                      key={product.id}
-                      className="border-b border-border/50 hover:bg-surface/50 transition-colors cursor-pointer"
-                      onClick={() => handleProductClick(product)}
-                    >
-                      <td className="py-3 px-4">
-                        <HStack gap="md" align="center">
-                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-surface flex items-center justify-center">
-                            <img
-                              src={product.imageUrl}
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                // 이미지 로드 실패시 이모지로 대체
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = "none";
-                                target.nextElementSibling!.textContent = product.image;
-                              }}
-                            />
-                            <span className="text-2xl hidden">{product.image}</span>
-                          </div>
-                          <div>
-                            <TextValue weight="semibold" className="block">
-                              {product.name}
-                            </TextValue>
-                          </div>
-                        </HStack>
-                      </td>
-                      <td className="py-3 px-4">
-                        <TextValue size="sm" color="muted">
-                          {product.category}
-                        </TextValue>
-                      </td>
-                      <td className="py-3 px-4">
-                        <TextValue weight="semibold" className="text-primary">
-                          {product.price.toLocaleString()}원
-                        </TextValue>
-                      </td>
-                      <td className="py-3 px-4">
-                        <TextValue size="sm">{product.stock}개</TextValue>
-                      </td>
-                      <td className="py-3 px-4">
-                        {product.status === "active" ? (
-                          <Badge color="success" size="sm">
-                            판매중
-                          </Badge>
-                        ) : (
-                          <Badge color="danger" size="sm">
-                            품절
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="py-3 px-4">
-                        <TextValue size="sm">⭐ {product.rating}</TextValue>
-                      </td>
-                      <td className="py-3 px-4">
-                        <TextValue size="sm">{product.sales}개</TextValue>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <HStack gap="xs" justify="end">
-                          <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()} className="text-xs">
-                            수정
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()} className="text-xs text-danger hover:text-danger">
-                            삭제
-                          </Button>
-                        </HStack>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Select
+                value={selectedStatus}
+                onChange={(value) => setSelectedStatus(value)}
+                options={statuses.map((status) => ({
+                  value: status,
+                  label: status,
+                }))}
+                width="160px"
+              />
             </div>
+            <Select
+              value={sortBy}
+              onChange={(value) => setSortBy(value)}
+              options={[
+                { value: "name", label: "이름순" },
+                { value: "price", label: "가격순" },
+                { value: "sales", label: "판매순" },
+                { value: "rating", label: "평점순" },
+              ]}
+              width="160px"
+            />
+          </div>
+        </Card>
 
-            {sortedProducts.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                <div className="text-4xl mb-4">📦</div>
-                <TextValue>검색 결과가 없습니다.</TextValue>
-              </div>
-            )}
-          </Card>
-        </GridItem>
-      </Grid>
+        {/* 상품 목록 테이블 */}
+        <Card className="p-lg">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">상품</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">카테고리</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">가격</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">재고</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">상태</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">평점</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">판매량</th>
+                  <th className="text-right py-3 px-4 font-medium text-sm text-muted">액션</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedProducts.map((product) => (
+                  <tr
+                    key={product.id}
+                    className="border-b border-border/50 hover:bg-surface/50 transition-colors cursor-pointer"
+                    onClick={() => handleProductClick(product)}
+                  >
+                    <td className="py-3 px-4">
+                      <HStack gap="md" align="center">
+                        <div className="w-12 h-12 rounded-lg overflow-hidden bg-surface flex items-center justify-center">
+                          <img
+                            src={product.imageUrl}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // 이미지 로드 실패시 이모지로 대체
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = "none";
+                              target.nextElementSibling!.textContent = product.image;
+                            }}
+                          />
+                          <span className="text-2xl hidden">{product.image}</span>
+                        </div>
+                        <div>
+                          <TextValue weight="semibold" className="block">
+                            {product.name}
+                          </TextValue>
+                        </div>
+                      </HStack>
+                    </td>
+                    <td className="py-3 px-4">
+                      <TextValue size="sm" color="muted">
+                        {product.category}
+                      </TextValue>
+                    </td>
+                    <td className="py-3 px-4">
+                      <TextValue weight="semibold" className="text-primary">
+                        {product.price.toLocaleString()}원
+                      </TextValue>
+                    </td>
+                    <td className="py-3 px-4">
+                      <TextValue size="sm">{product.stock}개</TextValue>
+                    </td>
+                    <td className="py-3 px-4">
+                      {product.status === "active" ? (
+                        <Badge color="success" size="md">
+                          판매중
+                        </Badge>
+                      ) : (
+                        <Badge color="danger" size="md">
+                          품절
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="py-3 px-4">
+                      <TextValue size="sm">⭐ {product.rating}</TextValue>
+                    </td>
+                    <td className="py-3 px-4">
+                      <TextValue size="sm">{product.sales}개</TextValue>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <HStack gap="xs" justify="end">
+                        <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()} className="text-xs">
+                          수정
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()} className="text-xs text-danger hover:text-danger">
+                          삭제
+                        </Button>
+                      </HStack>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {sortedProducts.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              <div className="text-4xl mb-4">📦</div>
+              <TextValue>검색 결과가 없습니다.</TextValue>
+            </div>
+          )}
+        </Card>
+      </div>
 
       {/* 상품 상세 드로워 */}
       <Drawer
