@@ -38,6 +38,8 @@ interface DesignSettingsProps {
   onSpacingChange: (spacing: { xs: number; sm: number; md: number; lg: number; xl: number }) => void;
   /** 그리드 갭 변경 시 호출되는 콜백 함수 */
   onGapChange: (gap: number) => void;
+  /** 레이아웃 타입 변경 시 호출되는 콜백 함수 */
+  onLayoutTypeChange: (layoutType: "full" | "centered" | "contained") => void;
   /** 현재 선택된 폰트 */
   currentFont: string;
   /** 현재 선택된 테마 */
@@ -50,6 +52,8 @@ interface DesignSettingsProps {
   currentSpacing: { xs: number; sm: number; md: number; lg: number; xl: number };
   /** 현재 그리드 갭 값 (px) */
   currentGap: number;
+  /** 현재 레이아웃 타입 */
+  currentLayoutType: "full" | "centered" | "contained";
 }
 
 /**
@@ -76,12 +80,14 @@ export function DesignSettings({
   onFontSizeChange,
   onSpacingChange,
   onGapChange,
+  onLayoutTypeChange,
   currentFont,
   currentTheme,
   currentRadius,
   currentFontSize,
   currentSpacing,
   currentGap,
+  currentLayoutType,
 }: DesignSettingsProps) {
   // 위젯 열림/닫힘 상태 관리 (클라이언트 전용)
   const [open, setOpen] = useState(false);
@@ -200,6 +206,22 @@ export function DesignSettings({
                   {f.label}
                 </Button>
               ))}
+            </div>
+          </div>
+
+          {/* 레이아웃 타입 선택 섹션 */}
+          <div className="mb-md">
+            <label className="block text-sm font-medium mb-sm text-foreground">레이아웃</label>
+            <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
+              <Button variant="toggle" size="sm" selected={currentLayoutType === "full"} onClick={() => onLayoutTypeChange("full")}>
+                전체
+              </Button>
+              <Button variant="toggle" size="sm" selected={currentLayoutType === "centered"} onClick={() => onLayoutTypeChange("centered")}>
+                중앙
+              </Button>
+              <Button variant="toggle" size="sm" selected={currentLayoutType === "contained"} onClick={() => onLayoutTypeChange("contained")}>
+                제한
+              </Button>
             </div>
           </div>
 

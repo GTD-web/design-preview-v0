@@ -24,6 +24,7 @@ const products = [
     rating: 4.8,
     sales: 1234,
     image: "🎧",
+    imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop&crop=center",
     description: "고음질 무선 이어폰으로, 노이즈 캔슬링 기능이 탑재되어 있습니다. 최대 30시간 재생 가능하며, IPX4 방수 등급을 가지고 있습니다.",
     features: ["노이즈 캔슬링", "30시간 재생", "IPX4 방수", "빠른 충전"],
     colors: ["블랙", "화이트", "블루"],
@@ -38,6 +39,7 @@ const products = [
     rating: 4.6,
     sales: 856,
     image: "⌚",
+    imageUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop&crop=center",
     description: "심박수 모니터링, GPS 추적, 운동 모드 등 다양한 건강 관리 기능을 제공하는 스마트워치입니다.",
     features: ["심박수 모니터링", "GPS 추적", "운동 모드", "7일 배터리"],
     colors: ["실버", "블랙", "로즈골드"],
@@ -52,6 +54,7 @@ const products = [
     rating: 4.2,
     sales: 234,
     image: "💻",
+    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=100&h=100&fit=crop&crop=center",
     description: "노트북을 더 편안한 각도로 사용할 수 있게 해주는 알루미늄 스탠드입니다.",
     features: ["알루미늄 소재", "조절 가능한 각도", "휴대용", "안정적인 지지"],
     colors: ["실버", "스페이스그레이"],
@@ -66,6 +69,7 @@ const products = [
     rating: 4.5,
     sales: 567,
     image: "🔊",
+    imageUrl: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=100&h=100&fit=crop&crop=center",
     description: "360도 사운드를 제공하는 휴대용 블루투스 스피커입니다. IPX7 방수 등급으로 야외에서도 안전하게 사용할 수 있습니다.",
     features: ["360도 사운드", "IPX7 방수", "20시간 재생", "파티 모드"],
     colors: ["블랙", "레드", "블루", "옐로우"],
@@ -80,6 +84,7 @@ const products = [
     rating: 4.3,
     sales: 789,
     image: "🔋",
+    imageUrl: "https://images.unsplash.com/photo-1601972599720-36938d4ecd31?w=100&h=100&fit=crop&crop=center",
     description: "15W 고속 무선 충전을 지원하는 충전 패드입니다. 다양한 기기와 호환되며 LED 표시등이 있어 충전 상태를 쉽게 확인할 수 있습니다.",
     features: ["15W 고속 충전", "LED 표시등", "다중 기기 호환", "과열 보호"],
     colors: ["화이트", "블랙"],
@@ -136,7 +141,7 @@ export default function EcommercePage() {
   };
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen">
       <Grid cols={4} gap="layout" className="grid-cols-1 lg:grid-cols-4">
         {/* 좌측 사이드바 */}
         <GridItem span={1} className="lg:col-span-1">
@@ -269,7 +274,20 @@ export default function EcommercePage() {
                     >
                       <td className="py-3 px-4">
                         <HStack gap="md" align="center">
-                          <div className="text-2xl">{product.image}</div>
+                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-surface flex items-center justify-center">
+                            <img
+                              src={product.imageUrl}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                // 이미지 로드 실패시 이모지로 대체
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = "none";
+                                target.nextElementSibling!.textContent = product.image;
+                              }}
+                            />
+                            <span className="text-2xl hidden">{product.image}</span>
+                          </div>
                           <div>
                             <TextValue weight="semibold" className="block">
                               {product.name}
@@ -334,10 +352,31 @@ export default function EcommercePage() {
       </Grid>
 
       {/* 상품 상세 드로워 */}
-      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} title="상품 상세">
+      <Drawer
+        isOpen={isDrawerOpen}
+        onClose={closeDrawer}
+        title="상품 상세"
+        position="bottom"
+        animationDuration={400}
+        animationTiming="cubic-bezier(0.4, 0, 0.2, 1)"
+        enableAnimation={true}
+      >
         {/* 상품 이미지 */}
         <div className="text-center mb-lg">
-          <div className="text-6xl mb-md">{selectedProduct?.image}</div>
+          <div className="w-32 h-32 rounded-xl overflow-hidden bg-surface mx-auto mb-md">
+            <img
+              src={selectedProduct?.imageUrl}
+              alt={selectedProduct?.name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                // 이미지 로드 실패시 이모지로 대체
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+                target.nextElementSibling!.textContent = selectedProduct?.image;
+              }}
+            />
+            <span className="text-6xl hidden flex items-center justify-center w-full h-full">{selectedProduct?.image}</span>
+          </div>
         </div>
 
         {/* 상품 정보 */}

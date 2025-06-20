@@ -5,6 +5,7 @@ import React from "react";
 import "../globals.css";
 import { useDesignSettings } from "@/packages/design-system/hooks/useDesignSettings";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
+import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -23,13 +24,12 @@ export default function DesignExampleLayout({
   children: React.ReactNode;
 }>) {
   // 디자인 설정 상태 관리를 커스텀 훅으로 처리
-  const { font, theme, radius, fontSize, spacing, gap, setFont, setTheme, setRadius, setFontSize, setSpacing, setGap } = useDesignSettings();
+  const { font, theme, radius, fontSize, spacing, gap, layoutType, setFont, setTheme, setRadius, setFontSize, setSpacing, setGap, setLayoutType } =
+    useDesignSettings();
 
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <div className="flex flex-row min-h-screen">
-        <main className="flex-1 min-h-screen bg-background">{children}</main>
-      </div>
+      <LayoutContainer type={layoutType}>{children}</LayoutContainer>
 
       <DesignSettings
         onFontChange={setFont}
@@ -38,12 +38,14 @@ export default function DesignExampleLayout({
         onFontSizeChange={setFontSize}
         onSpacingChange={setSpacing}
         onGapChange={setGap}
+        onLayoutTypeChange={setLayoutType}
         currentFont={font}
         currentTheme={theme}
         currentRadius={radius}
         currentFontSize={fontSize}
         currentSpacing={spacing}
         currentGap={gap}
+        currentLayoutType={layoutType}
       />
     </div>
   );

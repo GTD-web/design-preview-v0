@@ -45,20 +45,20 @@ const designExamples = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-6xl mx-auto space-y-8">
+    <div className="min-h-screen bg-background">
+      <div className="space-y-8">
         {/* 헤더 */}
         <div className="text-center">
           <TextHeading size="3xl" weight="bold" className="mb-4">
             디자인 시스템 예제
           </TextHeading>
-          <TextValue className="text-gray-600 max-w-2xl mx-auto">
+          <TextValue className="text-gray-600">
             다양한 디자인 시안을 통해 디자인 시스템의 활용법을 확인해보세요. 각 예제는 실제 비즈니스 시나리오를 기반으로 구성되어 있습니다.
           </TextValue>
         </div>
 
         {/* 디자인 예제 그리드 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
           {designExamples.map((example, index) => (
             <Link key={index} href={example.path}>
               <Card className="p-lg hover:shadow-lg transition-all duration-300 cursor-pointer group">

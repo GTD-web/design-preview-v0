@@ -104,6 +104,9 @@ export function useDesignSettings() {
     document.body.style.setProperty("--spacing-lg", `${gap / 16}rem`);
   }, [gap]);
 
+  // 레이아웃 타입 설정
+  const [layoutType, setLayoutType] = useState<"full" | "centered" | "contained">("centered");
+
   return {
     // 현재 상태값들
     font,
@@ -112,6 +115,7 @@ export function useDesignSettings() {
     fontSize,
     spacing,
     gap,
+    layoutType,
 
     // 상태 변경 함수들
     setFont,
@@ -120,5 +124,6 @@ export function useDesignSettings() {
     setFontSize,
     setSpacing,
     setGap,
+    setLayoutType,
   };
 }

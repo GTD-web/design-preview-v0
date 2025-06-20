@@ -9,6 +9,7 @@ export { Grid, GridItem } from "./components/Grid";
 export { HStack, VStack, VSpace } from "./components/Stack";
 export { Text, TextSpan, TextP, TextDiv, TextHeading, TextValue, TextLabel } from "./components/Text";
 export { Drawer } from "./components/Drawer";
+export { LayoutContainer } from "./components/LayoutContainer";
 
 // Hooks
 export { useDesignSettings } from "./hooks/useDesignSettings";

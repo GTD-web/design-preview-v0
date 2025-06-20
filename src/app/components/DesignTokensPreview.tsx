@@ -50,16 +50,19 @@ const paletteSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
 
 /**
  * 팔레트 프리뷰 컴포넌트
- * 특정 색상 팔레트의 모든 단계를 표시합니다.
+ * 특정 색상 팔레트의 모든 단계를 세로로 표시합니다.
  */
 function PalettePreview({ name }: { name: string }) {
   return (
     <div className="mb-8">
       <h4 className="font-semibold mb-2 capitalize">{name}</h4>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-1">
         {paletteSteps.map((step) => (
-          <div key={step} className={`w-16 h-16 flex flex-col items-center justify-center rounded bg-${name}-${step} border`}>
-            <span className="text-xs font-mono bg-white/70 rounded px-1 py-0.5 mt-8 -mb-2">{step}</span>
+          <div key={step} className={`h-8 flex items-center justify-between rounded px-2 bg-${name}-${step} border`}>
+            <span className="text-xs font-mono bg-white/70 rounded px-1 py-0.5">{step}</span>
+            <span className="text-xs font-mono text-white drop-shadow-sm">
+              #{name}-{step}
+            </span>
           </div>
         ))}
       </div>
@@ -106,7 +109,7 @@ function GradientButtonExamples() {
   return (
     <div className="mb-10">
       <h3 className="text-h3 font-heading leading-heading tracking-heading mb-4">Gradient Buttons</h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
         {gradientTypes.map((type) => (
           <div key={type} className="flex flex-col items-center space-y-2">
             <Button gradient gradientType={type as any} size="sm" className="w-full">
@@ -173,21 +176,14 @@ export function DesignTokensPreview({ theme }: DesignTokensPreviewProps) {
   ];
 
   return (
-    <section
-      className="mx-auto mt-20 p-md gap-layout max-w-layout"
-      style={{
-        maxWidth: "var(--grid-max-width)",
-        paddingLeft: "var(--grid-gutter)",
-        paddingRight: "var(--grid-gutter)",
-      }}
-    >
+    <section className="space-y-8">
       {/* 메인 제목 */}
       <h2 className="text-h1 font-heading leading-heading tracking-heading mb-6 text-foreground">디자인 시스템 컬러 프리뷰</h2>
 
       {/* 단일 색상 섹션 */}
       <div className="mb-12">
         <h3 className="text-h2 font-heading leading-heading tracking-heading mb-2 text-foreground">Single Colors</h3>
-        <div className="grid grid-cols-layout gap-layout">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {singleColors.map((color) => (
             <div
               key={color.name}
@@ -208,7 +204,7 @@ export function DesignTokensPreview({ theme }: DesignTokensPreviewProps) {
       {/* 팔레트 색상 섹션 */}
       <div className="mb-12">
         <h3 className="text-h2 font-heading leading-heading tracking-heading mb-2 text-foreground">Palette Colors</h3>
-        <div className="grid grid-cols-layout gap-layout">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {paletteColors.map((name) => (
             <PalettePreview key={name} name={name} />
           ))}
@@ -234,8 +230,8 @@ export function DesignTokensPreview({ theme }: DesignTokensPreviewProps) {
         <div className="flex gap-lg items-end">
           {spacings.map((sp) => (
             <div key={sp.name} className="flex flex-col items-center">
-              <div className={`bg-primary/30 w-8`} style={{ height: `var(--spacing-${sp.size}, 1rem)` }} />
-              <span className="text-xs mt-1">{sp.name}</span>
+              <div className={`bg-primary w-8 rounded-sm`} style={{ height: `var(--spacing-${sp.size}, 1rem)` }} />
+              <span className="text-xs mt-1 text-foreground">{sp.name}</span>
             </div>
           ))}
         </div>
