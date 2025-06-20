@@ -82,6 +82,13 @@ export function Select({
     onChange?.(option.value);
   };
 
+  // 체크 아이콘 컴포넌트
+  const CheckIcon = () => (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    </svg>
+  );
+
   return (
     <div className={`${width ? "" : "w-full"}`} style={{ width: width }} ref={dropdownRef}>
       {label && (
@@ -101,12 +108,13 @@ export function Select({
                     <button
                       key={option.value}
                       type="button"
-                      className={`w-full text-left px-3 py-2 text-sm hover:bg-primary/5 ${
+                      className={`w-full text-left px-3 py-2 text-sm hover:bg-primary/5 flex items-center justify-between ${
                         selectedOption?.value === option.value ? "bg-primary/10 text-primary" : "text-foreground"
                       }`}
                       onClick={() => handleSelect(option)}
                     >
-                      {option.label}
+                      <span>{option.label}</span>
+                      {selectedOption?.value === option.value && <CheckIcon />}
                     </button>
                   ))}
                 </div>
@@ -130,12 +138,13 @@ export function Select({
                   <button
                     key={option.value}
                     type="button"
-                    className={`w-full text-left px-3 py-2 text-sm hover:bg-primary/5 ${
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-primary/5 flex items-center justify-between ${
                       selectedOption?.value === option.value ? "bg-primary/10 text-primary" : "text-foreground"
                     }`}
                     onClick={() => handleSelect(option)}
                   >
-                    {option.label}
+                    <span>{option.label}</span>
+                    {selectedOption?.value === option.value && <CheckIcon />}
                   </button>
                 ))}
               </div>

@@ -59,6 +59,7 @@ export function Button({
   gradientType = "primary",
   children,
   className = "",
+  style,
   ...props
 }: ButtonProps) {
   const baseClasses = "font-medium transition-all duration-200 rounded border";
@@ -107,20 +108,35 @@ export function Button({
     }
 
     return {
-      primary: "bg-primary text-white border-primary hover:bg-primary/90 hover:border-primary/90",
-      secondary: "bg-secondary text-white border-secondary hover:bg-secondary/90 hover:border-secondary/90",
-      outline: "bg-transparent text-primary border-primary hover:bg-primary/10",
-      ghost: "bg-transparent text-body border-transparent hover:bg-surface hover:border-border",
-      toggle: selected
-        ? "bg-neutral-800 dark:bg-neutral-300 text-white border-neutral-800 dark:border-neutral-300 hover:bg-neutral-800 dark:hover:bg-neutral-600"
-        : "bg-surface text-body border-border hover:bg-primary/10 hover:border-primary/30",
+      primary: "bg-primary text-white hover:bg-primary/90",
+      secondary: "bg-secondary text-white hover:bg-secondary/90",
+      outline: "bg-transparent text-primary hover:bg-primary/10",
+      ghost: "bg-transparent text-foreground border-transparent hover:bg-surface",
+      toggle: selected ? "bg-surface text-foreground hover:bg-surface/80" : "bg-surface text-foreground hover:bg-primary/10",
     }[variant];
   };
 
+  const getBorderStyle = () => {
+    if (gradient) return { borderColor: "transparent" };
+
+    switch (variant) {
+      case "primary":
+      case "secondary":
+      case "outline":
+      case "toggle":
+        return { borderColor: "var(--color-border)" };
+      case "ghost":
+        return { borderColor: "transparent" };
+      default:
+        return { borderColor: "var(--color-border)" };
+    }
+  };
+
   const classes = [baseClasses, sizeClasses[size], getVariantClasses(), className].filter(Boolean).join(" ");
+  const borderStyle = getBorderStyle();
 
   return (
-    <button className={classes} {...props}>
+    <button className={classes} style={{ ...borderStyle, ...style }} {...props}>
       {children}
     </button>
   );

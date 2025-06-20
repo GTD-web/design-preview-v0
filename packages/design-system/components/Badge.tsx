@@ -1,12 +1,12 @@
 import React from "react";
 
 const colorMap: Record<string, string> = {
-  warning: "bg-warning/20 text-warning border-warning/30",
-  primary: "bg-primary/20 text-primary border-primary/30",
-  success: "bg-success/20 text-success border-success/30",
-  danger: "bg-danger/20 text-danger border-danger/30",
-  info: "bg-info/20 text-info border-info/30",
-  gray: "bg-gray-100 text-gray-700 border-gray-200",
+  warning: "bg-warning/20 text-warning",
+  primary: "bg-primary/20 text-primary",
+  success: "bg-success/20 text-success",
+  danger: "bg-danger/20 text-danger",
+  info: "bg-info/20 text-info",
+  gray: "bg-gray-100 text-gray-700",
 };
 
 export default function Badge({
@@ -26,6 +26,24 @@ export default function Badge({
     lg: "text-sm px-4 py-2",
   };
 
+  const getBorderStyle = () => {
+    switch (color) {
+      case "warning":
+        return { borderColor: "var(--color-warning)" };
+      case "primary":
+        return { borderColor: "var(--color-primary)" };
+      case "success":
+        return { borderColor: "var(--color-success)" };
+      case "danger":
+        return { borderColor: "var(--color-danger)" };
+      case "info":
+        return { borderColor: "var(--color-info)" };
+      case "gray":
+      default:
+        return { borderColor: "var(--color-border)" };
+    }
+  };
+
   return (
     <span
       className={`
@@ -39,6 +57,7 @@ export default function Badge({
         ${sizeClasses[size]}
         ${className}
       `}
+      style={getBorderStyle()}
     >
       {children}
     </span>
