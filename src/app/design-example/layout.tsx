@@ -118,13 +118,35 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
+  // 사용자 정보 (실제로는 인증 상태에서 가져와야 함)
+  const user = {
+    name: "김디자이너",
+    email: "designer@example.com",
+    initials: "김",
+  };
+
+  // 로그아웃 함수
+  const handleLogout = () => {
+    // 실제 로그아웃 로직 구현
+    console.log("로그아웃 처리 중...");
+    // 예: 인증 토큰 삭제, 로그인 페이지로 리다이렉트 등
+    alert("로그아웃되었습니다.");
+  };
+
   return (
     <ClientOnly fallback={<Loading />}>
       {/* 사이드바 */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} activePath={pathname} menuGroups={sidebarMenuGroups} />
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        activePath={pathname}
+        menuGroups={sidebarMenuGroups}
+        user={user}
+        onLogout={handleLogout}
+      />
 
       {/* 메인 콘텐츠 */}
-      <div className="lg:ml-60">
+      <div className="lg:ml-64">
         {/* 모바일 헤더 */}
         <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
           <div className="flex items-center justify-between">

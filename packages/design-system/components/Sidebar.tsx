@@ -41,6 +41,15 @@ interface SidebarProps {
   width?: string;
   /** 추가 클래스명 */
   className?: string;
+  /** 사용자 정보 */
+  user?: {
+    name: string;
+    email: string;
+    avatar?: string;
+    initials?: string;
+  };
+  /** 로그아웃 함수 */
+  onLogout?: () => void;
 }
 
 /**
@@ -52,7 +61,7 @@ interface SidebarProps {
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, width = "w-72", className = "" }: SidebarProps) {
+export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, width = "w-64", className = "", user, onLogout }: SidebarProps) {
   const router = useRouter();
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
@@ -208,21 +217,80 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
 
           {/* 푸터 */}
           <div className="p-4 border-t border-border">
-            <div
-              className="p-3 rounded-lg"
-              style={{
-                backgroundColor: "var(--color-surface)",
-                color: "var(--foreground)",
-              }}
-            >
-              <VStack gap="sm">
-                <TextValue size="sm" weight="medium" color="default" className="text-foreground">
-                  Tailwind CSS 기반
-                </TextValue>
-                <TextValue size="xs" color="muted">
-                  디자인 시스템 컴포넌트
-                </TextValue>
-              </VStack>
+            <div className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-colors duration-200">
+              <div className="flex items-center justify-between">
+                {/* 사용자 프로필 정보 - 간략화 */}
+                <div className="flex items-center gap-2">
+                  <div className="min-w-0">
+                    <TextValue size="sm" weight="semibold" className="text-foreground block truncate">
+                      {user?.name || "사용자"}
+                    </TextValue>
+                  </div>
+                </div>
+
+                {/* 액션 버튼들 - 간략화 */}
+                <div className="flex items-center gap-1">
+                  {/* 알림 버튼 */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80"
+                    onClick={() => {
+                      console.log("알림 클릭");
+                    }}
+                    title="알림"
+                  >
+                    <svg width="16" height="16" fill="none" viewBox="0 0 20 20">
+                      <path
+                        d="M10 18a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2Zm6-4V9a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Button>
+
+                  {/* 설정 버튼 */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80"
+                    onClick={() => {
+                      console.log("설정 클릭");
+                    }}
+                    title="설정"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </Button>
+
+                  {/* 로그아웃 버튼 */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-danger hover:text-danger hover:bg-danger/10"
+                    onClick={onLogout}
+                    title="로그아웃"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

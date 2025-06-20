@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { Card } from "@/packages/design-system/components/Card";
-import { TextLabel, TextValue, TextHeading, TextSpan } from "@/packages/design-system/components/Text";
-import Badge from "../../../../packages/design-system/components/Badge";
 import { Button } from "@/packages/design-system/components/Button";
-import { Select } from "@/packages/design-system/components/Select";
-import { Input } from "@/packages/design-system/components/Input";
-import { HStack, VStack, VSpace } from "@/packages/design-system/components/Stack";
-import { Grid, GridItem } from "@/packages/design-system/components/Grid";
-import { Flex1MinW0, Icon } from "@/packages/design-system/components/Box";
+import { Card } from "@/packages/design-system/components/Card";
 import { Drawer } from "@/packages/design-system/components/Drawer";
+import { Input } from "@/packages/design-system/components/Input";
+import { Select } from "@/packages/design-system/components/Select";
+import { HStack } from "@/packages/design-system/components/Stack";
+import { TextHeading, TextLabel, TextValue } from "@/packages/design-system/components/Text";
+import { useState } from "react";
+import Badge from "../../../../packages/design-system/components/Badge";
 
 // 상품 데이터
 const products = [

@@ -62,7 +62,7 @@ export function Button({
   style,
   ...props
 }: ButtonProps) {
-  const baseClasses = "font-medium transition-all duration-200 rounded border";
+  const baseClasses = "font-medium transition-all duration-200 rounded border flex items-center justify-center gap-1";
 
   const sizeClasses = {
     sm: "px-2 py-1 text-xs",
