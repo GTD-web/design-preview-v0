@@ -170,7 +170,7 @@ export default function DesignExampleLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <div className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--color-background)]`}>
       <DesignSettingsProvider>
         <DesignExampleContent>{children}</DesignExampleContent>
       </DesignSettingsProvider>

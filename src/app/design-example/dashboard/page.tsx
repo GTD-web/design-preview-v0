@@ -147,8 +147,10 @@ export default function DashboardPage() {
           pointerEvents: showHeader ? "auto" : "none",
         }}
       >
-        <div className="p-6">
-          <DashboardHeader />
+        <div className="lg:ml-60">
+          <div className="p-6">
+            <DashboardHeader />
+          </div>
         </div>
       </div>
 
