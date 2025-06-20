@@ -112,7 +112,7 @@ export function Button({
       outline: "bg-transparent text-primary border-primary hover:bg-primary/10",
       ghost: "bg-transparent text-body border-transparent hover:bg-surface hover:border-border",
       toggle: selected
-        ? "bg-primary text-white border-primary hover:bg-primary/90"
+        ? "bg-neutral-800 dark:bg-neutral-300 text-white border-neutral-800 dark:border-neutral-300 hover:bg-neutral-800 dark:hover:bg-neutral-600"
         : "bg-surface text-body border-border hover:bg-primary/10 hover:border-primary/30",
     }[variant];
   };
