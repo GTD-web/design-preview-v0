@@ -91,9 +91,9 @@ export const VSpace = forwardRef<HTMLDivElement, Omit<StackProps, "justify">>(
       }
     };
 
-    const style = {
+    const style: React.CSSProperties = {
       display: "flex",
-      flexDirection: "column" as const,
+      flexDirection: "column",
       gap: getGapStyle(gap),
       alignItems:
         align === "start" ? "flex-start" : align === "center" ? "center" : align === "end" ? "flex-end" : align === "baseline" ? "baseline" : "stretch",
@@ -136,9 +136,9 @@ export const HSpace = forwardRef<HTMLDivElement, Omit<StackProps, "justify">>(
       }
     };
 
-    const style = {
+    const style: React.CSSProperties = {
       display: "flex",
-      flexDirection: "row" as const,
+      flexDirection: "row",
       gap: getGapStyle(gap),
       alignItems:
         align === "start" ? "flex-start" : align === "center" ? "center" : align === "end" ? "flex-end" : align === "baseline" ? "baseline" : "stretch",

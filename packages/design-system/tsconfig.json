@@ -5,6 +5,7 @@
     "emitDeclarationOnly": false,
     "jsx": "react",
     "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "esModuleInterop": true,
     "skipLibCheck": true,

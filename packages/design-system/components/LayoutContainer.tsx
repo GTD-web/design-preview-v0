@@ -15,6 +15,8 @@ interface LayoutContainerProps {
   maxWidth?: string;
   /** 패딩 */
   padding?: string;
+  /** 사이드바 존재 여부 */
+  hasSidebar?: boolean;
   /** 자식 요소 */
   children: React.ReactNode;
   /** 추가 클래스명 */
@@ -29,11 +31,18 @@ interface LayoutContainerProps {
  * - centered: 중앙 정렬 (기본값)
  * - contained: 최대 너비 제한으로 중앙 정렬
  */
-export function LayoutContainer({ type = "centered", maxWidth = "max-w-6xl", padding = "p-6", children, className = "" }: LayoutContainerProps) {
+export function LayoutContainer({
+  type = "centered",
+  maxWidth = "max-w-6xl",
+  padding = "p-6",
+  hasSidebar = false,
+  children,
+  className = "",
+}: LayoutContainerProps) {
   const getLayoutClasses = () => {
     switch (type) {
       case "full":
-        return `w-full min-h-screen bg-background ${padding}`;
+        return `w-full min-h-screen bg-background`;
       case "centered":
         return `w-full min-h-screen flex items-center justify-center ${padding}`;
       case "contained":

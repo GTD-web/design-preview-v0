@@ -3,7 +3,7 @@ import React, { forwardRef, HTMLAttributes } from "react";
 interface TextProps extends HTMLAttributes<HTMLSpanElement> {
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
   weight?: "thin" | "extralight" | "light" | "normal" | "medium" | "semibold" | "bold" | "extrabold" | "black";
-  color?: "primary" | "secondary" | "success" | "warning" | "danger" | "info" | "muted" | "default";
+  color?: "primary" | "secondary" | "success" | "warning" | "danger" | "info" | "muted" | "default" | "black";
   variant?: "span" | "p" | "div";
   children: React.ReactNode;
 }
@@ -40,6 +40,7 @@ const colorClasses = {
   info: "text-info",
   muted: "text-gray-500",
   default: "text-foreground",
+  black: "text-neutral-900 dark:text-neutral-900",
 };
 
 export const Text = forwardRef<HTMLSpanElement, TextProps>(
@@ -82,8 +83,8 @@ export const TextHeading = forwardRef<HTMLDivElement, Omit<TextProps, "variant">
   <TextDiv ref={ref} size={size} weight={weight} className={`font-heading ${className}`} {...props} />
 ));
 
-export const TextValue = forwardRef<HTMLSpanElement, Omit<TextProps, "variant">>(({ size = "sm", weight = "medium", ...props }, ref) => (
-  <TextSpan ref={ref} size={size} weight={weight} {...props} />
+export const TextValue = forwardRef<HTMLSpanElement, Omit<TextProps, "variant">>(({ size = "sm", weight = "medium", color, ...props }, ref) => (
+  <TextSpan ref={ref} size={size} weight={weight} color={color} {...props} />
 ));
 
 export const TextLabel = forwardRef<HTMLSpanElement, Omit<TextProps, "variant">>(({ size = "xs", weight = "normal", color = "default", ...props }, ref) => (

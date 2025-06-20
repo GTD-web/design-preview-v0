@@ -7,19 +7,19 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 
 :root {
-  --background: #f1f5f9;
-  --foreground: #111827;
-  --foreground-inverse: #f8f8f2;
-  --color-primary: #2563eb;
-  --color-secondary: #334155;
-  --color-accent: #22d3ee;
+  --background: #ffffff;
+  --foreground: #171717;
+  --foreground-inverse: #ffffff;
+  --color-primary: #171717;
+  --color-secondary: #525252;
+  --color-accent: #737373;
   --color-success: #16a34a;
   --color-warning: #fbbf24;
   --color-danger: #ef4444;
   --color-info: #0ea5e9;
-  --color-surface: #f8fafc;
-  --color-background: #f1f5f9;
-  --color-border: #cbd5e1;
+  --color-surface: #ffffff;
+  --color-background: #ffffff;
+  --color-border: #e5e5e5;
   --radius: 8px;
   --font-size-base: 1rem;
   --spacing-xs: 0.25rem;
@@ -44,30 +44,30 @@
   --line-height-body: 1.5;
   --letter-spacing-heading: -0.01em;
   --letter-spacing-body: 0em;
-  --scrollbar-bg: #f1f5f9;
-  --scrollbar-thumb: #cbd5e1;
-  --scrollbar-thumb-hover: #94a3b8;
+  --scrollbar-bg: #fafafa;
+  --scrollbar-thumb: #e5e5e5;
+  --scrollbar-thumb-hover: #d4d4d4;
   --scrollbar-width: 8px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --foreground-inverse: #111827;
-    --color-primary: #60a5fa;
-    --color-secondary: #94a3b8;
-    --color-accent: #fdba74;
+    --background: #171717;
+    --foreground: #fafafa;
+    --foreground-inverse: #fafafa;
+    --color-primary: #fafafa;
+    --color-secondary: #a3a3a3;
+    --color-accent: #737373;
     --color-success: #4ade80;
     --color-warning: #fde047;
     --color-danger: #f87171;
     --color-info: #38bdf8;
-    --color-surface: #1e293b;
-    --color-background: #0f172a;
-    --color-border: #334155;
-    --scrollbar-bg: #18181b;
-    --scrollbar-thumb: #334155;
-    --scrollbar-thumb-hover: #64748b;
+    --color-surface: #171717;
+    --color-background: #171717;
+    --color-border: #404040;
+    --scrollbar-bg: #171717;
+    --scrollbar-thumb: #404040;
+    --scrollbar-thumb-hover: #525252;
   }
 }
 
@@ -85,18 +85,18 @@ body {
 }
 
 .theme-dark {
-  --color-primary: #60a5fa;
-  --color-secondary: #64748b;
-  --color-accent: #22d3ee;
+  --color-primary: #fafafa;
+  --color-secondary: #a3a3a3;
+  --color-accent: #737373;
   --color-success: #4ade80;
   --color-warning: #fde047;
   --color-danger: #f87171;
   --color-info: #38bdf8;
-  --color-surface: #23272f;
-  --color-background: #1e222a;
-  --color-border: #475569;
-  --foreground: #f8f8f2;
-  --foreground-inverse: #111827;
+  --color-surface: #171717;
+  --color-background: #171717;
+  --color-border: #404040;
+  --foreground: #fafafa;
+  --foreground-inverse: #171717;
 }
 
 .theme-dracula {
@@ -111,7 +111,7 @@ body {
   --color-background: #282a36;
   --color-border: #6272a4;
   --foreground: #f8f8f2;
-  --foreground-inverse: #282a36;
+  --foreground-inverse: #f8f8f2;
 }
 
 .theme-pastel {
