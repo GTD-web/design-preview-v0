@@ -62,10 +62,7 @@ interface DesignSettingsProps {
  * 기능:
  * - 테마 변경 (라이트, 다크, 드라큘라, 파스텔, CI 테마)
  * - 폰트 변경 (Noto Sans KR, Pretendard, System Sans)
- * - 라운드 값 조정 (0-32px)
- * - 폰트 크기 조정 (12-24px)
- * - 기본 스페이싱 조정 (2-32px)
- * - 그리드 갭 조정 (0-64px)
+ * - 레이아웃 타입 변경
  *
  * UI 특징:
  * - 우측 하단에 고정된 플로팅 버튼
@@ -164,7 +161,7 @@ export function DesignSettings({
       {open && (
         <div
           ref={widgetRef}
-          className="fixed bottom-24 right-6 z-[9999] w-[320px] max-w-[90vw] bg-surface rounded-2xl shadow-2xl border border-border p-lg"
+          className="fixed bottom-24 right-6 z-[9999] w-[320px] max-w-[90vw] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6"
           style={{
             position: "fixed",
             bottom: "96px",
@@ -173,22 +170,33 @@ export function DesignSettings({
             width: "320px",
             maxWidth: "90vw",
             transition: "all 0.2s cubic-bezier(.4,2,.6,1)",
+            backgroundColor: "#ffffff",
+            borderRadius: "16px",
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+            border: "1px solid #e5e7eb",
           }}
           role="dialog"
           aria-modal="true"
         >
           {/* 헤더 - 제목과 닫기 버튼 */}
-          <div className="flex justify-between items-center mb-md">
-            <span className="font-heading text-base text-foreground">디자인 퀵 설정</span>
+          <div className="flex justify-between items-center mb-6" style={{ marginBottom: "24px" }}>
+            <span className="font-semibold text-base text-gray-900 dark:text-white" style={{ fontSize: "16px", fontWeight: "600", color: "#111827" }}>
+              디자인 퀵 설정
+            </span>
             <Button variant="ghost" size="sm" className="text-lg p-1" aria-label="닫기" onClick={() => setOpen(false)}>
               ×
             </Button>
           </div>
 
           {/* 테마 선택 섹션 */}
-          <div className="mb-md">
-            <label className="block text-sm font-medium mb-sm text-foreground">테마</label>
-            <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
+          <div className="mb-6" style={{ marginBottom: "24px" }}>
+            <label
+              className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+              style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+            >
+              테마
+            </label>
+            <div className="flex gap-3 flex-wrap" style={{ gap: "12px" }}>
               {themes.map((t) => (
                 <Button key={t.key} variant="toggle" size="sm" selected={currentTheme === t.key} onClick={() => onThemeChange(t.key)}>
                   {t.label}
@@ -198,9 +206,14 @@ export function DesignSettings({
           </div>
 
           {/* 폰트 선택 섹션 */}
-          <div className="mb-md">
-            <label className="block text-sm font-medium mb-sm text-foreground">폰트</label>
-            <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
+          <div className="mb-6" style={{ marginBottom: "24px" }}>
+            <label
+              className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+              style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+            >
+              폰트
+            </label>
+            <div className="flex gap-3 flex-wrap" style={{ gap: "12px" }}>
               {fonts.map((f) => (
                 <Button key={f.key} variant="toggle" size="sm" selected={currentFont === f.key} onClick={() => onFontChange(f.key)}>
                   {f.label}
@@ -210,9 +223,14 @@ export function DesignSettings({
           </div>
 
           {/* 레이아웃 타입 선택 섹션 */}
-          <div className="mb-md">
-            <label className="block text-sm font-medium mb-sm text-foreground">레이아웃</label>
-            <div className="flex gap-md flex-wrap" style={{ gap: "12px" }}>
+          <div className="mb-6" style={{ marginBottom: "24px" }}>
+            <label
+              className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+              style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+            >
+              레이아웃
+            </label>
+            <div className="flex gap-3 flex-wrap" style={{ gap: "12px" }}>
               <Button variant="toggle" size="sm" selected={currentLayoutType === "full"} onClick={() => onLayoutTypeChange("full")}>
                 전체
               </Button>
@@ -226,25 +244,44 @@ export function DesignSettings({
           </div>
 
           {/* 수치 조정 섹션 - 라운드와 폰트 크기를 나란히 배치 */}
-          <div className="mb-md flex gap-md">
+          <div className="mb-6 flex gap-6" style={{ marginBottom: "24px", gap: "24px" }}>
             {/* 라운드 값 조정 */}
             <div>
-              <label className="block text-sm font-medium mb-sm text-foreground">라운드</label>
+              <label
+                className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+                style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+              >
+                라운드
+              </label>
               <input type="range" min={0} max={32} value={currentRadius} onChange={(e) => onRadiusChange(Number(e.target.value))} className="w-20" />
-              <span className="ml-xs text-xs text-foreground">{currentRadius}px</span>
+              <span className="ml-2 text-xs text-gray-600 dark:text-gray-400" style={{ marginLeft: "8px", fontSize: "12px", color: "#4b5563" }}>
+                {currentRadius}px
+              </span>
             </div>
 
             {/* 폰트 크기 조정 */}
             <div>
-              <label className="block text-sm font-medium mb-sm text-foreground">폰트크기</label>
+              <label
+                className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+                style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+              >
+                폰트크기
+              </label>
               <input type="range" min={12} max={24} value={currentFontSize} onChange={(e) => onFontSizeChange(Number(e.target.value))} className="w-20" />
-              <span className="ml-xs text-xs text-foreground">{currentFontSize}px</span>
+              <span className="ml-2 text-xs text-gray-600 dark:text-gray-400" style={{ marginLeft: "8px", fontSize: "12px", color: "#4b5563" }}>
+                {currentFontSize}px
+              </span>
             </div>
           </div>
 
           {/* 기본 스페이싱 조정 */}
-          <div>
-            <label className="block text-sm font-medium mb-sm text-foreground">기본 Spacing</label>
+          <div className="mb-6" style={{ marginBottom: "24px" }}>
+            <label
+              className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+              style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+            >
+              기본 Spacing
+            </label>
             <input
               type="range"
               min={2}
@@ -253,14 +290,23 @@ export function DesignSettings({
               onChange={(e) => onSpacingChange({ ...currentSpacing, md: Number(e.target.value) })}
               className="w-32"
             />
-            <span className="ml-xs text-xs text-foreground">{currentSpacing.md}px</span>
+            <span className="ml-2 text-xs text-gray-600 dark:text-gray-400" style={{ marginLeft: "8px", fontSize: "12px", color: "#4b5563" }}>
+              {currentSpacing.md}px
+            </span>
           </div>
 
           {/* 그리드 갭 조정 */}
-          <div className="mt-md">
-            <label className="block text-sm font-medium mb-sm text-foreground">Grid Gap (갭)</label>
+          <div className="mt-6" style={{ marginTop: "24px" }}>
+            <label
+              className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+              style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+            >
+              Grid Gap (갭)
+            </label>
             <input type="range" min={0} max={64} value={currentGap} onChange={(e) => onGapChange(Number(e.target.value))} className="w-32" />
-            <span className="ml-xs text-xs text-foreground">{currentGap}px</span>
+            <span className="ml-2 text-xs text-gray-600 dark:text-gray-400" style={{ marginLeft: "8px", fontSize: "12px", color: "#4b5563" }}>
+              {currentGap}px
+            </span>
           </div>
         </div>
       )}

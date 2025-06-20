@@ -375,7 +375,7 @@ export default function EcommercePage() {
                 target.nextElementSibling!.textContent = selectedProduct?.image;
               }}
             />
-            <span className="text-6xl hidden flex items-center justify-center w-full h-full">{selectedProduct?.image}</span>
+            <span className="text-6xl items-center justify-center w-full h-full">{selectedProduct?.image}</span>
           </div>
         </div>
 
