@@ -13,4 +13,4 @@ export { LayoutContainer } from "./components/LayoutContainer";
 export { Sidebar } from "./components/Sidebar";
 
 // Hooks
-export { useDesignSettings } from "./hooks/useDesignSettings";
+export { useDesignSettings, DesignSettingsProvider } from "./hooks/useDesignSettings";

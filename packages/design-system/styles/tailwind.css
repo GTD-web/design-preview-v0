@@ -20,6 +20,7 @@
   --color-surface: #ffffff;
   --color-background: #ffffff;
   --color-border: #e5e5e5;
+  --color-active-text: #ffffff;
   --radius: 8px;
   --font-size-base: 1rem;
   --spacing-xs: 0.25rem;
@@ -65,6 +66,7 @@
     --color-surface: #171717;
     --color-background: #171717;
     --color-border: #404040;
+    --color-active-text: #000000;
     --scrollbar-bg: #171717;
     --scrollbar-thumb: #404040;
     --scrollbar-thumb-hover: #525252;
@@ -97,6 +99,7 @@ body {
   --color-border: #404040;
   --foreground: #fafafa;
   --foreground-inverse: #171717;
+  --color-active-text: #000000;
 }
 
 .theme-dracula {

@@ -36,7 +36,7 @@ interface SidebarProps {
   /** 현재 활성 메뉴 경로 */
   activePath?: string;
   /** 메뉴 그룹 목록 (2차원 배열 구조) */
-  menuGroups?: SidebarMenuGroup[];
+  menuGroups: SidebarMenuGroup[];
   /** 사이드바 너비 */
   width?: string;
   /** 추가 클래스명 */
@@ -52,7 +52,7 @@ interface SidebarProps {
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups = [], width = "w-72", className = "" }: SidebarProps) {
+export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, width = "w-72", className = "" }: SidebarProps) {
   const router = useRouter();
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
@@ -67,92 +67,6 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups = 
       return newSet;
     });
   };
-
-  const defaultMenuGroups: SidebarMenuGroup[] = [
-    {
-      title: "대시보드",
-      items: [
-        {
-          title: "대시보드",
-          path: "/design-example/dashboard",
-          icon: (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
-            </svg>
-          ),
-        },
-      ],
-    },
-    {
-      title: "E-commerce",
-      items: [
-        {
-          title: "E-commerce",
-          path: "/design-example/ecommerce",
-          icon: (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-          ),
-        },
-      ],
-    },
-    {
-      title: "Analytics",
-      items: [
-        {
-          title: "Analytics",
-          path: "/design-example/analytics",
-          icon: (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-          ),
-        },
-      ],
-    },
-    {
-      title: "Task Management",
-      items: [
-        {
-          title: "Task Management",
-          path: "/design-example/task-management",
-          icon: (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-              />
-            </svg>
-          ),
-        },
-      ],
-    },
-    {
-      title: "User Profile",
-      items: [
-        {
-          title: "User Profile",
-          path: "/design-example/user-profile",
-          icon: (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          ),
-        },
-      ],
-    },
-  ];
-
-  const items = menuGroups.length > 0 ? menuGroups : defaultMenuGroups;
 
   return (
     <>
@@ -176,7 +90,9 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups = 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-background font-bold text-sm">DS</span>
+                  <span className="text-background font-bold text-sm" style={{ color: "var(--color-active-text)" }}>
+                    DS
+                  </span>
                 </div>
                 <div>
                   <TextHeading size="lg" weight="semibold" className="text-foreground">
@@ -198,7 +114,7 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups = 
           {/* 메뉴 */}
           <nav className="flex-1 overflow-y-auto p-4">
             <VStack gap="sm" align="start">
-              {items.map((group) => {
+              {menuGroups.map((group) => {
                 const isCollapsed = collapsedGroups.has(group.title);
                 const contentRef = useRef<HTMLDivElement>(null);
                 const [contentHeight, setContentHeight] = useState<number>(0);
@@ -258,11 +174,7 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups = 
                               className={`
                                 group flex items-center gap-3 w-full rounded-lg px-3 py-2 text-left transition-colors duration-200
                                 hover:bg-neutral-100 dark:hover:bg-neutral-800
-                                ${
-                                  activePath === item.path
-                                    ? "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-900"
-                                    : "text-neutral-600 dark:text-neutral-400"
-                                }
+                                ${activePath === item.path ? "bg-neutral-800 dark:bg-white" : "text-neutral-600 dark:text-neutral-400"}
                               `}
                             >
                               <div
@@ -270,18 +182,20 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups = 
                                 flex items-center justify-center w-5 h-5 transition-colors duration-200
                                 ${
                                   activePath === item.path
-                                    ? "text-neutral-900 dark:text-neutral-900"
+                                    ? ""
                                     : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
                                 }
                               `}
+                                style={activePath === item.path ? { color: "#ffffff" } : {}}
                               >
                                 {item.icon}
                               </div>
                               <span
                                 className={`
                                 text-sm font-medium transition-colors duration-200
-                                ${activePath === item.path ? "text-neutral-900 dark:text-neutral-900" : "font-normal"}
+                                ${activePath === item.path ? "" : "font-normal text-neutral-500 dark:text-neutral-400"}
                               `}
+                                style={activePath === item.path ? { color: "#ffffff" } : {}}
                               >
                                 {item.title}
                               </span>
@@ -298,7 +212,7 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups = 
 
           {/* 푸터 */}
           <div className="p-4 border-t border-border">
-            <div className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+            <div className="p-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
               <VStack gap="sm">
                 <TextValue size="sm" weight="medium" color="default" className="text-neutral-900 dark:text-neutral-900" style={{ color: "#171717" }}>
                   Tailwind CSS 기반
