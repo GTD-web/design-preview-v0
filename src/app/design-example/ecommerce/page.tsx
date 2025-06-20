@@ -219,11 +219,11 @@ export default function EcommercePage() {
                 <HStack gap="md" align="center" className="p-4 border border-border rounded-lg hover:bg-surface/50 transition-colors">
                   <Icon size="2xl">{product.image}</Icon>
                   <Flex1MinW0>
-                    <HStack gap="sm" align="center" className="mb-1">
+                    <HStack gap="md" align="center" className="mb-1">
                       <TextValue weight="semibold" className="truncate">
                         {product.name}
                       </TextValue>
-                      {product.status === "out_of_stock" && <Badge color="danger">품절</Badge>}
+                      {product.status === "out_of_stock" && <Badge color="black">품절</Badge>}
                     </HStack>
                     <HStack gap="md" align="center" className="text-sm text-gray-600">
                       <TextSpan size="sm" color="muted">
@@ -238,14 +238,16 @@ export default function EcommercePage() {
                     </HStack>
                   </Flex1MinW0>
                   <div className="text-right">
-                    <TextValue weight="semibold" className="text-primary">
-                      {product.price.toLocaleString()}원
-                    </TextValue>
-                    <TextSpan size="sm" color="muted">
-                      재고: {product.stock}개
-                    </TextSpan>
+                    <VStack gap="xs" align="end">
+                      <TextValue weight="semibold" className="text-primary">
+                        {product.price.toLocaleString()}원
+                      </TextValue>
+                      <TextSpan size="sm" color="muted">
+                        재고: {product.stock}개
+                      </TextSpan>
+                    </VStack>
                   </div>
-                  <HStack gap="sm">
+                  <HStack gap="md">
                     <Button variant="ghost" size="sm">
                       수정
                     </Button>
