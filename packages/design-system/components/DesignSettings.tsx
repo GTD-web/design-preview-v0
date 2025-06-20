@@ -19,6 +19,13 @@ export const themes = [
   { key: "dracula", label: "드라큘라", className: "theme-dracula" },
   { key: "pastel", label: "파스텔", className: "theme-pastel" },
   { key: "ci", label: "CI 테마", className: "theme-ci" },
+  { key: "github", label: "GitHub", className: "theme-github" },
+  { key: "midnight", label: "미드나잇", className: "theme-midnight" },
+  { key: "ocean", label: "오션", className: "theme-ocean" },
+  { key: "forest", label: "포레스트", className: "theme-forest" },
+  { key: "sunset", label: "선셋", className: "theme-sunset" },
+  { key: "aurora", label: "오로라", className: "theme-aurora" },
+  { key: "cosmic", label: "코스믹", className: "theme-cosmic" },
 ];
 
 /**

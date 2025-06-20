@@ -89,10 +89,8 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
           <div className="p-6 border-b border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-background font-bold text-sm" style={{ color: "var(--color-active-text)" }}>
-                    DS
-                  </span>
+                <div className="w-8 h-8 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">DS</span>
                 </div>
                 <div>
                   <TextHeading size="lg" weight="semibold" className="text-foreground">
@@ -174,7 +172,7 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
                               className={`
                                 group flex items-center gap-3 w-full rounded-lg px-3 py-2 text-left transition-colors duration-200
                                 hover:bg-neutral-100 dark:hover:bg-neutral-800
-                                ${activePath === item.path ? "bg-neutral-800 dark:bg-white" : "text-neutral-600 dark:text-neutral-400"}
+                                ${activePath === item.path ? "bg-neutral-800 dark:bg-neutral-700" : "text-neutral-600 dark:text-neutral-400"}
                               `}
                             >
                               <div
@@ -182,20 +180,18 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
                                 flex items-center justify-center w-5 h-5 transition-colors duration-200
                                 ${
                                   activePath === item.path
-                                    ? ""
+                                    ? "text-white"
                                     : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
                                 }
                               `}
-                                style={activePath === item.path ? { color: "#ffffff" } : {}}
                               >
                                 {item.icon}
                               </div>
                               <span
                                 className={`
                                 text-sm font-medium transition-colors duration-200
-                                ${activePath === item.path ? "" : "font-normal text-neutral-500 dark:text-neutral-400"}
+                                ${activePath === item.path ? "text-white font-semibold" : "font-normal text-neutral-500 dark:text-neutral-400"}
                               `}
-                                style={activePath === item.path ? { color: "#ffffff" } : {}}
                               >
                                 {item.title}
                               </span>
@@ -212,9 +208,15 @@ export function Sidebar({ isOpen = true, onClose, activePath = "", menuGroups, w
 
           {/* 푸터 */}
           <div className="p-4 border-t border-border">
-            <div className="p-3 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
+            <div
+              className="p-3 rounded-lg"
+              style={{
+                backgroundColor: "var(--color-surface)",
+                color: "var(--foreground)",
+              }}
+            >
               <VStack gap="sm">
-                <TextValue size="sm" weight="medium" color="default" className="text-neutral-900 dark:text-neutral-900" style={{ color: "#171717" }}>
+                <TextValue size="sm" weight="medium" color="default" className="text-foreground">
                   Tailwind CSS 기반
                 </TextValue>
                 <TextValue size="xs" color="muted">
