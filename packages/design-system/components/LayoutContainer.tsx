@@ -42,13 +42,13 @@ export function LayoutContainer({
   const getLayoutClasses = () => {
     switch (type) {
       case "full":
-        return `w-full min-h-screen bg-background`;
+        return `w-full min-h-screen bg-[var(--color-background)]`;
       case "centered":
-        return `w-full min-h-screen flex items-center justify-center ${padding}`;
+        return `w-full min-h-screen flex items-center justify-center ${padding} bg-[var(--color-background)]`;
       case "contained":
-        return `w-full min-h-screen ${padding} mx-auto ${maxWidth}`;
+        return `w-full min-h-screen ${padding} mx-auto ${maxWidth} bg-[var(--color-background)]`;
       default:
-        return `w-full min-h-screen flex items-center justify-center ${padding}`;
+        return `w-full min-h-screen flex items-center justify-center ${padding} bg-[var(--color-background)]`;
     }
   };
 
