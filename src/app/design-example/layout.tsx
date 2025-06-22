@@ -131,6 +131,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
 
   // 사이드바 상태 관리
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const pathname = usePathname();
 
   // 관리자/사용자 화면 상태 관리
@@ -172,6 +173,8 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         activePath={pathname}
         menuGroups={sidebarMenuGroups}
         user={user}
@@ -184,7 +187,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
       />
 
       {/* 메인 콘텐츠 */}
-      <div className="lg:ml-64">
+      <div className={`transition-all duration-500 ease-in-out ${sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"}`}>
         {/* 모바일 헤더 */}
         <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
           <div className="flex items-center justify-between">
