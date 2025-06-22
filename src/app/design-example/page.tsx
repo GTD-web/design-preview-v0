@@ -5,7 +5,7 @@ import TextLabel from "@/packages/design-system/components/TextLabel";
 
 export default function Home() {
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen">
       <div className="space-y-6">
         {/* 헤더 */}
         <div className="text-center">

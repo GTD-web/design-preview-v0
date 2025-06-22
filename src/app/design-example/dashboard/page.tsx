@@ -108,7 +108,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background">
       <div className="space-y-6">
         {/* 헤더 */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

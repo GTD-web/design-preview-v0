@@ -134,7 +134,7 @@ export default function UserProfilePage() {
   };
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* 프로필 헤더 */}
         <Card className="p-lg">

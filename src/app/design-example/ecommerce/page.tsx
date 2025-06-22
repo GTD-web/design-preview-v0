@@ -140,7 +140,7 @@ export default function EcommercePage() {
   };
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen">
       <div className="space-y-6">
         {/* 헤더 */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
