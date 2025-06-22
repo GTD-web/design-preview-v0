@@ -73,7 +73,7 @@ export default function DashboardPage() {
     const paddings = ["pl-0", "pl-4", "pl-8", "pl-12", "pl-16"]; // depth별 인덴트
     return (
       <div key={path} className={`${paddings[depth] || "pl-16"}`}>
-        <div className={`flex items-center min-h-[44px] py-2 border-b border-border/20`}>
+        <div className={`flex items-center min-h-[44px] py-2 border-b border-border`}>
           {hasChildren && (
             <button
               type="button"
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                   </TextLabel>
                   <TextValue>김경훈 · Core Squad 외 10건 변경</TextValue>
                 </li>
-                <li className="flex flex-col gap-1 bg-primary/5 rounded-lg p-3 border border-primary/20">
+                <li className="flex flex-col gap-1">
                   <TextLabel>
                     2024년 1월 1일 <Badge color="primary">현재</Badge>
                   </TextLabel>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
               </ul>
             </div>
             {/* 섹션 구분선 */}
-            <div className="border-t border-border/40" />
+            <div className="border-t border-border" />
             {/* 지급 내역 섹션 */}
             <div>
               <div className="flex items-end justify-between mb-4">

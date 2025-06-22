@@ -244,7 +244,7 @@ export default function AnalyticsPage() {
               </thead>
               <tbody>
                 {topProducts.map((product, index) => (
-                  <tr key={index} className="border-b border-border/50 hover:bg-surface/30">
+                  <tr key={index} className="border-b border-border hover:bg-surface/30">
                     <td className="py-3 px-4">
                       <TextValue weight="semibold">{product.name}</TextValue>
                     </td>
