@@ -206,8 +206,8 @@ export function Sidebar({
                         onClick={() => router.push(item.path)}
                         className={`
                           group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out
-                          hover:bg-neutral-100 dark:hover:bg-neutral-800
-                          ${activePath === item.path ? "bg-neutral-800 dark:bg-neutral-700 w-10 mx-auto" : "text-neutral-600 dark:text-neutral-400 w-full"}
+                          hover:bg-neutral-100 dark:hover:bg-neutral-800 w-10 mx-auto
+                          ${activePath === item.path ? "bg-neutral-800 dark:bg-neutral-700" : "text-neutral-600 dark:text-neutral-400"}
                         `}
                         title={item.title}
                       >
