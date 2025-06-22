@@ -75,11 +75,11 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">총 사용자</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">총 사용자</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {totalUsers.toLocaleString()}
                 </TextValue>
-                <TextLabel className="text-success text-sm">+12.5% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">+12.5% 지난 달 대비</TextLabel>
               </div>
               <div className="text-3xl">👥</div>
             </div>
@@ -88,11 +88,11 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">총 매출</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">총 매출</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {totalRevenue.toLocaleString()}원
                 </TextValue>
-                <TextLabel className="text-success text-sm">+8.2% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">+8.2% 지난 달 대비</TextLabel>
               </div>
               <div className="text-3xl">💰</div>
             </div>
@@ -101,11 +101,11 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">총 주문</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">총 주문</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {totalOrders.toLocaleString()}
                 </TextValue>
-                <TextLabel className="text-success text-sm">+15.7% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">+15.7% 지난 달 대비</TextLabel>
               </div>
               <div className="text-3xl">📦</div>
             </div>
@@ -114,11 +114,11 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600">평균 주문 금액</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl">
+                <TextLabel className="text-gray-600 mb-2 block">평균 주문 금액</TextLabel>
+                <TextValue weight="semibold" className="text-primary text-2xl block">
                   {avgOrderValue.toLocaleString()}원
                 </TextValue>
-                <TextLabel className="text-warning text-sm">-2.1% 지난 달 대비</TextLabel>
+                <TextLabel className="text-warning text-sm block">-2.1% 지난 달 대비</TextLabel>
               </div>
               <div className="text-3xl">📊</div>
             </div>

@@ -132,8 +132,8 @@ export default function TaskManagementPage() {
             <Card key={status} className="p-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <TextLabel className="text-gray-600">{config.label}</TextLabel>
-                  <TextValue weight="semibold" className="text-2xl">
+                  <TextLabel className="text-gray-600 mb-2 block">{config.label}</TextLabel>
+                  <TextValue weight="semibold" className="text-2xl block">
                     {getStatusCount(status)}
                   </TextValue>
                 </div>
