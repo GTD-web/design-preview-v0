@@ -40,7 +40,7 @@ interface DesignSettingsState {
   fontSize: number;
   spacing: SpacingConfig;
   gap: number;
-  layoutType: "full" | "centered" | "contained";
+  layoutType: "full" | "centered";
 }
 
 /**
@@ -53,7 +53,7 @@ interface DesignSettingsContextType extends DesignSettingsState {
   setFontSize: (fontSize: number) => void;
   setSpacing: (spacing: SpacingConfig) => void;
   setGap: (gap: number) => void;
-  setLayoutType: (layoutType: "full" | "centered" | "contained") => void;
+  setLayoutType: (layoutType: "full" | "centered") => void;
 }
 
 /**
@@ -210,9 +210,9 @@ export function DesignSettingsProvider({ children }: DesignSettingsProviderProps
   }, [gap]);
 
   // 레이아웃 타입 설정
-  const [layoutType, setLayoutType] = useState<"full" | "centered" | "contained">(() => {
+  const [layoutType, setLayoutType] = useState<"full" | "centered">(() => {
     if (typeof window !== "undefined") {
-      return (localStorage.getItem("design-layoutType") as "full" | "centered" | "contained") || "centered";
+      return (localStorage.getItem("design-layoutType") as "full" | "centered") || "centered";
     }
     return "centered";
   });
