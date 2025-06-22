@@ -192,7 +192,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
       />
 
       {/* 메인 콘텐츠 */}
-      <div className={`transition-all duration-500 ease-in-out ${sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"}`}>
+      <div className={`transition-all duration-500 ease-out ${sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"}`}>
         {/* 모바일 헤더 */}
         <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
           <div className="flex items-center justify-between">

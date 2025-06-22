@@ -162,7 +162,7 @@ export function Sidebar({
         <aside
           className={`
             fixed top-0 left-0 h-full bg-surface border-r-4 border-neutral-300 dark:border-neutral-600 z-50
-            transform transition-all duration-500 ease-in-out
+            transform transition-all duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0 lg:static lg:z-auto
             shadow-lg
@@ -252,7 +252,7 @@ export function Sidebar({
         <aside
           className={`
             fixed top-0 left-0 h-full bg-surface border-r-4 border-neutral-300 dark:border-neutral-600 z-50
-            transform transition-all duration-500 ease-in-out
+            transform transition-all duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0 lg:static lg:z-auto
             shadow-lg
