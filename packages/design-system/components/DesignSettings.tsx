@@ -47,6 +47,8 @@ interface DesignSettingsProps {
   onGapChange: (gap: number) => void;
   /** 레이아웃 타입 변경 시 호출되는 콜백 함수 */
   onLayoutTypeChange: (layoutType: "full" | "centered") => void;
+  /** 최대 너비 변경 시 호출되는 콜백 함수 */
+  onMaxWidthChange: (maxWidth: string) => void;
   /** 현재 선택된 폰트 */
   currentFont: string;
   /** 현재 선택된 테마 */
@@ -61,6 +63,8 @@ interface DesignSettingsProps {
   currentGap: number;
   /** 현재 레이아웃 타입 */
   currentLayoutType: "full" | "centered";
+  /** 현재 최대 너비 */
+  currentMaxWidth: string;
 }
 
 /**
@@ -85,6 +89,7 @@ export function DesignSettings({
   onSpacingChange,
   onGapChange,
   onLayoutTypeChange,
+  onMaxWidthChange,
   currentFont,
   currentTheme,
   currentRadius,
@@ -92,6 +97,7 @@ export function DesignSettings({
   currentSpacing,
   currentGap,
   currentLayoutType,
+  currentMaxWidth,
 }: DesignSettingsProps) {
   // 위젯 열림/닫힘 상태 관리 (클라이언트 전용)
   const [open, setOpen] = useState(false);
@@ -246,6 +252,38 @@ export function DesignSettings({
               </Button>
             </div>
           </div>
+
+          {/* 최대 너비 선택 섹션 (centered 타입일 때만 표시) */}
+          {currentLayoutType === "centered" && (
+            <div className="mb-6" style={{ marginBottom: "24px" }}>
+              <label
+                className="block text-sm font-medium mb-3 text-gray-900 dark:text-white"
+                style={{ fontSize: "14px", fontWeight: "500", color: "#111827", marginBottom: "12px" }}
+              >
+                최대 너비
+              </label>
+              <div className="flex gap-3 flex-wrap" style={{ gap: "12px" }}>
+                <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-4xl"} onClick={() => onMaxWidthChange("max-w-4xl")}>
+                  4xl
+                </Button>
+                <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-5xl"} onClick={() => onMaxWidthChange("max-w-5xl")}>
+                  5xl
+                </Button>
+                <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-6xl"} onClick={() => onMaxWidthChange("max-w-6xl")}>
+                  6xl
+                </Button>
+                <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-7xl"} onClick={() => onMaxWidthChange("max-w-7xl")}>
+                  7xl
+                </Button>
+                <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-8xl"} onClick={() => onMaxWidthChange("max-w-8xl")}>
+                  8xl
+                </Button>
+                <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-9xl"} onClick={() => onMaxWidthChange("max-w-9xl")}>
+                  9xl
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* 수치 조정 섹션 - 라운드와 폰트 크기를 나란히 배치 */}
           <div className="mb-6 flex gap-6" style={{ marginBottom: "24px", gap: "24px" }}>

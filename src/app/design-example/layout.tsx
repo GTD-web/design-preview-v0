@@ -110,8 +110,24 @@ const sidebarMenuGroups = [
 // 내부 컴포넌트 - 디자인 설정 컨텍스트 사용
 function DesignExampleContent({ children }: { children: React.ReactNode }) {
   // 디자인 설정 상태 관리를 커스텀 훅으로 처리
-  const { font, theme, radius, fontSize, spacing, gap, layoutType, setFont, setTheme, setRadius, setFontSize, setSpacing, setGap, setLayoutType } =
-    useDesignSettings();
+  const {
+    font,
+    theme,
+    radius,
+    fontSize,
+    spacing,
+    gap,
+    layoutType,
+    maxWidth,
+    setFont,
+    setTheme,
+    setRadius,
+    setFontSize,
+    setSpacing,
+    setGap,
+    setLayoutType,
+    setMaxWidth,
+  } = useDesignSettings();
 
   // 사이드바 상태 관리
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -182,7 +198,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
 
         {/* 콘텐츠 영역 */}
         <div className="lg:pt-0 pt-16">
-          <LayoutContainer type={layoutType} hasSidebar={true}>
+          <LayoutContainer type={layoutType} maxWidth={maxWidth} hasSidebar={true}>
             {children}
           </LayoutContainer>
         </div>
@@ -196,6 +212,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
         onSpacingChange={setSpacing}
         onGapChange={setGap}
         onLayoutTypeChange={setLayoutType}
+        onMaxWidthChange={setMaxWidth}
         currentFont={font}
         currentTheme={theme}
         currentRadius={radius}
@@ -203,6 +220,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
         currentSpacing={spacing}
         currentGap={gap}
         currentLayoutType={layoutType}
+        currentMaxWidth={maxWidth}
       />
     </ClientOnly>
   );

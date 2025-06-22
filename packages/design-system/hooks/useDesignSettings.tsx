@@ -41,6 +41,7 @@ interface DesignSettingsState {
   spacing: SpacingConfig;
   gap: number;
   layoutType: "full" | "centered";
+  maxWidth: string;
 }
 
 /**
@@ -54,6 +55,7 @@ interface DesignSettingsContextType extends DesignSettingsState {
   setSpacing: (spacing: SpacingConfig) => void;
   setGap: (gap: number) => void;
   setLayoutType: (layoutType: "full" | "centered") => void;
+  setMaxWidth: (maxWidth: string) => void;
 }
 
 /**
@@ -223,6 +225,20 @@ export function DesignSettingsProvider({ children }: DesignSettingsProviderProps
     }
   }, [layoutType]);
 
+  // 최대 너비 설정
+  const [maxWidth, setMaxWidth] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("design-maxWidth") || "max-w-6xl";
+    }
+    return "max-w-6xl";
+  });
+  useEffect(() => {
+    // localStorage에 저장
+    if (typeof window !== "undefined") {
+      localStorage.setItem("design-maxWidth", maxWidth);
+    }
+  }, [maxWidth]);
+
   const value: DesignSettingsContextType = {
     // 현재 상태값들
     font,
@@ -232,6 +248,7 @@ export function DesignSettingsProvider({ children }: DesignSettingsProviderProps
     spacing,
     gap,
     layoutType,
+    maxWidth,
 
     // 상태 변경 함수들
     setFont,
@@ -241,6 +258,7 @@ export function DesignSettingsProvider({ children }: DesignSettingsProviderProps
     setSpacing,
     setGap,
     setLayoutType,
+    setMaxWidth,
   };
 
   return <DesignSettingsContext.Provider value={value}>{children}</DesignSettingsContext.Provider>;

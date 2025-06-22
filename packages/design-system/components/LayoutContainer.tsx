@@ -11,6 +11,8 @@ type LayoutType = "full" | "centered";
 interface LayoutContainerProps {
   /** 레이아웃 타입 */
   type?: LayoutType;
+  /** 최대 너비 (centered 타입에서 사용) */
+  maxWidth?: string;
   /** 패딩 */
   padding?: string;
   /** 사이드바 존재 여부 */
@@ -28,15 +30,22 @@ interface LayoutContainerProps {
  * - full: 화면 전체를 채움
  * - centered: 중앙 정렬 (기본값)
  */
-export function LayoutContainer({ type = "centered", padding = "p-6", hasSidebar = false, children, className = "" }: LayoutContainerProps) {
+export function LayoutContainer({
+  type = "centered",
+  maxWidth = "max-w-6xl",
+  padding = "p-6",
+  hasSidebar = false,
+  children,
+  className = "",
+}: LayoutContainerProps) {
   const getLayoutClasses = () => {
     switch (type) {
       case "full":
         return `w-full min-h-screen ${padding} bg-[var(--color-background)]`;
       case "centered":
-        return `w-full min-h-screen ${padding} mx-auto max-w-6xl bg-[var(--color-background)]`;
+        return `w-full min-h-screen ${padding} mx-auto ${maxWidth} bg-[var(--color-background)]`;
       default:
-        return `w-full min-h-screen ${padding} mx-auto max-w-6xl bg-[var(--color-background)]`;
+        return `w-full min-h-screen ${padding} mx-auto ${maxWidth} bg-[var(--color-background)]`;
     }
   };
 
