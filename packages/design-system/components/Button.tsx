@@ -2,7 +2,7 @@ import * as React from "react";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "toggle";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "toggle" | "nav";
   size?: "sm" | "md" | "lg";
   selected?: boolean;
   gradient?: boolean;
@@ -113,6 +113,9 @@ export function Button({
       outline: "bg-transparent text-primary hover:bg-primary/10",
       ghost: "bg-transparent text-foreground border-transparent hover:bg-surface",
       toggle: selected ? "bg-surface text-foreground hover:bg-surface/80" : "bg-surface text-foreground hover:bg-primary/10",
+      nav: selected
+        ? "bg-neutral-800 dark:bg-neutral-700 text-white hover:bg-neutral-700 dark:hover:bg-neutral-600"
+        : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800",
     }[variant];
   };
 
@@ -126,6 +129,7 @@ export function Button({
       case "toggle":
         return { borderColor: "var(--color-border)" };
       case "ghost":
+      case "nav":
         return { borderColor: "transparent" };
       default:
         return { borderColor: "var(--color-border)" };

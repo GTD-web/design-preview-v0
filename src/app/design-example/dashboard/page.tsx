@@ -111,26 +111,26 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background">
       <div className="space-y-8">
         {/* 헤더 */}
-        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
+        <Card className="p-6 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div>
-              <TextHeading size="2xl" weight="semibold" className="text-gray-900 mb-2">
+              <TextHeading size="2xl" weight="semibold" className="text-foreground mb-2">
                 2024년 1월 1일 조직도
               </TextHeading>
-              <TextLabel className="text-gray-600 flex items-center gap-2">
+              <TextLabel className="text-secondary flex items-center gap-2">
                 <span className="w-2 h-2 bg-success rounded-full"></span>
                 최근 업데이트: 2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함
               </TextLabel>
             </div>
             <div className="flex items-center gap-4">
-              <div className="bg-white rounded-lg px-4 py-2 border border-border">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="bg-surface rounded-lg px-4 py-2 border border-border">
+                <span className="text-sm font-medium text-foreground">
                   전체 <span className="text-primary font-semibold">56</span>
                 </span>
               </div>
               <div className="relative w-64">
                 <input
-                  className="w-full border border-border rounded-lg px-4 py-2 text-sm bg-white text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10 shadow-sm"
+                  className="w-full border border-border rounded-lg px-4 py-2 text-sm bg-surface text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10 shadow-sm"
                   placeholder="조직 검색..."
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none">
@@ -142,7 +142,7 @@ export default function DashboardPage() {
               </div>
               <button
                 type="button"
-                className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white hover:shadow-sm transition-all border border-border"
+                className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface hover:shadow-sm transition-all border border-border"
                 aria-label="전체화면"
               >
                 <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
@@ -154,7 +154,7 @@ export default function DashboardPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* 메인 콘텐츠 */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -164,44 +164,44 @@ export default function DashboardPage() {
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <TextHeading size="lg" className="text-gray-900">
+                <TextHeading size="lg" className="text-foreground">
                   조직도 변경내역
                 </TextHeading>
               </div>
               <ul className="space-y-4">
                 <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
                   <div className="flex items-center gap-2">
-                    <TextLabel className="text-sm text-gray-600">2024년 1월 15일</TextLabel>
+                    <TextLabel className="text-sm text-secondary">2024년 1월 15일</TextLabel>
                     <Badge color="warning" className="text-xs">
                       예약
                     </Badge>
                   </div>
-                  <TextValue className="text-gray-900 font-medium">김경훈 · Core Squad 외 10건 변경</TextValue>
+                  <TextValue className="text-foreground font-medium">김경훈 · Core Squad 외 10건 변경</TextValue>
                 </li>
                 <li className="flex flex-col gap-2 p-3 rounded-lg bg-primary/5 border border-primary/10">
                   <div className="flex items-center gap-2">
-                    <TextLabel className="text-sm text-gray-600">2024년 1월 1일</TextLabel>
+                    <TextLabel className="text-sm text-secondary">2024년 1월 1일</TextLabel>
                     <Badge color="primary" className="text-xs">
                       현재
                     </Badge>
                   </div>
-                  <TextValue className="text-gray-900 font-medium">김경훈 · Review Squad 변경</TextValue>
+                  <TextValue className="text-foreground font-medium">김경훈 · Review Squad 변경</TextValue>
                 </li>
                 <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
-                  <TextLabel className="text-sm text-gray-600">2023년 10월 20일</TextLabel>
-                  <TextValue className="text-gray-900 font-medium">김경훈 · Product Group 변경</TextValue>
+                  <TextLabel className="text-sm text-secondary">2023년 10월 20일</TextLabel>
+                  <TextValue className="text-foreground font-medium">김경훈 · Product Group 변경</TextValue>
                 </li>
                 <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
-                  <TextLabel className="text-sm text-gray-600">2023년 10월 15일</TextLabel>
-                  <TextValue className="text-gray-900 font-medium">이지나 · AI Lovable TF 외 3건 변경</TextValue>
+                  <TextLabel className="text-sm text-secondary">2023년 10월 15일</TextLabel>
+                  <TextValue className="text-foreground font-medium">이지나 · AI Lovable TF 외 3건 변경</TextValue>
                 </li>
                 <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
-                  <TextLabel className="text-sm text-gray-600">2023년 8월 1일</TextLabel>
-                  <TextValue className="text-gray-900 font-medium">이지나 · Data Engineering Team 변경</TextValue>
+                  <TextLabel className="text-sm text-secondary">2023년 8월 1일</TextLabel>
+                  <TextValue className="text-foreground font-medium">이지나 · Data Engineering Team 변경</TextValue>
                 </li>
                 <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
-                  <TextLabel className="text-sm text-gray-600">2023년 7월 30일</TextLabel>
-                  <TextValue className="text-gray-900 font-medium">이지나 · Security Dev Team 변경</TextValue>
+                  <TextLabel className="text-sm text-secondary">2023년 7월 30일</TextLabel>
+                  <TextValue className="text-foreground font-medium">이지나 · Security Dev Team 변경</TextValue>
                 </li>
               </ul>
             </Card>
@@ -210,13 +210,13 @@ export default function DashboardPage() {
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-2 h-2 bg-success rounded-full"></div>
-                <TextHeading size="lg" className="text-gray-900">
+                <TextHeading size="lg" className="text-foreground">
                   지급 내역
                 </TextHeading>
               </div>
               <div className="flex items-end justify-between mb-6">
                 <div>
-                  <TextLabel className="text-sm text-gray-600">2024. 12. 1 - 2024. 12. 31</TextLabel>
+                  <TextLabel className="text-sm text-secondary">2024. 12. 1 - 2024. 12. 31</TextLabel>
                 </div>
                 <TextValue size="xl" weight="semibold" className="text-primary">
                   4,287,676원
@@ -224,20 +224,20 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
-                  <TextLabel className="text-gray-700 font-medium">기본급</TextLabel>
-                  <TextValue className="text-gray-900 font-semibold">4,000,000원</TextValue>
+                  <TextLabel className="text-foreground font-medium">기본급</TextLabel>
+                  <TextValue className="text-foreground font-semibold">4,000,000원</TextValue>
                 </div>
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
-                  <TextLabel className="text-gray-700 font-medium">근무미달차감금</TextLabel>
+                  <TextLabel className="text-foreground font-medium">근무미달차감금</TextLabel>
                   <TextValue className="text-danger font-semibold">-200,000원</TextValue>
                 </div>
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
-                  <TextLabel className="text-gray-700 font-medium">초과근무수당</TextLabel>
+                  <TextLabel className="text-foreground font-medium">초과근무수당</TextLabel>
                   <TextValue className="text-success font-semibold">1,326,270원</TextValue>
                 </div>
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
                   <div className="flex items-center gap-2">
-                    <TextLabel className="text-gray-700 font-medium">초과근무수당</TextLabel>
+                    <TextLabel className="text-foreground font-medium">초과근무수당</TextLabel>
                     <Badge color="gray" className="text-xs">
                       고정
                     </Badge>
@@ -246,30 +246,30 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
                   <div className="flex items-center gap-2">
-                    <TextLabel className="text-gray-700 font-medium">식비</TextLabel>
+                    <TextLabel className="text-foreground font-medium">식비</TextLabel>
                     <Badge color="gray" className="text-xs">
                       비과세
                     </Badge>
                   </div>
-                  <TextValue className="text-gray-900 font-semibold">100,000원</TextValue>
+                  <TextValue className="text-foreground font-semibold">100,000원</TextValue>
                 </div>
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
                   <div className="flex items-center gap-2">
-                    <TextLabel className="text-gray-700 font-medium">인재추천비</TextLabel>
+                    <TextLabel className="text-foreground font-medium">인재추천비</TextLabel>
                     <Badge color="gray" className="text-xs">
                       1명 추천
                     </Badge>
                   </div>
-                  <TextValue className="text-gray-900 font-semibold">500,000원</TextValue>
+                  <TextValue className="text-foreground font-semibold">500,000원</TextValue>
                 </div>
                 <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
                   <div className="flex items-center gap-2">
-                    <TextLabel className="text-gray-700 font-medium">인재추천비</TextLabel>
+                    <TextLabel className="text-foreground font-medium">인재추천비</TextLabel>
                     <Badge color="gray" className="text-xs">
                       비과세
                     </Badge>
                   </div>
-                  <TextValue className="text-gray-900 font-semibold">500,000원</TextValue>
+                  <TextValue className="text-foreground font-semibold">500,000원</TextValue>
                 </div>
               </div>
             </Card>
@@ -280,7 +280,7 @@ export default function DashboardPage() {
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-6">
                 <div className="w-2 h-2 bg-info rounded-full"></div>
-                <TextHeading size="lg" className="text-gray-900">
+                <TextHeading size="lg" className="text-foreground">
                   조직 구조
                 </TextHeading>
               </div>

@@ -164,16 +164,10 @@ export default function UserProfilePage() {
         <Card className="p-lg">
           <div className="flex flex-wrap gap-2 border-b border-border">
             {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 ${
-                  activeTab === tab.id ? "bg-primary text-white font-medium" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
-                }`}
-              >
+              <Button key={tab.id} variant="nav" selected={activeTab === tab.id} onClick={() => setActiveTab(tab.id)} className="flex items-center gap-2">
                 <span>{tab.icon}</span>
                 <TextValue className={activeTab === tab.id ? "text-white" : ""}>{tab.label}</TextValue>
-              </button>
+              </Button>
             ))}
           </div>
         </Card>

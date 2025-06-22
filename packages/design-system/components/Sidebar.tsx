@@ -85,7 +85,7 @@ export function Sidebar({
   activePath = "",
   menuGroups,
   width = "w-64",
-  collapsedWidth = "w-16",
+  collapsedWidth = "w-20",
   className = "",
   user,
   onLogout,
@@ -176,8 +176,8 @@ export function Sidebar({
             {/* 헤더 - 접힌 상태 */}
             <div className="p-3 border-b border-border">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-8 h-8 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
-                  <span className="text-white font-bold text-sm">DS</span>
+                <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                  <span className="text-white font-bold text-base">DS</span>
                 </div>
                 {/* 접기/펼치기 버튼 */}
                 <Button
@@ -233,11 +233,11 @@ export function Sidebar({
             {/* 푸터 - 접힌 상태 */}
             <div className="p-2 border-t border-border">
               <div
-                className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer"
+                className="p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer"
                 onClick={handleProfileClick}
               >
                 <div className="flex justify-center">
-                  <div className="w-8 h-8 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                  <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
                     <span className="text-white font-bold text-sm">{user?.initials || user?.name?.charAt(0) || "U"}</span>
                   </div>
                 </div>
@@ -267,8 +267,8 @@ export function Sidebar({
             <div className="p-4 border-b border-border">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
-                    <span className="text-white font-bold text-sm">DS</span>
+                  <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                    <span className="text-white font-bold text-base">DS</span>
                   </div>
                   <span className="font-semibold text-lg transition-all duration-300">디자인시스템</span>
                 </div>
