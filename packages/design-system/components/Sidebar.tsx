@@ -289,7 +289,7 @@ export function Sidebar({
 
             {/* 메뉴 - 펼쳐진 상태 */}
             <nav className="flex-1 overflow-y-auto p-4">
-              <VStack gap="md" align="stretch">
+              <VSpace gap="lg" align="stretch">
                 {menuGroups.map((group) => (
                   <div key={group.title} className="space-y-2">
                     <h3 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider transition-all duration-300">
@@ -331,7 +331,7 @@ export function Sidebar({
                     </VStack>
                   </div>
                 ))}
-              </VStack>
+              </VSpace>
             </nav>
 
             {/* 관리자/사용자 전환 영역 */}

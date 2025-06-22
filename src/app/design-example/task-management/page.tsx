@@ -144,64 +144,60 @@ export default function TaskManagementPage() {
         </div>
 
         {/* 필터 및 검색 */}
-        <Card className="p-lg">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="작업 제목 또는 설명으로 검색..."
-                className="w-full border border-border rounded-lg px-4 py-2 pl-10 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <select
-              className="border border-border rounded-lg px-4 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-            >
-              <option value="all">모든 상태</option>
-              {Object.entries(statusConfig).map(([status, config]) => (
-                <option key={status} value={status}>
-                  {config.label}
-                </option>
-              ))}
-            </select>
-            <select
-              className="border border-border rounded-lg px-4 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-              value={selectedPriority}
-              onChange={(e) => setSelectedPriority(e.target.value)}
-            >
-              <option value="all">모든 우선순위</option>
-              {Object.entries(priorityConfig).map(([priority, config]) => (
-                <option key={priority} value={priority}>
-                  {config.label}
-                </option>
-              ))}
-            </select>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              placeholder="작업 제목 또는 설명으로 검색..."
+              className="w-full border border-border rounded-lg px-4 py-2 pl-10 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
           </div>
-        </Card>
+          <select
+            className="border border-border rounded-lg px-4 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+          >
+            <option value="all">모든 상태</option>
+            {Object.entries(statusConfig).map(([status, config]) => (
+              <option key={status} value={status}>
+                {config.label}
+              </option>
+            ))}
+          </select>
+          <select
+            className="border border-border rounded-lg px-4 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+            value={selectedPriority}
+            onChange={(e) => setSelectedPriority(e.target.value)}
+          >
+            <option value="all">모든 우선순위</option>
+            {Object.entries(priorityConfig).map(([priority, config]) => (
+              <option key={priority} value={priority}>
+                {config.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* 칸반 보드 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {Object.entries(statusConfig).map(([status, config]) => (
             <div key={status} className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">{config.icon}</span>
-                  <div>
-                    <TextValue weight="semibold">{config.label}</TextValue>
-                    <TextLabel className="text-gray-500">{groupedTasks[status]?.length || 0}개 작업</TextLabel>
-                  </div>
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">{config.icon}</span>
+                <div className="flex flex-col gap-1">
+                  <TextValue weight="semibold">{config.label}</TextValue>
+                  <TextLabel className="text-gray-500">{groupedTasks[status]?.length || 0}개 작업</TextLabel>
                 </div>
               </div>
 
               <div className="space-y-3">
                 {groupedTasks[status]?.map((task) => (
-                  <Card key={task.id} className="p-md hover:shadow-md transition-shadow cursor-pointer">
+                  <Card key={task.id} className="p-lg hover:shadow-md transition-shadow cursor-pointer">
                     <div className="space-y-3">
                       <div className="flex items-start justify-between gap-2">
                         <TextValue weight="semibold" className="flex-1 line-clamp-2">

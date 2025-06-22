@@ -134,14 +134,14 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 매출 차트 */}
           <div className="lg:col-span-2">
-            <Card className="p-md h-full">
+            <Card className="p-lg h-full">
               <div className="flex items-center justify-between mb-md">
                 <TextHeading size="lg">매출 추이</TextHeading>
                 <Badge color="primary">{selectedPeriod}</Badge>
               </div>
 
               {/* 간단한 SVG 차트 */}
-              <div className="overflow-x-auto -mx-md -mb-md relative flex-1">
+              <div className="overflow-x-auto -mx-lg -mb-lg relative flex-1">
                 <svg width={chartWidth} height={chartHeight + 50} viewBox={`0 0 ${chartWidth} ${chartHeight + 50}`} className="w-full">
                   {/* 그리드 라인 */}
                   {[0, 1, 2, 3, 4].map((i) => (
