@@ -167,12 +167,12 @@ export default function UserProfilePage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                  activeTab === tab.id ? "bg-primary text-white" : "text-gray-600 hover:bg-gray-100"
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 ${
+                  activeTab === tab.id ? "bg-primary text-white font-medium" : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
                 }`}
               >
                 <span>{tab.icon}</span>
-                <TextValue>{tab.label}</TextValue>
+                <TextValue className={activeTab === tab.id ? "text-white" : ""}>{tab.label}</TextValue>
               </button>
             ))}
           </div>
@@ -187,22 +187,22 @@ export default function UserProfilePage() {
                 <TextHeading size="lg" className="mb-lg">
                   기본 정보
                 </TextHeading>
-                <div className="space-y-4">
-                  <div>
-                    <TextLabel className="text-gray-600">이메일</TextLabel>
-                    <TextValue>{userData.email}</TextValue>
+                <div className="space-y-3">
+                  <div className="">
+                    <TextLabel className="text-gray-600 text-sm font-medium mb-1 block">이메일</TextLabel>
+                    <TextValue className="text-gray-900">{userData.email}</TextValue>
                   </div>
-                  <div>
-                    <TextLabel className="text-gray-600">전화번호</TextLabel>
-                    <TextValue>{userData.phone}</TextValue>
+                  <div className="">
+                    <TextLabel className="text-gray-600 text-sm font-medium mb-1 block">전화번호</TextLabel>
+                    <TextValue className="text-gray-900">{userData.phone}</TextValue>
                   </div>
-                  <div>
-                    <TextLabel className="text-gray-600">위치</TextLabel>
-                    <TextValue>{userData.location}</TextValue>
+                  <div className="">
+                    <TextLabel className="text-gray-600 text-sm font-medium mb-1 block">위치</TextLabel>
+                    <TextValue className="text-gray-900">{userData.location}</TextValue>
                   </div>
-                  <div>
-                    <TextLabel className="text-gray-600">소개</TextLabel>
-                    <TextValue className="text-gray-700">{userData.bio}</TextValue>
+                  <div className="">
+                    <TextLabel className="text-gray-600 text-sm font-medium mb-1 block">소개</TextLabel>
+                    <TextValue className="text-gray-700 leading-relaxed">{userData.bio}</TextValue>
                   </div>
                 </div>
               </Card>
@@ -226,28 +226,36 @@ export default function UserProfilePage() {
               {/* 통계 카드 */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Card className="p-md text-center">
-                  <TextValue weight="semibold" className="text-2xl text-primary">
-                    {projectStats.completed}
-                  </TextValue>
-                  <TextLabel className="text-gray-600">완료 프로젝트</TextLabel>
+                  <div className="space-y-2">
+                    <TextValue weight="semibold" className="text-2xl text-primary block">
+                      {projectStats.completed}
+                    </TextValue>
+                    <TextLabel className="text-gray-600 text-sm font-medium block">완료 프로젝트</TextLabel>
+                  </div>
                 </Card>
                 <Card className="p-md text-center">
-                  <TextValue weight="semibold" className="text-2xl text-warning">
-                    {projectStats.inProgress}
-                  </TextValue>
-                  <TextLabel className="text-gray-600">진행중</TextLabel>
+                  <div className="space-y-2">
+                    <TextValue weight="semibold" className="text-2xl text-warning block">
+                      {projectStats.inProgress}
+                    </TextValue>
+                    <TextLabel className="text-gray-600 text-sm font-medium block">진행중</TextLabel>
+                  </div>
                 </Card>
                 <Card className="p-md text-center">
-                  <TextValue weight="semibold" className="text-2xl text-success">
-                    {projectStats.totalHours}
-                  </TextValue>
-                  <TextLabel className="text-gray-600">총 작업시간</TextLabel>
+                  <div className="space-y-2">
+                    <TextValue weight="semibold" className="text-2xl text-success block">
+                      {projectStats.totalHours}
+                    </TextValue>
+                    <TextLabel className="text-gray-600 text-sm font-medium block">총 작업시간</TextLabel>
+                  </div>
                 </Card>
                 <Card className="p-md text-center">
-                  <TextValue weight="semibold" className="text-2xl text-info">
-                    {projectStats.thisMonth}
-                  </TextValue>
-                  <TextLabel className="text-gray-600">이번 달</TextLabel>
+                  <div className="space-y-2">
+                    <TextValue weight="semibold" className="text-2xl text-info block">
+                      {projectStats.thisMonth}
+                    </TextValue>
+                    <TextLabel className="text-gray-600 text-sm font-medium block">이번 달</TextLabel>
+                  </div>
                 </Card>
               </div>
 

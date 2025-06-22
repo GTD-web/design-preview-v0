@@ -73,11 +73,11 @@ export default function DashboardPage() {
     const paddings = ["pl-0", "pl-4", "pl-8", "pl-12", "pl-16"]; // depth별 인덴트
     return (
       <div key={path} className={`${paddings[depth] || "pl-16"}`}>
-        <div className={`flex items-center min-h-[44px] py-2 border-b border-border`}>
+        <div className={`flex items-center min-h-[48px] py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors border-b border-border/50`}>
           {hasChildren && (
             <button
               type="button"
-              className="mr-2 flex items-center justify-center w-5 h-5 text-muted hover:bg-surface rounded transition-colors focus:outline-none"
+              className="mr-3 flex items-center justify-center w-6 h-6 text-muted hover:bg-surface rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
               onClick={() => setOpenMap((prev) => ({ ...prev, [path]: !isOpen }))}
               aria-label={isOpen ? "접기" : "펼치기"}
               tabIndex={0}
@@ -94,151 +94,197 @@ export default function DashboardPage() {
             </button>
           )}
           {/* 하위(Squad)면 불릿 */}
-          {!hasChildren && <span className="inline-block w-4 text-center text-muted select-none">•</span>}
-          <TextValue className="ml-0.5 flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">{node.name}</TextValue>
+          {!hasChildren && <span className="inline-block w-6 text-center text-muted select-none text-lg">•</span>}
+          <TextValue className="ml-1 flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap font-medium">{node.name}</TextValue>
           {node.count !== undefined && (
-            <TextValue size="xs" weight="normal" className="ml-1 text-muted">
+            <Badge color="gray" className="ml-2">
               {node.count}
-            </TextValue>
+            </Badge>
           )}
         </div>
-        {hasChildren && isOpen && <div>{node.children.map((child: any, idx: number) => renderTree(child, `${path}-${idx}`, depth + 1))}</div>}
+        {hasChildren && isOpen && <div className="mt-1">{node.children.map((child: any, idx: number) => renderTree(child, `${path}-${idx}`, depth + 1))}</div>}
       </div>
     );
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* 헤더 */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <TextHeading size="2xl" weight="semibold">
-              2024년 1월 1일 조직도
-            </TextHeading>
-            <TextLabel className="mt-xs">2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함</TextLabel>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted">전체 (56)</span>
-            <div className="relative w-64">
-              <input
-                className="w-full border border-border rounded-lg px-3 py-2 text-sm bg-surface text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary/20 pr-8"
-                placeholder="검색"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none">
-                <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
-                  <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" strokeWidth="1.2" />
-                  <path d="M13 13l-2-2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                </svg>
-              </span>
+        <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+              <TextHeading size="2xl" weight="semibold" className="text-gray-900 mb-2">
+                2024년 1월 1일 조직도
+              </TextHeading>
+              <TextLabel className="text-gray-600 flex items-center gap-2">
+                <span className="w-2 h-2 bg-success rounded-full"></span>
+                최근 업데이트: 2024. 1. 1 · 김경훈 · 3분기 조직 확장으로 조직도로 변경함
+              </TextLabel>
             </div>
-            <button type="button" className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-surface transition" aria-label="전체화면">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path d="M3 8V3h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M17 8V3h-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M3 12v5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M17 12v5h-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-4">
+              <div className="bg-white rounded-lg px-4 py-2 border border-border">
+                <span className="text-sm font-medium text-gray-700">
+                  전체 <span className="text-primary font-semibold">56</span>
+                </span>
+              </div>
+              <div className="relative w-64">
+                <input
+                  className="w-full border border-border rounded-lg px-4 py-2 text-sm bg-white text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10 shadow-sm"
+                  placeholder="조직 검색..."
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 16 16">
+                    <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" strokeWidth="1.2" />
+                    <path d="M13 13l-2-2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                </span>
+              </div>
+              <button
+                type="button"
+                className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white hover:shadow-sm transition-all border border-border"
+                aria-label="전체화면"
+              >
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                  <path d="M3 8V3h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M17 8V3h-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M3 12v5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M17 12v5h-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* 메인 콘텐츠 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* 좌측: 변경내역/사이드바 */}
-          <Card className="flex flex-col gap-6 p-6">
+          <div className="space-y-6">
             {/* 조직도 변경내역 섹션 */}
-            <div>
-              <TextHeading className="mb-4">조직도 변경내역</TextHeading>
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-2 h-2 bg-primary rounded-full"></div>
+                <TextHeading size="lg" className="text-gray-900">
+                  조직도 변경내역
+                </TextHeading>
+              </div>
               <ul className="space-y-4">
-                <li className="flex flex-col gap-1">
-                  <TextLabel>
-                    2024년 1월 15일 <Badge color="warning">예약</Badge>
-                  </TextLabel>
-                  <TextValue>김경훈 · Core Squad 외 10건 변경</TextValue>
+                <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <TextLabel className="text-sm text-gray-600">2024년 1월 15일</TextLabel>
+                    <Badge color="warning" className="text-xs">
+                      예약
+                    </Badge>
+                  </div>
+                  <TextValue className="text-gray-900 font-medium">김경훈 · Core Squad 외 10건 변경</TextValue>
                 </li>
-                <li className="flex flex-col gap-1">
-                  <TextLabel>
-                    2024년 1월 1일 <Badge color="primary">현재</Badge>
-                  </TextLabel>
-                  <TextValue>김경훈 · Review Squad 변경</TextValue>
+                <li className="flex flex-col gap-2 p-3 rounded-lg bg-primary/5 border border-primary/10">
+                  <div className="flex items-center gap-2">
+                    <TextLabel className="text-sm text-gray-600">2024년 1월 1일</TextLabel>
+                    <Badge color="primary" className="text-xs">
+                      현재
+                    </Badge>
+                  </div>
+                  <TextValue className="text-gray-900 font-medium">김경훈 · Review Squad 변경</TextValue>
                 </li>
-                <li className="flex flex-col gap-1">
-                  <TextLabel>2023년 10월 20일</TextLabel>
-                  <TextValue>김경훈 · Product Group 변경</TextValue>
+                <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <TextLabel className="text-sm text-gray-600">2023년 10월 20일</TextLabel>
+                  <TextValue className="text-gray-900 font-medium">김경훈 · Product Group 변경</TextValue>
                 </li>
-                <li className="flex flex-col gap-1">
-                  <TextLabel>2023년 10월 15일</TextLabel>
-                  <TextValue>이지나 · AI Lovable TF 외 3건 변경</TextValue>
+                <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <TextLabel className="text-sm text-gray-600">2023년 10월 15일</TextLabel>
+                  <TextValue className="text-gray-900 font-medium">이지나 · AI Lovable TF 외 3건 변경</TextValue>
                 </li>
-                <li className="flex flex-col gap-1">
-                  <TextLabel>2023년 8월 1일</TextLabel>
-                  <TextValue>이지나 · Data Engineering Team 변경</TextValue>
+                <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <TextLabel className="text-sm text-gray-600">2023년 8월 1일</TextLabel>
+                  <TextValue className="text-gray-900 font-medium">이지나 · Data Engineering Team 변경</TextValue>
                 </li>
-                <li className="flex flex-col gap-1">
-                  <TextLabel>2023년 7월 30일</TextLabel>
-                  <TextValue>이지나 · Security Dev Team 변경</TextValue>
+                <li className="flex flex-col gap-2 p-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <TextLabel className="text-sm text-gray-600">2023년 7월 30일</TextLabel>
+                  <TextValue className="text-gray-900 font-medium">이지나 · Security Dev Team 변경</TextValue>
                 </li>
               </ul>
-            </div>
-            {/* 섹션 구분선 */}
-            <div className="border-t border-border" />
+            </Card>
+
             {/* 지급 내역 섹션 */}
-            <div>
-              <div className="flex items-end justify-between mb-4">
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-2 h-2 bg-success rounded-full"></div>
+                <TextHeading size="lg" className="text-gray-900">
+                  지급 내역
+                </TextHeading>
+              </div>
+              <div className="flex items-end justify-between mb-6">
                 <div>
-                  <TextHeading>지급 내역</TextHeading>
-                  <TextLabel className="mt-1">2024. 12. 1 - 2024. 12. 31</TextLabel>
+                  <TextLabel className="text-sm text-gray-600">2024. 12. 1 - 2024. 12. 31</TextLabel>
                 </div>
-                <TextValue size="xl" weight="semibold">
+                <TextValue size="xl" weight="semibold" className="text-primary">
                   4,287,676원
                 </TextValue>
               </div>
               <div className="space-y-3">
-                <div className="flex items-center justify-between py-2">
-                  <TextLabel>기본급</TextLabel>
-                  <TextValue>4,000,000원</TextValue>
+                <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <TextLabel className="text-gray-700 font-medium">기본급</TextLabel>
+                  <TextValue className="text-gray-900 font-semibold">4,000,000원</TextValue>
                 </div>
-                <div className="flex items-center justify-between py-2">
-                  <TextLabel>근무미달차감금</TextLabel>
-                  <TextValue>-200,000원</TextValue>
+                <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <TextLabel className="text-gray-700 font-medium">근무미달차감금</TextLabel>
+                  <TextValue className="text-danger font-semibold">-200,000원</TextValue>
                 </div>
-                <div className="flex items-center justify-between py-2">
-                  <TextLabel>초과근무수당</TextLabel>
-                  <TextValue>1,326,270원</TextValue>
+                <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <TextLabel className="text-gray-700 font-medium">초과근무수당</TextLabel>
+                  <TextValue className="text-success font-semibold">1,326,270원</TextValue>
                 </div>
-                <div className="flex items-center justify-between py-2">
-                  <TextLabel>
-                    초과근무수당 <Badge color="gray">고정</Badge>
-                  </TextLabel>
-                  <TextValue>456,780원</TextValue>
+                <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <TextLabel className="text-gray-700 font-medium">초과근무수당</TextLabel>
+                    <Badge color="gray" className="text-xs">
+                      고정
+                    </Badge>
+                  </div>
+                  <TextValue className="text-success font-semibold">456,780원</TextValue>
                 </div>
-                <div className="flex items-center justify-between py-2">
-                  <TextLabel>
-                    식비 <Badge color="gray">비과세</Badge>
-                  </TextLabel>
-                  <TextValue>100,000원</TextValue>
+                <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <TextLabel className="text-gray-700 font-medium">식비</TextLabel>
+                    <Badge color="gray" className="text-xs">
+                      비과세
+                    </Badge>
+                  </div>
+                  <TextValue className="text-gray-900 font-semibold">100,000원</TextValue>
                 </div>
-                <div className="flex items-center justify-between py-2">
-                  <TextLabel>
-                    인재추천비 <Badge color="gray">1명 추천</Badge>
-                  </TextLabel>
-                  <TextValue>500,000원</TextValue>
+                <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <TextLabel className="text-gray-700 font-medium">인재추천비</TextLabel>
+                    <Badge color="gray" className="text-xs">
+                      1명 추천
+                    </Badge>
+                  </div>
+                  <TextValue className="text-gray-900 font-semibold">500,000원</TextValue>
                 </div>
-                <div className="flex items-center justify-between py-2">
-                  <TextLabel>
-                    인재추천비 <Badge color="gray">비과세</Badge>
-                  </TextLabel>
-                  <TextValue>500,000원</TextValue>
+                <div className="flex items-center justify-between py-3 px-3 rounded-lg hover:bg-surface/50 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <TextLabel className="text-gray-700 font-medium">인재추천비</TextLabel>
+                    <Badge color="gray" className="text-xs">
+                      비과세
+                    </Badge>
+                  </div>
+                  <TextValue className="text-gray-900 font-semibold">500,000원</TextValue>
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
 
           {/* 중앙: 메인 섹션 */}
           <div className="lg:col-span-2">
             <Card className="p-6">
-              <div className="flex flex-col gap-4">{orgData.map((node, idx) => renderTree(node, `${idx}`))}</div>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-2 h-2 bg-info rounded-full"></div>
+                <TextHeading size="lg" className="text-gray-900">
+                  조직 구조
+                </TextHeading>
+              </div>
+              <div className="flex flex-col gap-2">{orgData.map((node, idx) => renderTree(node, `${idx}`))}</div>
             </Card>
           </div>
         </div>
