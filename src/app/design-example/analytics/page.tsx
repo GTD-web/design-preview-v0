@@ -35,6 +35,7 @@ const recentActivity = [
 
 export default function AnalyticsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState("6개월");
+  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; data: any } | null>(null);
 
   const totalUsers = chartData.reduce((sum, data) => sum + data.users, 0);
   const totalRevenue = chartData.reduce((sum, data) => sum + data.revenue, 0);
@@ -43,8 +44,12 @@ export default function AnalyticsPage() {
 
   // 간단한 차트 렌더링 (SVG 기반)
   const maxRevenue = Math.max(...chartData.map((d) => d.revenue));
-  const chartHeight = 200;
-  const chartWidth = 600;
+  const chartHeight = 300;
+  const chartWidth = 700;
+  const paddingX = 10;
+  const paddingY = 40;
+  const graphHeight = chartHeight - paddingY * 2;
+  const graphWidth = chartWidth - paddingX * 2;
 
   return (
     <div className="min-h-screen">
@@ -129,23 +134,23 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* 매출 차트 */}
           <div className="lg:col-span-2">
-            <Card className="p-lg">
-              <div className="flex items-center justify-between mb-lg">
+            <Card className="p-md h-full">
+              <div className="flex items-center justify-between mb-md">
                 <TextHeading size="lg">매출 추이</TextHeading>
                 <Badge color="primary">{selectedPeriod}</Badge>
               </div>
 
               {/* 간단한 SVG 차트 */}
-              <div className="overflow-x-auto">
-                <svg width={chartWidth} height={chartHeight} className="w-full">
+              <div className="overflow-x-auto -mx-md -mb-md relative flex-1">
+                <svg width={chartWidth} height={chartHeight + 50} viewBox={`0 0 ${chartWidth} ${chartHeight + 50}`} className="w-full">
                   {/* 그리드 라인 */}
                   {[0, 1, 2, 3, 4].map((i) => (
                     <line
                       key={i}
-                      x1="0"
-                      y1={chartHeight - (i * chartHeight) / 4}
-                      x2={chartWidth}
-                      y2={chartHeight - (i * chartHeight) / 4}
+                      x1={paddingX}
+                      y1={paddingY + (i * graphHeight) / 4}
+                      x2={paddingX + graphWidth}
+                      y2={paddingY + (i * graphHeight) / 4}
                       stroke="#e5e7eb"
                       strokeWidth="1"
                     />
@@ -157,24 +162,66 @@ export default function AnalyticsPage() {
                     stroke="var(--color-primary)"
                     strokeWidth="3"
                     points={chartData
-                      .map((data, i) => `${(i * chartWidth) / (chartData.length - 1)},${chartHeight - (data.revenue / maxRevenue) * chartHeight}`)
+                      .map(
+                        (data, i) =>
+                          `${paddingX + (i * graphWidth) / (chartData.length - 1)},${paddingY + graphHeight - (data.revenue / maxRevenue) * graphHeight}`
+                      )
                       .join(" ")}
                   />
 
                   {/* 데이터 포인트 */}
-                  {chartData.map((data, i) => (
-                    <circle
-                      key={i}
-                      cx={(i * chartWidth) / (chartData.length - 1)}
-                      cy={chartHeight - (data.revenue / maxRevenue) * chartHeight}
-                      r="4"
-                      fill="var(--color-primary)"
-                    />
-                  ))}
+                  {chartData.map((data, i) => {
+                    const x = paddingX + (i * graphWidth) / (chartData.length - 1);
+                    const y = paddingY + graphHeight - (data.revenue / maxRevenue) * graphHeight;
+
+                    return (
+                      <g key={i}>
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="5"
+                          fill="var(--color-primary)"
+                          onMouseEnter={(e) => {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setHoveredPoint({
+                              x: rect.left + rect.width / 2,
+                              y: rect.top,
+                              data: data,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredPoint(null)}
+                          style={{ cursor: "pointer" }}
+                        />
+                        {/* 호버 영역 확대 */}
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="15"
+                          fill="transparent"
+                          onMouseEnter={(e) => {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setHoveredPoint({
+                              x: rect.left + rect.width / 2,
+                              y: rect.top,
+                              data: data,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredPoint(null)}
+                          style={{ cursor: "pointer" }}
+                        />
+                      </g>
+                    );
+                  })}
 
                   {/* X축 라벨 */}
                   {chartData.map((data, i) => (
-                    <text key={i} x={(i * chartWidth) / (chartData.length - 1)} y={chartHeight + 20} textAnchor="middle" className="text-xs fill-gray-600">
+                    <text
+                      key={i}
+                      x={paddingX + (i * graphWidth) / (chartData.length - 1)}
+                      y={chartHeight + 25}
+                      textAnchor="middle"
+                      className="text-sm fill-gray-600"
+                    >
                       {data.month}
                     </text>
                   ))}
@@ -185,11 +232,11 @@ export default function AnalyticsPage() {
 
           {/* 실시간 활동 */}
           <div className="lg:col-span-1">
-            <Card className="p-lg">
+            <Card className="p-lg h-full flex flex-col">
               <TextHeading size="lg" className="mb-lg">
                 실시간 활동
               </TextHeading>
-              <div className="space-y-4">
+              <div className="space-y-1 overflow-y-auto flex-1">
                 {recentActivity.map((activity, index) => (
                   <div key={index} className="flex items-start gap-3 p-3 bg-surface/50 rounded-lg">
                     <div
@@ -204,8 +251,8 @@ export default function AnalyticsPage() {
                       }`}
                     />
                     <div className="flex-1 min-w-0">
-                      <TextValue className="truncate text-sm">{activity.message}</TextValue>
-                      <TextLabel className="text-gray-500 text-xs">{activity.time}</TextLabel>
+                      <TextValue className="text-sm block mb-1">{activity.message}</TextValue>
+                      <TextLabel className="text-gray-500 text-xs block">{activity.time}</TextLabel>
                     </div>
                     {activity.amount && (
                       <TextValue size="sm" weight="semibold" className="text-primary">
@@ -268,6 +315,26 @@ export default function AnalyticsPage() {
             </table>
           </div>
         </Card>
+
+        {/* 툴팁 - 카드 밖으로 이동 */}
+        {hoveredPoint && (
+          <div
+            className="fixed bg-surface border border-border rounded-lg shadow-lg p-3 pointer-events-none min-w-[120px]"
+            style={{
+              left: `${hoveredPoint.x}px`,
+              top: `${hoveredPoint.y + 20}px`,
+              transform: "translateX(-50%)",
+              zIndex: 99999,
+            }}
+          >
+            <div className="text-sm font-medium text-primary mb-1">{hoveredPoint.data.month}</div>
+            <div className="text-lg font-semibold text-primary mb-2">{hoveredPoint.data.revenue.toLocaleString()}원</div>
+            <div className="text-xs text-gray-500 space-y-1">
+              <div>사용자: {hoveredPoint.data.users.toLocaleString()}명</div>
+              <div>주문: {hoveredPoint.data.orders}건</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

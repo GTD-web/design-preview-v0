@@ -274,7 +274,7 @@ export default function EcommercePage() {
                   <th className="text-left py-3 px-4 font-medium text-sm text-muted">상태</th>
                   <th className="text-left py-3 px-4 font-medium text-sm text-muted">평점</th>
                   <th className="text-left py-3 px-4 font-medium text-sm text-muted">판매량</th>
-                  <th className="text-right py-3 px-4 font-medium text-sm text-muted">액션</th>
+                  <th className="text-center py-3 px-4 font-medium text-sm text-muted">액션</th>
                 </tr>
               </thead>
               <tbody>
@@ -337,8 +337,8 @@ export default function EcommercePage() {
                     <td className="py-3 px-4">
                       <TextValue size="sm">{product.sales}개</TextValue>
                     </td>
-                    <td className="py-3 px-4 text-right">
-                      <HStack gap="xs" justify="end">
+                    <td className="py-3 px-4 text-center">
+                      <HStack gap="xs" justify="center">
                         <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()} className="text-xs">
                           수정
                         </Button>
