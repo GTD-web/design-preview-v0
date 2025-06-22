@@ -6,9 +6,14 @@ import { Drawer } from "@/packages/design-system/components/Drawer";
 import { Input } from "@/packages/design-system/components/Input";
 import { Select } from "@/packages/design-system/components/Select";
 import { HStack } from "@/packages/design-system/components/Stack";
-import { TextHeading, TextLabel, TextValue } from "@/packages/design-system/components/Text";
+import {
+  TextHeading,
+  TextLabel,
+  TextValue,
+} from "@/packages/design-system/components/Text";
 import { useState } from "react";
 import Badge from "../../../../packages/design-system/components/Badge";
+import Image from "next/image";
 
 // 상품 데이터
 const products = [
@@ -22,8 +27,10 @@ const products = [
     rating: 4.8,
     sales: 1234,
     image: "🎧",
-    imageUrl: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop&crop=center",
-    description: "고음질 무선 이어폰으로, 노이즈 캔슬링 기능이 탑재되어 있습니다. 최대 30시간 재생 가능하며, IPX4 방수 등급을 가지고 있습니다.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop&crop=center",
+    description:
+      "고음질 무선 이어폰으로, 노이즈 캔슬링 기능이 탑재되어 있습니다. 최대 30시간 재생 가능하며, IPX4 방수 등급을 가지고 있습니다.",
     features: ["노이즈 캔슬링", "30시간 재생", "IPX4 방수", "빠른 충전"],
     colors: ["블랙", "화이트", "블루"],
   },
@@ -37,8 +44,10 @@ const products = [
     rating: 4.6,
     sales: 856,
     image: "⌚",
-    imageUrl: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop&crop=center",
-    description: "심박수 모니터링, GPS 추적, 운동 모드 등 다양한 건강 관리 기능을 제공하는 스마트워치입니다.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100&h=100&fit=crop&crop=center",
+    description:
+      "심박수 모니터링, GPS 추적, 운동 모드 등 다양한 건강 관리 기능을 제공하는 스마트워치입니다.",
     features: ["심박수 모니터링", "GPS 추적", "운동 모드", "7일 배터리"],
     colors: ["실버", "블랙", "로즈골드"],
   },
@@ -52,8 +61,10 @@ const products = [
     rating: 4.2,
     sales: 234,
     image: "💻",
-    imageUrl: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=100&h=100&fit=crop&crop=center",
-    description: "노트북을 더 편안한 각도로 사용할 수 있게 해주는 알루미늄 스탠드입니다.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=100&h=100&fit=crop&crop=center",
+    description:
+      "노트북을 더 편안한 각도로 사용할 수 있게 해주는 알루미늄 스탠드입니다.",
     features: ["알루미늄 소재", "조절 가능한 각도", "휴대용", "안정적인 지지"],
     colors: ["실버", "스페이스그레이"],
   },
@@ -67,8 +78,10 @@ const products = [
     rating: 4.5,
     sales: 567,
     image: "🔊",
-    imageUrl: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=100&h=100&fit=crop&crop=center",
-    description: "360도 사운드를 제공하는 휴대용 블루투스 스피커입니다. IPX7 방수 등급으로 야외에서도 안전하게 사용할 수 있습니다.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=100&h=100&fit=crop&crop=center",
+    description:
+      "360도 사운드를 제공하는 휴대용 블루투스 스피커입니다. IPX7 방수 등급으로 야외에서도 안전하게 사용할 수 있습니다.",
     features: ["360도 사운드", "IPX7 방수", "20시간 재생", "파티 모드"],
     colors: ["블랙", "레드", "블루", "옐로우"],
   },
@@ -82,8 +95,10 @@ const products = [
     rating: 4.3,
     sales: 789,
     image: "🔋",
-    imageUrl: "https://images.unsplash.com/photo-1601972599720-36938d4ecd31?w=100&h=100&fit=crop&crop=center",
-    description: "15W 고속 무선 충전을 지원하는 충전 패드입니다. 다양한 기기와 호환되며 LED 표시등이 있어 충전 상태를 쉽게 확인할 수 있습니다.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1601972599720-36938d4ecd31?w=100&h=100&fit=crop&crop=center",
+    description:
+      "15W 고속 무선 충전을 지원하는 충전 패드입니다. 다양한 기기와 호환되며 LED 표시등이 있어 충전 상태를 쉽게 확인할 수 있습니다.",
     features: ["15W 고속 충전", "LED 표시등", "다중 기기 호환", "과열 보호"],
     colors: ["화이트", "블랙"],
   },
@@ -99,14 +114,21 @@ export default function EcommercePage() {
   const [sortBy, setSortBy] = useState("name");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [imageErrors, setImageErrors] = useState<{ [key: number]: boolean }>(
+    {}
+  );
+  const [drawerImageError, setDrawerImageError] = useState(false);
 
   const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategory === "전체" || product.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "전체" || product.category === selectedCategory;
     const matchesStatus =
       selectedStatus === "전체" ||
       (selectedStatus === "판매중" && product.status === "active") ||
       (selectedStatus === "품절" && product.status === "out_of_stock");
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
     return matchesCategory && matchesStatus && matchesSearch;
   });
@@ -124,7 +146,10 @@ export default function EcommercePage() {
     }
   });
 
-  const totalRevenue = products.reduce((sum, product) => sum + product.price * product.sales, 0);
+  const totalRevenue = products.reduce(
+    (sum, product) => sum + product.price * product.sales,
+    0
+  );
   const totalProducts = products.length;
   const activeProducts = products.filter((p) => p.status === "active").length;
   const totalSales = products.reduce((sum, product) => sum + product.sales, 0);
@@ -132,6 +157,7 @@ export default function EcommercePage() {
   const handleProductClick = (product: any) => {
     setSelectedProduct(product);
     setIsDrawerOpen(true);
+    setDrawerImageError(false);
   };
 
   const closeDrawer = () => {
@@ -148,7 +174,9 @@ export default function EcommercePage() {
             <TextHeading size="2xl" weight="semibold">
               상품 관리
             </TextHeading>
-            <TextLabel className="mt-xs">총 {sortedProducts.length}개의 상품</TextLabel>
+            <TextLabel className="mt-xs">
+              총 {sortedProducts.length}개의 상품
+            </TextLabel>
           </div>
           <Button className="w-fit" gradient gradientType="primary">
             + 새 상품 추가
@@ -160,11 +188,18 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">총 매출</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  총 매출
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {totalRevenue.toLocaleString()}원
                 </TextValue>
-                <TextLabel className="text-success text-sm block">+8.2%</TextLabel>
+                <TextLabel className="text-success text-sm block">
+                  +8.2%
+                </TextLabel>
               </div>
               <div className="text-3xl">💰</div>
             </div>
@@ -173,11 +208,18 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">총 상품</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  총 상품
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {totalProducts}개
                 </TextValue>
-                <TextLabel className="text-success text-sm block">+5.3%</TextLabel>
+                <TextLabel className="text-success text-sm block">
+                  +5.3%
+                </TextLabel>
               </div>
               <div className="text-3xl">📦</div>
             </div>
@@ -186,11 +228,18 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">판매중</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  판매중
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {activeProducts}개
                 </TextValue>
-                <TextLabel className="text-success text-sm block">+12.5%</TextLabel>
+                <TextLabel className="text-success text-sm block">
+                  +12.5%
+                </TextLabel>
               </div>
               <div className="text-3xl">✅</div>
             </div>
@@ -199,11 +248,18 @@ export default function EcommercePage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">총 판매량</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  총 판매량
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {totalSales.toLocaleString()}개
                 </TextValue>
-                <TextLabel className="text-success text-sm block">+15.7%</TextLabel>
+                <TextLabel className="text-success text-sm block">
+                  +15.7%
+                </TextLabel>
               </div>
               <div className="text-3xl">📊</div>
             </div>
@@ -220,8 +276,18 @@ export default function EcommercePage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 leftIcon={
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
                   </svg>
                 }
                 clearable="icon"
@@ -267,14 +333,30 @@ export default function EcommercePage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">상품</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">카테고리</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">가격</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">재고</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">상태</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">평점</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">판매량</th>
-                  <th className="text-center py-3 px-4 font-medium text-sm text-muted">액션</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">
+                    상품
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">
+                    카테고리
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">
+                    가격
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">
+                    재고
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">
+                    상태
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">
+                    평점
+                  </th>
+                  <th className="text-left py-3 px-4 font-medium text-sm text-muted">
+                    판매량
+                  </th>
+                  <th className="text-center py-3 px-4 font-medium text-sm text-muted">
+                    액션
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -287,18 +369,23 @@ export default function EcommercePage() {
                     <td className="py-3 px-4">
                       <HStack gap="md" align="center">
                         <div className="w-12 h-12 rounded-lg overflow-hidden bg-surface flex items-center justify-center">
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              // 이미지 로드 실패시 이모지로 대체
-                              const target = e.target as HTMLImageElement;
-                              target.style.display = "none";
-                              target.nextElementSibling!.textContent = product.image;
-                            }}
-                          />
-                          <span className="text-2xl hidden">{product.image}</span>
+                          {imageErrors[product.id] ? (
+                            <span className="text-2xl">{product.image}</span>
+                          ) : (
+                            <Image
+                              src={product.imageUrl}
+                              alt={product.name}
+                              width={48}
+                              height={48}
+                              className="w-full h-full object-cover"
+                              onError={() =>
+                                setImageErrors((prev) => ({
+                                  ...prev,
+                                  [product.id]: true,
+                                }))
+                              }
+                            />
+                          )}
                         </div>
                         <div>
                           <TextValue weight="semibold" className="block">
@@ -339,10 +426,20 @@ export default function EcommercePage() {
                     </td>
                     <td className="py-3 px-4 text-center">
                       <HStack gap="xs" justify="center">
-                        <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()} className="text-xs">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-xs"
+                        >
                           수정
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()} className="text-xs text-danger hover:text-danger">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-xs text-danger hover:text-danger"
+                        >
                           삭제
                         </Button>
                       </HStack>
@@ -374,19 +471,19 @@ export default function EcommercePage() {
       >
         {/* 상품 이미지 */}
         <div className="text-center mb-lg">
-          <div className="w-32 h-32 rounded-xl overflow-hidden bg-surface mx-auto mb-md">
-            <img
-              src={selectedProduct?.imageUrl}
-              alt={selectedProduct?.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                // 이미지 로드 실패시 이모지로 대체
-                const target = e.target as HTMLImageElement;
-                target.style.display = "none";
-                target.nextElementSibling!.textContent = selectedProduct?.image;
-              }}
-            />
-            <span className="text-6xl items-center justify-center w-full h-full">{selectedProduct?.image}</span>
+          <div className="w-32 h-32 rounded-xl overflow-hidden bg-surface mx-auto mb-md flex items-center justify-center">
+            {drawerImageError || !selectedProduct?.imageUrl ? (
+              <span className="text-6xl">{selectedProduct?.image}</span>
+            ) : (
+              <Image
+                src={selectedProduct.imageUrl}
+                alt={selectedProduct.name}
+                width={128}
+                height={128}
+                className="w-full h-full object-cover"
+                onError={() => setDrawerImageError(true)}
+              />
+            )}
           </div>
         </div>
 
@@ -408,7 +505,9 @@ export default function EcommercePage() {
         <div>
           <TextLabel className="mb-xs block">상태</TextLabel>
           <div className="flex flex-col gap-xs">
-            <TextValue className="block">{selectedProduct?.status === "active" ? "판매중" : "품절"}</TextValue>
+            <TextValue className="block">
+              {selectedProduct?.status === "active" ? "판매중" : "품절"}
+            </TextValue>
           </div>
         </div>
 
@@ -431,7 +530,9 @@ export default function EcommercePage() {
 
         <div>
           <TextLabel className="mb-xs block">설명</TextLabel>
-          <TextValue className="text-sm leading-relaxed block">{selectedProduct?.description}</TextValue>
+          <TextValue className="text-sm leading-relaxed block">
+            {selectedProduct?.description}
+          </TextValue>
         </div>
 
         <div>
