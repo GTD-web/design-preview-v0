@@ -248,12 +248,11 @@ export function Sidebar({
                         type="button"
                         onClick={() => router.push(item.path)}
                         className={`
-                          group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out
-                          hover:bg-neutral-100 dark:hover:bg-neutral-800 w-10 mx-auto
+                          group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out w-10 mx-auto
                           ${
                             activePath === item.path
                               ? "bg-neutral-800 dark:bg-neutral-700"
-                              : "text-neutral-600 dark:text-neutral-400"
+                              : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                           }
                         `}
                         title={item.title}
@@ -301,14 +300,14 @@ export function Sidebar({
         <aside
           className={`
             fixed top-0 left-0 h-full bg-surface z-50
-            transform transition-transform duration-500 ease-out
+            transform transition-transform duration-300 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0
             shadow-lg
             ${width} ${className}
           `}
           style={{
-            transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
           <div className="flex flex-col h-full">
@@ -374,11 +373,10 @@ export function Sidebar({
                           onClick={() => router.push(item.path)}
                           className={`
                             group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out
-                            hover:bg-neutral-100 dark:hover:bg-neutral-800
                             ${
                               activePath === item.path
                                 ? "bg-neutral-800 dark:bg-neutral-700"
-                                : "text-neutral-600 dark:text-neutral-400"
+                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                             }
                           `}
                         >
@@ -453,9 +451,9 @@ export function Sidebar({
                 onClick={handleProfileClick}
               >
                 {/* 사용자 프로필 정보 - 첫 번째 줄 */}
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between ">
                   <div className="flex-1 min-w-0 transition-all duration-300">
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">
+                    <p className="text-sm font-medium text-[var(--foreground)] truncate">
                       {user?.name || "사용자"}
                     </p>
                   </div>
