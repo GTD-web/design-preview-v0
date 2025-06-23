@@ -633,19 +633,19 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-primary":
-          "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-600) 100%)",
+          "linear-gradient(135deg, var(--color-primary) 0%, color-mix(in srgb, var(--color-primary), black 15%) 100%)",
         "gradient-secondary":
-          "linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-600) 100%)",
+          "linear-gradient(135deg, var(--color-secondary) 0%, color-mix(in srgb, var(--color-secondary), black 15%) 100%)",
         "gradient-accent":
-          "linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-600) 100%)",
+          "linear-gradient(135deg, var(--color-accent) 0%, color-mix(in srgb, var(--color-accent), black 15%) 100%)",
         "gradient-success":
-          "linear-gradient(135deg, var(--color-success) 0%, var(--color-success-600) 100%)",
+          "linear-gradient(135deg, var(--color-success) 0%, color-mix(in srgb, var(--color-success), black 15%) 100%)",
         "gradient-warning":
-          "linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-600) 100%)",
+          "linear-gradient(135deg, var(--color-warning) 0%, color-mix(in srgb, var(--color-warning), black 15%) 100%)",
         "gradient-danger":
-          "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-600) 100%)",
+          "linear-gradient(135deg, var(--color-danger) 0%, color-mix(in srgb, var(--color-danger), black 15%) 100%)",
         "gradient-info":
-          "linear-gradient(135deg, var(--color-info) 0%, var(--color-info-600) 100%)",
+          "linear-gradient(135deg, var(--color-info) 0%, color-mix(in srgb, var(--color-info), black 15%) 100%)",
         "gradient-blue": "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
         "gradient-purple": "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
         "gradient-pink": "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
