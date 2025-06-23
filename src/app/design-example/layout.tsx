@@ -3,7 +3,10 @@
 import localFont from "next/font/local";
 import React, { useState } from "react";
 import "../globals.css";
-import { useDesignSettings, DesignSettingsProvider } from "@/packages/design-system/hooks/useDesignSettings";
+import {
+  useDesignSettings,
+  DesignSettingsProvider,
+} from "@/packages/design-system/hooks/useDesignSettings";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
 import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
 import { Sidebar } from "@/packages/design-system/components/Sidebar";
@@ -32,9 +35,24 @@ const sidebarMenuGroups = [
         title: "디자인토큰",
         path: "/design-example",
         icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.5 12a7.5 7.5 0 0015 0 7.5 7.5 0 00-15 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.5v15m7.5-7.5h-15" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M4.5 12a7.5 7.5 0 0015 0 7.5 7.5 0 00-15 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
           </svg>
         ),
       },
@@ -47,7 +65,12 @@ const sidebarMenuGroups = [
         title: "대시보드",
         path: "/design-example/dashboard",
         icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -61,7 +84,12 @@ const sidebarMenuGroups = [
         title: "이커머스",
         path: "/design-example/ecommerce",
         icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -75,7 +103,12 @@ const sidebarMenuGroups = [
         title: "분석",
         path: "/design-example/analytics",
         icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -89,8 +122,18 @@ const sidebarMenuGroups = [
         title: "업무관리",
         path: "/design-example/task-management",
         icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         ),
       },
@@ -98,7 +141,12 @@ const sidebarMenuGroups = [
         title: "사용자 프로필",
         path: "/design-example/user-profile",
         icon: (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -189,14 +237,27 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
         showModeToggle={true}
         showNotification={true}
         showSettings={true}
+        // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
+        // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
+        // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
+        logoText="커스텀 시스템"
+        logoTextShort="CS"
       />
 
       {/* 메인 콘텐츠 */}
-      <div className={`transition-all duration-500 ease-out ${sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"}`}>
+      <div
+        className={`transition-all duration-500 ease-out ${
+          sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
+        }`}
+      >
         {/* 모바일 헤더 */}
         <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(true)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(true)}
+            >
               ☰
             </Button>
             <span className="font-semibold">디자인 예제</span>
@@ -206,7 +267,11 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
 
         {/* 콘텐츠 영역 */}
         <div className="lg:pt-0 pt-16">
-          <LayoutContainer type={layoutType} maxWidth={maxWidth} hasSidebar={true}>
+          <LayoutContainer
+            type={layoutType}
+            maxWidth={maxWidth}
+            hasSidebar={true}
+          >
             {children}
           </LayoutContainer>
         </div>
@@ -240,7 +305,9 @@ export default function DesignExampleLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--color-background)]`}>
+    <div
+      className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--color-background)]`}
+    >
       <DesignSettingsProvider>
         <DesignExampleContent>{children}</DesignExampleContent>
       </DesignSettingsProvider>
