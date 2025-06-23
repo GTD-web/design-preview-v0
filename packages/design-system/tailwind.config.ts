@@ -1,7 +1,11 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@lumir-company/design-system-v0/dist/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
   safelist: [
     ...[
       "neutral",
@@ -22,7 +26,11 @@ const config: Config = {
       "violet",
       "fuchsia",
       "rose",
-    ].flatMap((color) => [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map((step) => `bg-${color}-${step}`)),
+    ].flatMap((color) =>
+      [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map(
+        (step) => `bg-${color}-${step}`
+      )
+    ),
     ...[
       "primary",
       "secondary",
@@ -622,14 +630,22 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "gradient-primary": "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-600) 100%)",
-        "gradient-secondary": "linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-600) 100%)",
-        "gradient-accent": "linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-600) 100%)",
-        "gradient-success": "linear-gradient(135deg, var(--color-success) 0%, var(--color-success-600) 100%)",
-        "gradient-warning": "linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-600) 100%)",
-        "gradient-danger": "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-600) 100%)",
-        "gradient-info": "linear-gradient(135deg, var(--color-info) 0%, var(--color-info-600) 100%)",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-primary":
+          "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-600) 100%)",
+        "gradient-secondary":
+          "linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-600) 100%)",
+        "gradient-accent":
+          "linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-600) 100%)",
+        "gradient-success":
+          "linear-gradient(135deg, var(--color-success) 0%, var(--color-success-600) 100%)",
+        "gradient-warning":
+          "linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-600) 100%)",
+        "gradient-danger":
+          "linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-600) 100%)",
+        "gradient-info":
+          "linear-gradient(135deg, var(--color-info) 0%, var(--color-info-600) 100%)",
         "gradient-blue": "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
         "gradient-purple": "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
         "gradient-pink": "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
@@ -657,7 +673,8 @@ const config: Config = {
         "gradient-fire": "linear-gradient(135deg, #ef4444 0%, #f59e42 100%)",
         "gradient-aurora": "linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)",
         "gradient-cosmic": "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
-        "gradient-midnight": "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
+        "gradient-midnight":
+          "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
         "gradient-dawn": "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
         "gradient-dusk": "linear-gradient(135deg, #fecdd3 0%, #fda4af 100%)",
         "gradient-spring": "linear-gradient(135deg, #86efac 0%, #4ade80 100%)",
