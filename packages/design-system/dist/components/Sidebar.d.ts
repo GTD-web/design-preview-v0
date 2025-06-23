@@ -18,6 +18,12 @@ interface SidebarMenuGroup {
  * Sidebar 컴포넌트 Props 인터페이스
  */
 interface SidebarProps {
+    /** 로고 이미지 URL */
+    logoUrl?: string;
+    /** 로고 텍스트 (전체) */
+    logoText?: string;
+    /** 로고 텍스트 (축약) */
+    logoTextShort?: string;
     /** 사이드바 열림/닫힘 상태 */
     isOpen?: boolean;
     /** 사이드바 닫기 함수 */
@@ -65,5 +71,5 @@ interface SidebarProps {
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, }: SidebarProps): React.JSX.Element;
+export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, }: SidebarProps): React.JSX.Element;
 export {};

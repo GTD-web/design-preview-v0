@@ -14,7 +14,7 @@ import { Button } from "./Button";
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, }) {
+export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", }) {
     const router = useRouter();
     const [collapsedGroups, setCollapsedGroups] = useState(new Set());
     const [showProfilePopup, setShowProfilePopup] = useState(false);
@@ -60,13 +60,15 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
         menuGroups.forEach((group) => {
             const ref = groupRefs.current[group.title];
             if (ref) {
-                newHeights[group.title] = collapsedGroups.has(group.title) ? 0 : ref.scrollHeight;
+                newHeights[group.title] = collapsedGroups.has(group.title)
+                    ? 0
+                    : ref.scrollHeight;
             }
         });
         setGroupHeights(newHeights);
     }, [collapsedGroups, menuGroups]);
     return (React.createElement(React.Fragment, null,
-        isOpen && React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose }),
+        isOpen && (React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose })),
         isCollapsed && (React.createElement("aside", { className: `
             fixed top-0 left-0 h-full bg-surface border-r-4 border-neutral-300 dark:border-neutral-600 z-50
             transform transition-all duration-500 ease-out
@@ -80,8 +82,8 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
             React.createElement("div", { className: "flex flex-col h-full border-r-2 border-neutral-300 dark:border-neutral-600" },
                 React.createElement("div", { className: "p-3 border-b border-border" },
                     React.createElement("div", { className: "flex flex-col items-center gap-3" },
-                        React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
-                            React.createElement("span", { className: "text-white font-bold text-base" }, "DS")),
+                        logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "w-10 h-10 object-contain" })) : (React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
+                            React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort))),
                         React.createElement(Button, { variant: "ghost", size: "sm", onClick: onToggleCollapse, className: "p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200", title: "\uC0AC\uC774\uB4DC\uBC14 \uD3BC\uCE58\uAE30" },
                             React.createElement("svg", { className: "w-4 h-4 transition-transform duration-300", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M13 5l7 7-7 7M5 5l7 7-7 7" }))))),
@@ -89,7 +91,9 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                     React.createElement("div", { className: "flex flex-col gap-sm items-center justify-start" }, menuGroups.map((group, groupIndex) => (React.createElement("div", { key: group.title, className: `w-full ${groupIndex === 0 ? "mt-2" : ""}` }, group.items.map((item) => (React.createElement("button", { key: item.path, type: "button", onClick: () => router.push(item.path), className: `
                           group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out
                           hover:bg-neutral-100 dark:hover:bg-neutral-800 w-10 mx-auto
-                          ${activePath === item.path ? "bg-neutral-800 dark:bg-neutral-700" : "text-neutral-600 dark:text-neutral-400"}
+                          ${activePath === item.path
+                            ? "bg-neutral-800 dark:bg-neutral-700"
+                            : "text-neutral-600 dark:text-neutral-400"}
                         `, title: item.title },
                         React.createElement("div", { className: `
                           flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
@@ -115,10 +119,10 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
             React.createElement("div", { className: "flex flex-col h-full border-r-2 border-neutral-300 dark:border-neutral-600" },
                 React.createElement("div", { className: "p-4 border-b border-border" },
                     React.createElement("div", { className: "flex items-center justify-between" },
-                        React.createElement("div", { className: "flex items-center gap-3" },
+                        logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "h-10 object-contain" })) : (React.createElement("div", { className: "flex items-center gap-3" },
                             React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
-                                React.createElement("span", { className: "text-white font-bold text-base" }, "DS")),
-                            React.createElement("span", { className: "font-semibold text-lg transition-all duration-300" }, "\uB514\uC790\uC778\uC2DC\uC2A4\uD15C")),
+                                React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort)),
+                            React.createElement("span", { className: "font-semibold text-lg transition-all duration-300" }, logoText))),
                         React.createElement(Button, { variant: "ghost", size: "sm", onClick: onToggleCollapse, className: "p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200", title: "\uC0AC\uC774\uB4DC\uBC14 \uC811\uAE30" },
                             React.createElement("svg", { className: "w-4 h-4 transition-transform duration-300", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M11 19l-7-7 7-7m8 14l-7-7 7-7" }))))),
@@ -128,7 +132,9 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                         React.createElement(VStack, { gap: "sm", align: "stretch" }, group.items.map((item) => (React.createElement("button", { key: item.path, type: "button", onClick: () => router.push(item.path), className: `
                             group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out
                             hover:bg-neutral-100 dark:hover:bg-neutral-800
-                            ${activePath === item.path ? "bg-neutral-800 dark:bg-neutral-700" : "text-neutral-600 dark:text-neutral-400"}
+                            ${activePath === item.path
+                                ? "bg-neutral-800 dark:bg-neutral-700"
+                                : "text-neutral-600 dark:text-neutral-400"}
                           ` },
                             React.createElement("div", { className: `
                             flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
@@ -136,14 +142,18 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                                     ? "text-white"
                                     : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"}
                           ` }, item.icon),
-                            React.createElement("span", { className: `font-medium transition-all duration-200 ease-in-out ${activePath === item.path ? "text-white" : "text-neutral-600 dark:text-neutral-400"}` }, item.title)))))))))),
-                showModeToggle && (React.createElement("div", { className: "p-4 border-t border-border" },
+                            React.createElement("span", { className: `font-medium transition-all duration-200 ease-in-out ${activePath === item.path
+                                    ? "text-white"
+                                    : "text-neutral-600 dark:text-neutral-400"}` }, item.title)))))))))),
+                showModeToggle && (React.createElement("div", { className: "p-4 border-b border-t" },
                     React.createElement(Button, { variant: "ghost", size: "sm", className: "w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group", onClick: handleModeToggle },
                         React.createElement("div", { className: "flex items-center justify-between w-full" },
-                            React.createElement("span", { className: "text-sm font-medium" }, isAdminMode ? "사용자 화면으로 이동" : "관리자 화면으로 이동"),
+                            React.createElement("span", { className: "text-sm font-medium" }, isAdminMode
+                                ? "사용자 화면으로 이동"
+                                : "관리자 화면으로 이동"),
                             React.createElement("svg", { width: "16", height: "16", fill: "none", viewBox: "0 0 24 24", className: "text-muted group-hover:text-primary transition-colors duration-200" },
                                 React.createElement("path", { d: "M9 5l7 7-7 7", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })))))),
-                React.createElement("div", { className: "p-4 border-t border-border" },
+                React.createElement("div", { className: "p-4" },
                     React.createElement("div", { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer", onClick: handleProfileClick },
                         React.createElement("div", { className: "flex items-center justify-between mb-3" },
                             React.createElement("div", { className: "flex-1 min-w-0 transition-all duration-300" },
@@ -205,7 +215,9 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                                         React.createElement("div", { className: "flex items-center w-full" },
                                             React.createElement("svg", { className: "w-5 h-5 mr-3 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" })),
-                                            React.createElement("span", { className: "text-left" }, isAdminMode ? "사용자 화면으로 이동" : "관리자 화면으로 이동")))),
+                                            React.createElement("span", { className: "text-left" }, isAdminMode
+                                                ? "사용자 화면으로 이동"
+                                                : "관리자 화면으로 이동")))),
                                     React.createElement(Button, { variant: "ghost", size: "lg", className: "w-full text-left text-danger hover:bg-danger/10", onClick: () => {
                                             onLogout?.();
                                             setShowProfilePopup(false);
