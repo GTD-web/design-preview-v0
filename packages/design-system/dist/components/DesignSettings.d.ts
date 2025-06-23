@@ -38,6 +38,10 @@ interface DesignSettingsProps {
     }) => void;
     /** 그리드 갭 변경 시 호출되는 콜백 함수 */
     onGapChange: (gap: number) => void;
+    /** 레이아웃 타입 변경 시 호출되는 콜백 함수 */
+    onLayoutTypeChange: (layoutType: "full" | "centered") => void;
+    /** 최대 너비 변경 시 호출되는 콜백 함수 */
+    onMaxWidthChange: (maxWidth: string) => void;
     /** 현재 선택된 폰트 */
     currentFont: string;
     /** 현재 선택된 테마 */
@@ -56,6 +60,10 @@ interface DesignSettingsProps {
     };
     /** 현재 그리드 갭 값 (px) */
     currentGap: number;
+    /** 현재 레이아웃 타입 */
+    currentLayoutType: "full" | "centered";
+    /** 현재 최대 너비 */
+    currentMaxWidth: string;
 }
 /**
  * 디자인 설정을 실시간으로 변경할 수 있는 플로팅 위젯 컴포넌트
@@ -63,10 +71,7 @@ interface DesignSettingsProps {
  * 기능:
  * - 테마 변경 (라이트, 다크, 드라큘라, 파스텔, CI 테마)
  * - 폰트 변경 (Noto Sans KR, Pretendard, System Sans)
- * - 라운드 값 조정 (0-32px)
- * - 폰트 크기 조정 (12-24px)
- * - 기본 스페이싱 조정 (2-32px)
- * - 그리드 갭 조정 (0-64px)
+ * - 레이아웃 타입 변경
  *
  * UI 특징:
  * - 우측 하단에 고정된 플로팅 버튼
@@ -74,5 +79,5 @@ interface DesignSettingsProps {
  * - 바깥 영역 클릭 시 자동으로 닫힘
  * - 반응형 디자인 (모바일에서 최대 90vw)
  */
-export declare function DesignSettings({ onFontChange, onThemeChange, onRadiusChange, onFontSizeChange, onSpacingChange, onGapChange, currentFont, currentTheme, currentRadius, currentFontSize, currentSpacing, currentGap, }: DesignSettingsProps): React.JSX.Element;
+export declare function DesignSettings({ onFontChange, onThemeChange, onRadiusChange, onFontSizeChange, onSpacingChange, onGapChange, onLayoutTypeChange, onMaxWidthChange, currentFont, currentTheme, currentRadius, currentFontSize, currentSpacing, currentGap, currentLayoutType, currentMaxWidth, }: DesignSettingsProps): React.JSX.Element;
 export {};

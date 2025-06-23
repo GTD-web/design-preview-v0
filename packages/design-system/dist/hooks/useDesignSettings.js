@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { fonts, themes } from "../components/DesignSettings";
 /**
- * 디자인 설정 상태 관리 커스텀 훅
+ * 디자인 설정 컨텍스트 생성
+ */
+const DesignSettingsContext = createContext(undefined);
+/**
+ * 디자인 설정 프로바이더 컴포넌트
  *
  * 기능:
  * - 폰트 변경 및 CSS 클래스 적용
@@ -10,47 +14,89 @@ import { fonts, themes } from "../components/DesignSettings";
  * - 폰트 크기 변경 및 CSS 변수 설정
  * - 스페이싱 변경 및 CSS 변수 설정
  * - 그리드 갭 변경 및 CSS 변수 설정
- *
- * @returns 디자인 설정 상태와 변경 함수들
  */
-export function useDesignSettings() {
+export function DesignSettingsProvider({ children }) {
     // 폰트 설정
-    const [font, setFont] = useState("noto");
+    const [font, setFont] = useState(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("design-font") || "noto";
+        }
+        return "noto";
+    });
     useEffect(() => {
         // 기존 폰트 클래스들 제거
         document.body.classList.remove("font-noto", "font-pretendard", "font-system");
         // 새로운 폰트 클래스 추가
         const selectedFont = fonts.find((f) => f.key === font);
         document.body.classList.add(selectedFont?.className || "font-noto");
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-font", font);
+        }
     }, [font]);
     // 테마 설정
-    const [theme, setTheme] = useState("light");
+    const [theme, setTheme] = useState(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("design-theme") || "light";
+        }
+        return "light";
+    });
     useEffect(() => {
         // 기존 테마 클래스들 제거
-        document.body.classList.remove("theme-dark", "theme-dracula", "theme-pastel", "theme-ci");
+        document.body.classList.remove("theme-dark", "theme-dracula", "theme-pastel", "theme-ci", "theme-github", "theme-midnight", "theme-ocean", "theme-forest", "theme-sunset", "theme-aurora", "theme-cosmic");
         // 라이트 테마가 아닌 경우에만 테마 클래스 추가
         if (theme !== "light") {
             const selectedTheme = themes.find((t) => t.key === theme);
             document.body.classList.add(selectedTheme?.className || "");
         }
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-theme", theme);
+        }
     }, [theme]);
     // 라운드 값 설정
-    const [radius, setRadius] = useState(8);
+    const [radius, setRadius] = useState(() => {
+        if (typeof window !== "undefined") {
+            return parseInt(localStorage.getItem("design-radius") || "8", 10);
+        }
+        return 8;
+    });
     useEffect(() => {
         document.body.style.setProperty("--radius", `${radius}px`);
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-radius", radius.toString());
+        }
     }, [radius]);
     // 폰트 크기 설정
-    const [fontSize, setFontSize] = useState(16);
+    const [fontSize, setFontSize] = useState(() => {
+        if (typeof window !== "undefined") {
+            return parseInt(localStorage.getItem("design-fontSize") || "16", 10);
+        }
+        return 16;
+    });
     useEffect(() => {
         document.body.style.setProperty("--font-size-base", `${fontSize}px`);
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-fontSize", fontSize.toString());
+        }
     }, [fontSize]);
     // 스페이싱 설정
-    const [spacing, setSpacing] = useState({
-        xs: 4, // px
-        sm: 8,
-        md: 16,
-        lg: 32,
-        xl: 64,
+    const [spacing, setSpacing] = useState(() => {
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("design-spacing");
+            if (saved) {
+                return JSON.parse(saved);
+            }
+        }
+        return {
+            xs: 4, // px
+            sm: 8,
+            md: 16,
+            lg: 32,
+            xl: 64,
+        };
     });
     useEffect(() => {
         // px를 rem으로 변환하여 CSS 변수 설정 (16px = 1rem 기준)
@@ -59,13 +105,55 @@ export function useDesignSettings() {
         document.body.style.setProperty("--spacing-md", `${spacing.md / 16}rem`);
         document.body.style.setProperty("--spacing-lg", `${spacing.lg / 16}rem`);
         document.body.style.setProperty("--spacing-xl", `${spacing.xl / 16}rem`);
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-spacing", JSON.stringify(spacing));
+        }
     }, [spacing]);
     // 그리드 갭 설정
-    const [gap, setGap] = useState(24); // px 단위, 기본값 24px(1.5rem)
+    const [gap, setGap] = useState(() => {
+        if (typeof window !== "undefined") {
+            return parseInt(localStorage.getItem("design-gap") || "24", 10);
+        }
+        return 24; // px 단위, 기본값 24px(1.5rem)
+    });
     useEffect(() => {
         document.body.style.setProperty("--grid-gutter", `${gap / 16}rem`);
+        document.body.style.setProperty("--flex-gap", `${gap / 16}rem`);
+        // 갭 변경 시 spacing-lg도 함께 업데이트 (사이드바 카드 간격용)
+        document.body.style.setProperty("--spacing-lg", `${gap / 16}rem`);
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-gap", gap.toString());
+        }
     }, [gap]);
-    return {
+    // 레이아웃 타입 설정
+    const [layoutType, setLayoutType] = useState(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("design-layoutType") || "centered";
+        }
+        return "centered";
+    });
+    useEffect(() => {
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-layoutType", layoutType);
+        }
+    }, [layoutType]);
+    // 최대 너비 설정
+    const [maxWidth, setMaxWidth] = useState(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem("design-maxWidth") || "max-w-6xl";
+        }
+        return "max-w-6xl";
+    });
+    useEffect(() => {
+        // localStorage에 저장
+        if (typeof window !== "undefined") {
+            localStorage.setItem("design-maxWidth", maxWidth);
+        }
+    }, [maxWidth]);
+    const value = {
         // 현재 상태값들
         font,
         theme,
@@ -73,6 +161,8 @@ export function useDesignSettings() {
         fontSize,
         spacing,
         gap,
+        layoutType,
+        maxWidth,
         // 상태 변경 함수들
         setFont,
         setTheme,
@@ -80,5 +170,21 @@ export function useDesignSettings() {
         setFontSize,
         setSpacing,
         setGap,
+        setLayoutType,
+        setMaxWidth,
     };
+    return React.createElement(DesignSettingsContext.Provider, { value: value }, children);
+}
+/**
+ * 디자인 설정 컨텍스트 사용을 위한 커스텀 훅
+ *
+ * @returns 디자인 설정 상태와 변경 함수들
+ * @throws Error 컨텍스트가 제공되지 않은 경우
+ */
+export function useDesignSettings() {
+    const context = useContext(DesignSettingsContext);
+    if (context === undefined) {
+        throw new Error("useDesignSettings must be used within a DesignSettingsProvider");
+    }
+    return context;
 }

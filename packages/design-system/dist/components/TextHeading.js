@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 const sizeMap = {
     xs: "text-xs",
@@ -18,7 +19,7 @@ export default function TextHeading({ children, className = "", size = "base", w
         font-heading
         ${sizeMap[size] || sizeMap.base}
         ${weightMap[weight] || weightMap.semibold}
-        text-[var(--foreground)]
+        text-foreground
         ${className}
       ` }, children));
 }
