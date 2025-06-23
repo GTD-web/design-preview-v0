@@ -9,11 +9,11 @@ import Loading from "../loading";
 import {
   Button,
   DesignSettingsProvider,
+  LayoutContainer,
+  Sidebar,
   useDesignSettings,
 } from "@lumir-company/design-system-v0";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
-import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
-import { Sidebar } from "@/packages/design-system/components/Sidebar";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
