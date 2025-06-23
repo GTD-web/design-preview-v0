@@ -3,17 +3,17 @@
 import localFont from "next/font/local";
 import React, { useState } from "react";
 import "../globals.css";
-import {
-  useDesignSettings,
-  DesignSettingsProvider,
-} from "@/packages/design-system/hooks/useDesignSettings";
-import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
-import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
-import { Sidebar } from "@/packages/design-system/components/Sidebar";
-import { Button } from "@/packages/design-system/components/Button";
 import { usePathname } from "next/navigation";
 import ClientOnly from "@/components/ClientOnly";
 import Loading from "../loading";
+import {
+  Button,
+  DesignSettingsProvider,
+  useDesignSettings,
+} from "@lumir-company/design-system-v0";
+import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
+import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
+import { Sidebar } from "@/packages/design-system/components/Sidebar";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -222,59 +222,58 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
 
   return (
     <ClientOnly fallback={<Loading />}>
-      {/* 사이드바 */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        isCollapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-        activePath={pathname}
-        menuGroups={sidebarMenuGroups}
-        user={user}
-        onLogout={handleLogout}
-        isAdminMode={isAdminMode}
-        onModeToggle={handleModeToggle}
-        showModeToggle={true}
-        showNotification={true}
-        showSettings={true}
-        // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
-        // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
-        // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
-        logoText="커스텀 시스템"
-        logoTextShort="CS"
-      />
+      <div className="lg:flex h-screen">
+        {/* 사이드바 */}
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          activePath={pathname}
+          menuGroups={sidebarMenuGroups}
+          user={user}
+          onLogout={handleLogout}
+          isAdminMode={isAdminMode}
+          onModeToggle={handleModeToggle}
+          showModeToggle={true}
+          showNotification={true}
+          showSettings={true}
+          // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
+          // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
+          // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
+          logoText="커스텀 시스템"
+          logoTextShort="CS"
+        />
 
-      {/* 메인 콘텐츠 */}
-      <div
-        className={`transition-all duration-500 ease-out ${
-          sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
-        }`}
-      >
-        {/* 모바일 헤더 */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSidebarOpen(true)}
-            >
-              ☰
-            </Button>
-            <span className="font-semibold">디자인 예제</span>
-            <div className="w-8" />
+        {/* 메인 콘텐츠 */}
+        <main className="flex-1">
+          {/* 모바일 헤더 */}
+          <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
+            <div className="flex items-center justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(true)}
+              >
+                ☰
+              </Button>
+              <span className="font-semibold">디자인 예제</span>
+              <div className="w-8" />
+            </div>
           </div>
-        </div>
 
-        {/* 콘텐츠 영역 */}
-        <div className="lg:pt-0 pt-16">
-          <LayoutContainer
-            type={layoutType}
-            maxWidth={maxWidth}
-            hasSidebar={true}
-          >
-            {children}
-          </LayoutContainer>
-        </div>
+          {/* 콘텐츠 영역 */}
+          <div className="lg:pt-0 pt-16">
+            <LayoutContainer
+              type={layoutType}
+              maxWidth={maxWidth}
+              hasSidebar={true}
+              sidebarCollapsed={sidebarCollapsed}
+            >
+              {children}
+            </LayoutContainer>
+          </div>
+        </main>
       </div>
 
       <DesignSettings

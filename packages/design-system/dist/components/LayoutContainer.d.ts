@@ -15,6 +15,8 @@ interface LayoutContainerProps {
     padding?: string;
     /** 사이드바 존재 여부 */
     hasSidebar?: boolean;
+    /** 사이드바 접힘 상태 */
+    sidebarCollapsed?: boolean;
     /** 자식 요소 */
     children: React.ReactNode;
     /** 추가 클래스명 */
@@ -27,5 +29,5 @@ interface LayoutContainerProps {
  * - full: 화면 전체를 채움
  * - centered: 중앙 정렬 (기본값)
  */
-export declare function LayoutContainer({ type, maxWidth, padding, hasSidebar, children, className, }: LayoutContainerProps): React.JSX.Element;
+export declare function LayoutContainer({ type, maxWidth, padding, hasSidebar, sidebarCollapsed, children, className, }: LayoutContainerProps): React.JSX.Element;
 export {};

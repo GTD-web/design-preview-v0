@@ -73,7 +73,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
             fixed top-0 left-0 h-full bg-surface z-50
             transform transition-all duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0 lg:static lg:z-auto
+            lg:translate-x-0
             shadow-lg
             ${collapsedWidth} ${className}
           `, style: {
@@ -110,7 +110,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
             fixed top-0 left-0 h-full bg-surface z-50
             transform transition-transform duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0 lg:static lg:z-auto
+            lg:translate-x-0
             shadow-lg
             ${width} ${className}
           `, style: {
