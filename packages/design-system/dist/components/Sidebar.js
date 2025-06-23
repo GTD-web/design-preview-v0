@@ -70,7 +70,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
     return (React.createElement(React.Fragment, null,
         isOpen && (React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose })),
         isCollapsed && (React.createElement("aside", { className: `
-            fixed top-0 left-0 h-full bg-surface border-r-4 border-neutral-300 dark:border-neutral-600 z-50
+            fixed top-0 left-0 h-full bg-surface z-50
             transform transition-all duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0 lg:static lg:z-auto
@@ -79,7 +79,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
           `, style: {
                 transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
             } },
-            React.createElement("div", { className: "flex flex-col h-full border-r-2 border-neutral-300 dark:border-neutral-600" },
+            React.createElement("div", { className: "flex flex-col h-full" },
                 React.createElement("div", { className: "p-3 border-b border-border" },
                     React.createElement("div", { className: "flex flex-col items-center gap-3" },
                         logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "w-10 h-10 object-contain" })) : (React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
@@ -107,8 +107,8 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                             React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
                                 React.createElement("span", { className: "text-white font-bold text-sm" }, user?.initials || user?.name?.charAt(0) || "U")))))))),
         !isCollapsed && (React.createElement("aside", { className: `
-            fixed top-0 left-0 h-full bg-surface border-r-4 border-neutral-300 dark:border-neutral-600 z-50
-            transform transition-all duration-500 ease-out
+            fixed top-0 left-0 h-full bg-surface z-50
+            transform transition-transform duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0 lg:static lg:z-auto
             shadow-lg
@@ -116,9 +116,9 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
           `, style: {
                 transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
             } },
-            React.createElement("div", { className: "flex flex-col h-full border-r-2 border-neutral-300 dark:border-neutral-600" },
-                React.createElement("div", { className: "p-4 border-b border-border" },
-                    React.createElement("div", { className: "flex items-center justify-between" },
+            React.createElement("div", { className: "flex flex-col h-full" },
+                React.createElement("div", { className: "p-4 flex items-center justify-between border-b border-border" },
+                    React.createElement("div", { className: "flex items-center gap-3" },
                         logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "h-10 object-contain" })) : (React.createElement("div", { className: "flex items-center gap-3" },
                             React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
                                 React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort)),

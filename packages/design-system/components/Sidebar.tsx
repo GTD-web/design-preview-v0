@@ -181,7 +181,7 @@ export function Sidebar({
       {isCollapsed && (
         <aside
           className={`
-            fixed top-0 left-0 h-full bg-surface border-r-4 border-neutral-300 dark:border-neutral-600 z-50
+            fixed top-0 left-0 h-full bg-surface z-50
             transform transition-all duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0 lg:static lg:z-auto
@@ -192,7 +192,7 @@ export function Sidebar({
             transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
-          <div className="flex flex-col h-full border-r-2 border-neutral-300 dark:border-neutral-600">
+          <div className="flex flex-col h-full">
             {/* 헤더 - 접힌 상태 */}
             <div className="p-3 border-b border-border">
               <div className="flex flex-col items-center gap-3">
@@ -300,8 +300,8 @@ export function Sidebar({
       {!isCollapsed && (
         <aside
           className={`
-            fixed top-0 left-0 h-full bg-surface border-r-4 border-neutral-300 dark:border-neutral-600 z-50
-            transform transition-all duration-500 ease-out
+            fixed top-0 left-0 h-full bg-surface z-50
+            transform transition-transform duration-500 ease-out
             ${isOpen ? "translate-x-0" : "-translate-x-full"}
             lg:translate-x-0 lg:static lg:z-auto
             shadow-lg
@@ -311,10 +311,10 @@ export function Sidebar({
             transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
-          <div className="flex flex-col h-full border-r-2 border-neutral-300 dark:border-neutral-600">
+          <div className="flex flex-col h-full">
             {/* 헤더 - 펼쳐진 상태 */}
-            <div className="p-4 border-b border-border">
-              <div className="flex items-center justify-between">
+            <div className="p-4 flex items-center justify-between border-b border-border">
+              <div className="flex items-center gap-3">
                 {logoUrl ? (
                   <img
                     src={logoUrl}
