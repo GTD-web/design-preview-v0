@@ -413,7 +413,7 @@ export function Sidebar({
 
             {/* 관리자/사용자 전환 영역 */}
             {showModeToggle && (
-              <div className="p-4 border-t border-border">
+              <div className="p-4 border-b border-t">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -447,7 +447,7 @@ export function Sidebar({
             )}
 
             {/* 푸터 - 펼쳐진 상태 */}
-            <div className="p-4 border-t border-border">
+            <div className="p-4">
               <div
                 className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer"
                 onClick={handleProfileClick}

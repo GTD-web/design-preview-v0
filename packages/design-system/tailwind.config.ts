@@ -4,6 +4,7 @@ const config: Config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@lumir-company/design-system-v0/dist/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
@@ -682,14 +683,7 @@ const config: Config = {
         "gradient-autumn": "linear-gradient(135deg, #fdba74 0%, #fb923c 100%)",
         "gradient-winter": "linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%)",
       },
-      borderWidth: {
-        DEFAULT: "1px",
-        0: "0",
-        2: "2px",
-        4: "4px",
-        8: "8px",
-      },
-      outlineWidth: {
+      eWidth: {
         0: "0",
         1: "1px",
         2: "2px",
