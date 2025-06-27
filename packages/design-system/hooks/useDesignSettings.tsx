@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { fonts, themes } from "../components/DesignSettings";
 
@@ -56,6 +58,9 @@ interface DesignSettingsContextType extends DesignSettingsState {
   setGap: (gap: number) => void;
   setLayoutType: (layoutType: "full" | "centered") => void;
   setMaxWidth: (maxWidth: string) => void;
+  // 편의 함수들
+  setShadcnV0Light: () => void;
+  setShadcnV0Dark: () => void;
 }
 
 /**
@@ -112,6 +117,9 @@ export function DesignSettingsProvider({ children }: DesignSettingsProviderProps
     // 기존 테마 클래스들 제거
     document.body.classList.remove(
       "theme-dark",
+      "theme-shadcn-v0-light",
+      "theme-shadcn-v0-dark",
+      "theme-shadcn",
       "theme-dracula",
       "theme-pastel",
       "theme-ci",
@@ -239,6 +247,15 @@ export function DesignSettingsProvider({ children }: DesignSettingsProviderProps
     }
   }, [maxWidth]);
 
+  // 편의 함수들
+  const setShadcnV0Light = () => {
+    setTheme("shadcn-v0-light");
+  };
+
+  const setShadcnV0Dark = () => {
+    setTheme("shadcn-v0-dark");
+  };
+
   const value: DesignSettingsContextType = {
     // 현재 상태값들
     font,
@@ -259,6 +276,10 @@ export function DesignSettingsProvider({ children }: DesignSettingsProviderProps
     setGap,
     setLayoutType,
     setMaxWidth,
+
+    // 편의 함수들
+    setShadcnV0Light,
+    setShadcnV0Dark,
   };
 
   return <DesignSettingsContext.Provider value={value}>{children}</DesignSettingsContext.Provider>;

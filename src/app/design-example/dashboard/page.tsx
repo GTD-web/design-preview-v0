@@ -78,7 +78,7 @@ export default function DashboardPage() {
           {hasChildren && (
             <button
               type="button"
-              className="mr-3 flex items-center justify-center w-6 h-6 text-muted hover:bg-surface rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="mr-3 flex items-center justify-center w-6 h-6 text-secondary hover:bg-surface rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20"
               onClick={() =>
                 setOpenMap((prev) => ({ ...prev, [path]: !isOpen }))
               }
@@ -110,7 +110,7 @@ export default function DashboardPage() {
           )}
           {/* 하위(Squad)면 불릿 */}
           {!hasChildren && (
-            <span className="inline-block w-6 text-center text-muted select-none text-lg">
+            <span className="inline-block w-6 text-center text-secondary select-none text-lg">
               •
             </span>
           )}
@@ -162,7 +162,7 @@ export default function DashboardPage() {
               </div>
               <div className="relative w-64">
                 <input
-                  className="w-full border border-border rounded-lg px-4 py-2 text-sm bg-surface text-foreground placeholder-muted focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10 shadow-sm"
+                  className="w-full border border-border rounded-lg px-4 py-2 text-sm bg-surface text-foreground placeholder-secondary focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10 shadow-sm"
                   placeholder="조직 검색..."
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none">

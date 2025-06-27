@@ -429,7 +429,7 @@ export function Sidebar({
                       height="16"
                       fill="none"
                       viewBox="0 0 24 24"
-                      className="text-muted group-hover:text-primary transition-colors duration-200"
+                      className="text-secondary group-hover:text-primary transition-colors duration-200"
                     >
                       <path
                         d="M9 5l7 7-7 7"

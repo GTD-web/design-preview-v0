@@ -34,6 +34,8 @@ interface DesignSettingsContextType extends DesignSettingsState {
     setGap: (gap: number) => void;
     setLayoutType: (layoutType: "full" | "centered") => void;
     setMaxWidth: (maxWidth: string) => void;
+    setShadcnV0Light: () => void;
+    setShadcnV0Dark: () => void;
 }
 /**
  * 디자인 설정 프로바이더 Props 타입 정의

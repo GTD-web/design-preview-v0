@@ -149,7 +149,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                             React.createElement("span", { className: "text-sm font-medium" }, isAdminMode
                                 ? "사용자 화면으로 이동"
                                 : "관리자 화면으로 이동"),
-                            React.createElement("svg", { width: "16", height: "16", fill: "none", viewBox: "0 0 24 24", className: "text-muted group-hover:text-primary transition-colors duration-200" },
+                            React.createElement("svg", { width: "16", height: "16", fill: "none", viewBox: "0 0 24 24", className: "text-secondary group-hover:text-primary transition-colors duration-200" },
                                 React.createElement("path", { d: "M9 5l7 7-7 7", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })))))),
                 React.createElement("div", { className: "p-4" },
                     React.createElement("div", { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer", onClick: handleProfileClick },

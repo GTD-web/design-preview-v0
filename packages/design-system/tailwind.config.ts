@@ -147,6 +147,25 @@ const config: Config = {
         surface: "var(--color-surface)",
         background: "var(--color-background)",
         border: "var(--color-border)",
+        foreground: "var(--foreground)",
+        card: {
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
+        },
+        popover: {
+          DEFAULT: "var(--popover)",
+          foreground: "var(--popover-foreground)",
+        },
+        muted: {
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
+        },
+        destructive: {
+          DEFAULT: "var(--destructive)",
+          foreground: "var(--destructive-foreground)",
+        },
+        input: "var(--input)",
+        ring: "var(--ring)",
         neutral: {
           50: "#fafafa",
           100: "#f5f5f5",

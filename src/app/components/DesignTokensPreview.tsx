@@ -7,16 +7,30 @@ import { Button } from "@/packages/design-system/components/Button";
  * 단일 색상 정의
  */
 const singleColors = [
-  { name: "primary", className: "bg-primary", text: "onPrimary" },
-  { name: "secondary", className: "bg-secondary", text: "onSecondary" },
-  { name: "accent", className: "bg-accent", text: "onAccent" },
-  { name: "success", className: "bg-success", text: "onSuccess" },
-  { name: "warning", className: "bg-warning", text: "onWarning" },
-  { name: "danger", className: "bg-danger", text: "onDanger" },
-  { name: "info", className: "bg-info", text: "onInfo" },
-  { name: "surface", className: "bg-surface", text: "onSurface border border-border" },
-  { name: "background", className: "bg-background", text: "onBackground border border-border" },
-  { name: "border", className: "bg-border", text: "text-onSurface border border-border" },
+  // 기본 디자인 시스템 색상
+  { name: "primary", className: "bg-primary", text: "text-primary-foreground" },
+  { name: "secondary", className: "bg-secondary", text: "text-secondary-foreground" },
+  { name: "accent", className: "bg-accent", text: "text-accent-foreground" },
+  { name: "success", className: "bg-success", text: "text-white" },
+  { name: "warning", className: "bg-warning", text: "text-black" },
+  { name: "danger", className: "bg-danger", text: "text-white" },
+  { name: "info", className: "bg-info", text: "text-white" },
+  { name: "surface", className: "bg-surface", text: "text-foreground border border-border" },
+  { name: "background", className: "bg-background", text: "text-foreground border border-border" },
+  { name: "border", className: "bg-border", text: "text-foreground border border-gray-400" },
+  
+  // Shadcn 토큰 색상들
+  { name: "foreground", className: "bg-foreground", text: "text-background" },
+  { name: "card", className: "bg-card", text: "text-card-foreground border border-border" },
+  { name: "card-foreground", className: "bg-card-foreground", text: "text-card" },
+  { name: "popover", className: "bg-popover", text: "text-popover-foreground border border-border" },
+  { name: "popover-foreground", className: "bg-popover-foreground", text: "text-popover" },
+  { name: "muted", className: "bg-muted", text: "text-muted-foreground" },
+  { name: "muted-foreground", className: "bg-muted-foreground", text: "text-muted" },
+  { name: "destructive", className: "bg-destructive", text: "text-destructive-foreground" },
+  { name: "destructive-foreground", className: "bg-destructive-foreground", text: "text-destructive" },
+  { name: "input", className: "bg-input", text: "text-foreground border border-border" },
+  { name: "ring", className: "bg-ring", text: "text-foreground" },
 ];
 
 /**
@@ -124,14 +138,6 @@ function GradientButtonExamples() {
 }
 
 /**
- * 디자인 토큰 프리뷰 컴포넌트 Props 인터페이스
- */
-interface DesignTokensPreviewProps {
-  /** 현재 선택된 테마 */
-  theme?: string;
-}
-
-/**
  * 디자인 시스템의 모든 토큰들을 시각적으로 보여주는 프리뷰 컴포넌트
  *
  * 포함 내용:
@@ -142,7 +148,7 @@ interface DesignTokensPreviewProps {
  * - 보더 라디우스
  * - 박스 섀도우
  */
-export function DesignTokensPreview({ theme }: DesignTokensPreviewProps) {
+export function DesignTokensPreview() {
   // 폰트 옵션 정의
   const fonts = [
     { key: "noto", label: "Noto Sans KR", className: "font-noto" },
@@ -182,22 +188,31 @@ export function DesignTokensPreview({ theme }: DesignTokensPreviewProps) {
 
       {/* 단일 색상 섹션 */}
       <div className="mb-12">
-        <h3 className="text-h2 font-heading leading-heading tracking-heading mb-2 text-foreground">Single Colors</h3>
+        <h3 className="text-h2 font-heading leading-heading tracking-heading mb-4 text-foreground">Single Colors</h3>
+        <p className="text-sm text-muted-foreground mb-6">기본 디자인 시스템 색상과 Shadcn 토큰 색상들을 확인할 수 있습니다.</p>
+        
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {singleColors.map((color) => (
             <div
               key={color.name}
-              className={`h-16 flex flex-col items-center justify-center rounded-md ${color.className} ${color.text} ${
-                color.name === "warning" || color.name === "success"
-                  ? theme === "dracula"
-                    ? "text-foreground"
-                    : "text-[var(--foreground-inverse)]"
-                  : "text-foreground"
-              }`}
+              className={`h-20 flex flex-col items-center justify-center rounded-lg ${color.className} ${color.text} transition-all duration-200 hover:scale-105 hover:shadow-lg`}
             >
-              <span className="text-xs font-mono opacity-80">{color.name}</span>
+              <span className="text-xs font-mono font-medium">{color.name}</span>
+              <span className="text-xs opacity-75 mt-1">
+                {color.name.includes('-') ? color.name.split('-')[1] : 'color'}
+              </span>
             </div>
           ))}
+        </div>
+        
+        {/* 색상 사용법 안내 */}
+        <div className="mt-6 p-4 bg-muted rounded-lg">
+          <h4 className="text-sm font-semibold text-muted-foreground mb-2">사용법:</h4>
+          <div className="text-xs text-muted-foreground space-y-1">
+            <div><code className="bg-background px-1 rounded">bg-primary</code> - 배경색</div>
+            <div><code className="bg-background px-1 rounded">text-primary-foreground</code> - 텍스트 색상</div>
+            <div><code className="bg-background px-1 rounded">border-border</code> - 테두리 색상</div>
+          </div>
         </div>
       </div>
 
