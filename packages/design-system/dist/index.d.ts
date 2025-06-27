@@ -10,4 +10,6 @@ export { Text, TextSpan, TextP, TextDiv, TextHeading, TextValue, TextLabel } fro
 export { Drawer } from "./components/Drawer";
 export { LayoutContainer } from "./components/LayoutContainer";
 export { Sidebar } from "./components/Sidebar";
+export { DesignSettings } from "./components/DesignSettings";
 export { useDesignSettings, DesignSettingsProvider } from "./hooks/useDesignSettings";
+export { getShadcnTokenPath, getAvailableTokenVersions, getTokenConfig, SHADCN_TOKEN_CONFIGS, type ShadcnTokenVersion, type TokenConfig } from "./styles/tokens";

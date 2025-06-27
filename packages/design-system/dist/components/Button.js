@@ -46,8 +46,10 @@ export function Button({ variant = "primary", size = "md", selected = false, gra
             primary: "bg-primary text-white hover:bg-primary/90",
             secondary: "bg-secondary text-white hover:bg-secondary/90",
             outline: "bg-transparent text-primary hover:bg-primary/10",
-            ghost: "bg-transparent text-foreground border-transparent hover:bg-surface",
-            toggle: selected ? "bg-surface text-foreground hover:bg-surface/80" : "bg-surface text-foreground hover:bg-primary/10",
+            ghost: "bg-transparent text-secondary border-secondary hover:bg-surface",
+            toggle: selected
+                ? "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800"
+                : "bg-transparent text-foreground border-border hover:bg-surface hover:border-primary/30",
             nav: selected
                 ? "bg-neutral-800 dark:bg-neutral-700 text-white hover:bg-neutral-700 dark:hover:bg-neutral-600"
                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800",

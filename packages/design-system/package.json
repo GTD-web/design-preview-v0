@@ -6,7 +6,8 @@
   "files": [
     "dist",
     "styles",
-    "tailwind.config.ts"
+    "tailwind.config.ts",
+    "SHADCN_TOKENS.md"
   ],
   "peerDependencies": {
     "react": "^18.0.0",

@@ -1,3 +1,4 @@
+"use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { fonts, themes } from "../components/DesignSettings";
 /**
@@ -43,7 +44,7 @@ export function DesignSettingsProvider({ children }) {
     });
     useEffect(() => {
         // 기존 테마 클래스들 제거
-        document.body.classList.remove("theme-dark", "theme-dracula", "theme-pastel", "theme-ci", "theme-github", "theme-midnight", "theme-ocean", "theme-forest", "theme-sunset", "theme-aurora", "theme-cosmic");
+        document.body.classList.remove("theme-dark", "theme-shadcn-v0-light", "theme-shadcn-v0-dark", "theme-shadcn", "theme-dracula", "theme-pastel", "theme-ci", "theme-github", "theme-midnight", "theme-ocean", "theme-forest", "theme-sunset", "theme-aurora", "theme-cosmic");
         // 라이트 테마가 아닌 경우에만 테마 클래스 추가
         if (theme !== "light") {
             const selectedTheme = themes.find((t) => t.key === theme);
@@ -153,6 +154,13 @@ export function DesignSettingsProvider({ children }) {
             localStorage.setItem("design-maxWidth", maxWidth);
         }
     }, [maxWidth]);
+    // 편의 함수들
+    const setShadcnV0Light = () => {
+        setTheme("shadcn-v0-light");
+    };
+    const setShadcnV0Dark = () => {
+        setTheme("shadcn-v0-dark");
+    };
     const value = {
         // 현재 상태값들
         font,
@@ -172,6 +180,9 @@ export function DesignSettingsProvider({ children }) {
         setGap,
         setLayoutType,
         setMaxWidth,
+        // 편의 함수들
+        setShadcnV0Light,
+        setShadcnV0Dark,
     };
     return React.createElement(DesignSettingsContext.Provider, { value: value }, children);
 }
