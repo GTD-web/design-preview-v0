@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ButtonHTMLAttributes, ReactNode, useState, useRef, useEffect } from "react";
+import { ButtonHTMLAttributes, useState, useRef, useEffect } from "react";
 import { HStack } from "./Stack";
 
 export interface SelectOption {
@@ -52,7 +52,7 @@ export function Select({
     setSelectedOption(newSelectedOption);
   }, [value, options]);
 
-  const baseClasses = "border rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20";
+  const baseClasses = "border rounded transition-all duration-200 focus:outline-none";
 
   const sizeClasses = {
     sm: "px-2 py-1 text-xs",
