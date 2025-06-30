@@ -20,9 +20,9 @@ const sizeClasses = {
 };
 
 const variantClasses = {
-  default: "border border-border bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20",
-  filled: "border-0 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-primary/20",
-  outlined: "border-2 border-border bg-transparent focus:border-primary focus:ring-2 focus:ring-primary/20",
+  default: "border border-border bg-surface focus:border-primary",
+  filled: "border-0 bg-gray-100 focus:bg-white",
+  outlined: "border-2 border-border bg-transparent focus:border-primary",
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -65,7 +65,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       "w-full rounded-lg transition-all duration-200 focus:outline-none",
       getInputPadding(),
       variantClasses[variant],
-      error && "border-danger focus:border-danger focus:ring-danger/20",
+      error && "border-danger focus:border-danger",
     ]
       .filter(Boolean)
       .join(" ");

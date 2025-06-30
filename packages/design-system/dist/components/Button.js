@@ -1,5 +1,5 @@
 import * as React from "react";
-export function Button({ variant = "primary", size = "md", selected = false, gradient = false, gradientType = "primary", children, className = "", style, ...props }) {
+export function Button({ variant = "primary", size = "md", selected = false, gradient = false, gradientType = "primary", children, className = "", style, disabled = false, ...props }) {
     const baseClasses = "font-medium transition-all duration-200 rounded border flex items-center justify-center gap-1";
     const sizeClasses = {
         sm: "px-2 py-1 text-xs",
@@ -7,6 +7,9 @@ export function Button({ variant = "primary", size = "md", selected = false, gra
         lg: "px-4 py-2 text-base",
     };
     const getVariantClasses = () => {
+        if (disabled) {
+            return "bg-muted text-muted-foreground border-border cursor-not-allowed opacity-60";
+        }
         if (gradient) {
             const gradientMap = {
                 primary: "bg-gradient-to-r from-blue-500 to-blue-700",
@@ -43,10 +46,10 @@ export function Button({ variant = "primary", size = "md", selected = false, gra
             return `${gradientClass} text-white border-transparent hover:opacity-90 hover:shadow-lg`;
         }
         return {
-            primary: "bg-primary text-white hover:bg-primary/90",
+            primary: "bg-primary text-muted hover:bg-primary/90",
             secondary: "bg-secondary text-white hover:bg-secondary/90",
             outline: "bg-transparent text-primary hover:bg-primary/10",
-            ghost: "bg-transparent text-secondary border-secondary hover:bg-surface",
+            ghost: "bg-transparent text-primary border-secondary hover:bg-surface",
             toggle: selected
                 ? "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800"
                 : "bg-transparent text-foreground border-border hover:bg-surface hover:border-primary/30",
@@ -56,6 +59,8 @@ export function Button({ variant = "primary", size = "md", selected = false, gra
         }[variant];
     };
     const getBorderStyle = () => {
+        if (disabled)
+            return { borderColor: "rgb(209 213 219)" };
         if (gradient)
             return { borderColor: "transparent" };
         switch (variant) {
@@ -73,5 +78,5 @@ export function Button({ variant = "primary", size = "md", selected = false, gra
     };
     const classes = [baseClasses, sizeClasses[size], getVariantClasses(), className].filter(Boolean).join(" ");
     const borderStyle = getBorderStyle();
-    return (React.createElement("button", { className: classes, style: { ...borderStyle, ...style }, ...props }, children));
+    return (React.createElement("button", { className: classes, style: { ...borderStyle, ...style }, disabled: disabled, ...props }, children));
 }
