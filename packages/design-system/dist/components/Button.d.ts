@@ -7,5 +7,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     gradient?: boolean;
     gradientType?: "primary" | "secondary" | "accent" | "success" | "warning" | "danger" | "info" | "blue" | "purple" | "pink" | "green" | "orange" | "red" | "teal" | "cyan" | "indigo" | "violet" | "fuchsia" | "rose" | "slate" | "gray" | "zinc" | "neutral" | "stone" | "lime" | "emerald" | "amber" | "yellow" | "sunset" | "ocean" | "forest" | "fire" | "aurora" | "cosmic" | "midnight" | "dawn" | "dusk" | "spring" | "summer" | "autumn" | "winter";
     children?: ReactNode;
+    disabled?: boolean;
 }
-export declare function Button({ variant, size, selected, gradient, gradientType, children, className, style, ...props }: ButtonProps): React.JSX.Element;
+export declare function Button({ variant, size, selected, gradient, gradientType, children, className, style, disabled, ...props }: ButtonProps): React.JSX.Element;

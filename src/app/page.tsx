@@ -17,31 +17,33 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h1 className="text-lg font-semibold text-foreground">디자인 시스템 프리뷰</h1>
             
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground mr-2">Shadcn 테마:</span>
-              
-              {/* V0 버튼들 */}
-              <div className="flex gap-1">
-                <button 
-                  onClick={setShadcnV0Light}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                    theme === 'shadcn-v0-light'
-                      ? 'bg-blue-500 text-white shadow-md' 
-                      : 'bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700'
-                  }`}
-                >
-                  V0 Light
-                </button>
-                <button 
-                  onClick={setShadcnV0Dark}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                    theme === 'shadcn-v0-dark'
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700'
-                  }`}
-                >
-                  V0 Dark
-                </button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground mr-2">Shadcn 테마:</span>
+                
+                {/* V0 버튼들 */}
+                <div className="flex gap-1">
+                  <button 
+                    onClick={setShadcnV0Light}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+                      theme === 'shadcn-v0-light'
+                        ? 'bg-blue-500 text-white shadow-md' 
+                        : 'bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700'
+                    }`}
+                  >
+                    V0 Light
+                  </button>
+                  <button 
+                    onClick={setShadcnV0Dark}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
+                      theme === 'shadcn-v0-dark'
+                        ? 'bg-blue-600 text-white shadow-md' 
+                        : 'bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700'
+                    }`}
+                  >
+                    V0 Dark
+                  </button>
+                </div>
               </div>
             </div>
           </div>
