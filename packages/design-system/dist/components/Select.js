@@ -18,7 +18,7 @@ export function Select({ selectSize = "md", variant = "default", options, value,
         const newSelectedOption = options.find((option) => option.value === value);
         setSelectedOption(newSelectedOption);
     }, [value, options]);
-    const baseClasses = "border rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/20";
+    const baseClasses = "border rounded transition-all duration-200 focus:outline-none";
     const sizeClasses = {
         sm: "px-2 py-1 text-xs",
         md: "px-3 py-2 text-sm",
