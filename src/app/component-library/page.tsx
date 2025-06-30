@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useDesignSettings } from "@lumir-company/design-system-v0";
+import { useDesignSettings } from "@/packages/design-system/hooks/useDesignSettings";
 import {
   Button,
   Card,

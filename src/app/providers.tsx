@@ -1,6 +1,6 @@
 "use client";
 
-import { DesignSettingsProvider } from "@lumir-company/design-system-v0";
+import { DesignSettingsProvider } from "@/packages/design-system/hooks/useDesignSettings";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
