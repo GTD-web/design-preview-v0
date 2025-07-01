@@ -64,7 +64,7 @@ export function Button({
   disabled = false,
   ...props
 }: ButtonProps) {
-  const baseClasses = "font-medium transition-all duration-200 rounded border flex items-center justify-center gap-1";
+  const baseClasses = "font-medium transition-all duration-200 rounded flex items-center justify-center gap-1";
 
   const sizeClasses = {
     sm: "px-2 py-1 text-xs",
@@ -117,7 +117,7 @@ export function Button({
       primary: "bg-primary text-muted hover:bg-primary/90",
       secondary: "bg-secondary text-white hover:bg-secondary/90",
       outline: "bg-transparent text-primary hover:bg-primary/10",
-      ghost: "bg-transparent text-primary border-secondary hover:bg-surface",
+      ghost: "bg-transparent text-primary hover:bg-surface",
       toggle: selected 
         ? "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800" 
         : "bg-transparent text-foreground border-border hover:bg-surface hover:border-primary/30",
@@ -128,20 +128,20 @@ export function Button({
   };
 
   const getBorderStyle = () => {
-    if (disabled) return { borderColor: "rgb(209 213 219)" };
-    if (gradient) return { borderColor: "transparent" };
+    if (disabled) return { borderColor: "rgb(209 213 219)", borderWidth: "1px" };
+    if (gradient) return { borderColor: "transparent", borderWidth: "0" };
 
     switch (variant) {
       case "primary":
       case "secondary":
       case "outline":
       case "toggle":
-        return { borderColor: "var(--color-border)" };
+        return { borderColor: "var(--color-border)", borderWidth: "1px" };
       case "ghost":
       case "nav":
-        return { borderColor: "transparent" };
+        return { borderColor: "transparent", borderWidth: "0" };
       default:
-        return { borderColor: "var(--color-border)" };
+        return { borderColor: "var(--color-border)", borderWidth: "1px" };
     }
   };
 
