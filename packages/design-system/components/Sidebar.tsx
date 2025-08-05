@@ -6,6 +6,7 @@ import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
 import { Button } from "./Button";
+import { useSidebarIcons, sidebarIconOptions } from "../hooks/useSidebarIcons";
 
 /**
  * 사이드바 메뉴 아이템 타입 정의
@@ -72,6 +73,10 @@ interface SidebarProps {
   showNotification?: boolean;
   /** 설정 아이콘 표시 여부 */
   showSettings?: boolean;
+  /** 사이드바 접기 아이콘 (펼쳐진 상태에서 표시) */
+  collapseIcon?: React.ReactNode;
+  /** 사이드바 펼치기 아이콘 (접힌 상태에서 표시) */
+  expandIcon?: React.ReactNode;
 }
 
 /**
@@ -103,10 +108,18 @@ export function Sidebar({
   logoUrl,
   logoText = "디자인시스템",
   logoTextShort = "DS",
+  collapseIcon,
+  expandIcon,
 }: SidebarProps) {
   const router = useRouter();
+  const { currentIcon, isLoaded, setSelectedIcon } = useSidebarIcons();
 
   const [showProfilePopup, setShowProfilePopup] = useState(false);
+  const [showIconSelector, setShowIconSelector] = useState(false);
+  const [iconSelectorPosition, setIconSelectorPosition] = useState({
+    x: 0,
+    y: 0,
+  });
 
   const handleModeToggle = () => {
     onModeToggle?.();
@@ -118,6 +131,25 @@ export function Sidebar({
     }
   };
 
+  // 아이콘 우클릭 핸들러
+  const handleIconRightClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    setIconSelectorPosition({
+      x: rect.right + 10,
+      y: rect.top,
+    });
+    setShowIconSelector(true);
+  };
+
+  // 아이콘 선택 핸들러
+  const handleIconSelect = (iconId: string) => {
+    setSelectedIcon(iconId);
+    setShowIconSelector(false);
+  };
+
   // 팝업 외부 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -125,13 +157,21 @@ export function Sidebar({
       if (showProfilePopup && !target.closest(".profile-popup")) {
         setShowProfilePopup(false);
       }
+      if (showIconSelector && !target.closest(".icon-selector-popup")) {
+        setShowIconSelector(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showProfilePopup]);
+  }, [showProfilePopup, showIconSelector]);
+
+  // 저장된 아이콘이 로드되지 않았으면 로딩 상태 처리
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <>
@@ -180,22 +220,11 @@ export function Sidebar({
                   variant="ghost"
                   size="sm"
                   onClick={onToggleCollapse}
+                  onContextMenu={handleIconRightClick}
                   className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
-                  title="사이드바 펼치기"
+                  title="사이드바 펼치기 (우클릭: 아이콘 변경)"
                 >
-                  <svg
-                    className="w-4 h-4 transition-transform duration-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 5l7 7-7 7M5 5l7 7-7 7"
-                    />
-                  </svg>
+                  {expandIcon || currentIcon.expandIcon}
                 </Button>
               </div>
             </div>
@@ -310,22 +339,11 @@ export function Sidebar({
                   variant="ghost"
                   size="sm"
                   onClick={onToggleCollapse}
+                  onContextMenu={handleIconRightClick}
                   className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
-                  title="사이드바 접기"
+                  title="사이드바 접기 (우클릭: 아이콘 변경)"
                 >
-                  <svg
-                    className="w-4 h-4 transition-transform duration-300"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                    />
-                  </svg>
+                  {collapseIcon || currentIcon.collapseIcon}
                 </Button>
               </div>
             </div>
@@ -704,6 +722,68 @@ export function Sidebar({
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 아이콘 선택 팝업 */}
+      {showIconSelector && (
+        <>
+          {/* 팝업 오버레이 */}
+          <div
+            className="fixed inset-0 bg-black/20 z-50"
+            onClick={() => setShowIconSelector(false)}
+          />
+
+          {/* 팝업 컨테이너 */}
+          <div
+            className="icon-selector-popup fixed bg-surface rounded-lg shadow-2xl border border-border w-72 max-h-96 overflow-hidden transform transition-all duration-200 ease-in-out z-50"
+            style={{
+              left: iconSelectorPosition.x,
+              top: iconSelectorPosition.y,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4">
+              <h3 className="text-sm font-semibold text-foreground mb-3">
+                사이드바 아이콘 선택
+              </h3>
+
+              <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                {sidebarIconOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleIconSelect(option.id)}
+                    className={`
+                      flex flex-col items-center gap-2 p-3 rounded-lg border transition-all duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800
+                      ${
+                        option.id === currentIcon.id
+                          ? "bg-neutral-900 dark:bg-neutral-700 text-white border-neutral-900 dark:border-neutral-700"
+                          : "border-neutral-200 dark:border-neutral-700"
+                      }
+                    `}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-center">
+                        {option.expandIcon}
+                      </div>
+                      <div className="flex items-center justify-center">
+                        {option.collapseIcon}
+                      </div>
+                    </div>
+                    <span
+                      className={`text-xs font-medium ${
+                        option.id === currentIcon.id
+                          ? "text-white"
+                          : "text-neutral-600 dark:text-neutral-400"
+                      }`}
+                    >
+                      {option.name}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>

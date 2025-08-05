@@ -16,8 +16,16 @@ export const fonts = [
 export const themes = [
   { key: "light", label: "라이트", className: "" },
   { key: "dark", label: "다크", className: "theme-dark" },
-  { key: "shadcn-v0-light", label: "Shadcn V0 Light", className: "theme-shadcn-v0-light" },
-  { key: "shadcn-v0-dark", label: "Shadcn V0 Dark", className: "theme-shadcn-v0-dark" },
+  {
+    key: "shadcn-v0-light",
+    label: "Shadcn V0 Light",
+    className: "theme-shadcn-v0-light",
+  },
+  {
+    key: "shadcn-v0-dark",
+    label: "Shadcn V0 Dark",
+    className: "theme-shadcn-v0-dark",
+  },
   { key: "shadcn", label: "Shadcn", className: "theme-shadcn" },
   { key: "dracula", label: "드라큘라", className: "theme-dracula" },
   { key: "pastel", label: "파스텔", className: "theme-pastel" },
@@ -44,7 +52,13 @@ interface DesignSettingsProps {
   /** 폰트 크기 변경 시 호출되는 콜백 함수 */
   onFontSizeChange: (fontSize: number) => void;
   /** 스페이싱 변경 시 호출되는 콜백 함수 */
-  onSpacingChange: (spacing: { xs: number; sm: number; md: number; lg: number; xl: number }) => void;
+  onSpacingChange: (spacing: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+  }) => void;
   /** 그리드 갭 변경 시 호출되는 콜백 함수 */
   onGapChange: (gap: number) => void;
   /** 레이아웃 타입 변경 시 호출되는 콜백 함수 */
@@ -60,7 +74,13 @@ interface DesignSettingsProps {
   /** 현재 폰트 크기 (px) */
   currentFontSize: number;
   /** 현재 스페이싱 설정 (px 단위) */
-  currentSpacing: { xs: number; sm: number; md: number; lg: number; xl: number };
+  currentSpacing: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+  };
   /** 현재 그리드 갭 값 (px) */
   currentGap: number;
   /** 현재 레이아웃 타입 */
@@ -102,7 +122,10 @@ export function DesignSettings({
     if (!mounted) return;
 
     function handleClickOutside(event: MouseEvent) {
-      if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
+      if (
+        widgetRef.current &&
+        !widgetRef.current.contains(event.target as Node)
+      ) {
         setOpen(false);
       }
     }
@@ -142,7 +165,13 @@ export function DesignSettings({
             <span className="font-semibold text-base text-gray-900 dark:text-white">
               디자인 퀵 설정
             </span>
-            <Button variant="ghost" size="sm" className="text-lg p-1" aria-label="닫기" onClick={() => setOpen(false)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-lg p-1"
+              aria-label="닫기"
+              onClick={() => setOpen(false)}
+            >
               ×
             </Button>
           </div>
@@ -156,7 +185,13 @@ export function DesignSettings({
               </label>
               <div className="flex gap-3 flex-wrap">
                 {themes.map((t) => (
-                  <Button key={t.key} variant="toggle" size="sm" selected={currentTheme === t.key} onClick={() => onThemeChange(t.key)}>
+                  <Button
+                    key={t.key}
+                    variant="toggle"
+                    size="sm"
+                    selected={currentTheme === t.key}
+                    onClick={() => onThemeChange(t.key)}
+                  >
                     {t.label}
                   </Button>
                 ))}
@@ -170,7 +205,13 @@ export function DesignSettings({
               </label>
               <div className="flex gap-3 flex-wrap">
                 {fonts.map((f) => (
-                  <Button key={f.key} variant="toggle" size="sm" selected={currentFont === f.key} onClick={() => onFontChange(f.key)}>
+                  <Button
+                    key={f.key}
+                    variant="toggle"
+                    size="sm"
+                    selected={currentFont === f.key}
+                    onClick={() => onFontChange(f.key)}
+                  >
                     {f.label}
                   </Button>
                 ))}
@@ -183,10 +224,20 @@ export function DesignSettings({
                 레이아웃
               </label>
               <div className="flex gap-3 flex-wrap">
-                <Button variant="toggle" size="sm" selected={currentLayoutType === "full"} onClick={() => onLayoutTypeChange("full")}>
+                <Button
+                  variant="toggle"
+                  size="sm"
+                  selected={currentLayoutType === "full"}
+                  onClick={() => onLayoutTypeChange("full")}
+                >
                   전체
                 </Button>
-                <Button variant="toggle" size="sm" selected={currentLayoutType === "centered"} onClick={() => onLayoutTypeChange("centered")}>
+                <Button
+                  variant="toggle"
+                  size="sm"
+                  selected={currentLayoutType === "centered"}
+                  onClick={() => onLayoutTypeChange("centered")}
+                >
                   중앙
                 </Button>
               </div>
@@ -199,16 +250,36 @@ export function DesignSettings({
                   최대 너비
                 </label>
                 <div className="flex gap-3 flex-wrap">
-                  <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-4xl"} onClick={() => onMaxWidthChange("max-w-4xl")}>
+                  <Button
+                    variant="toggle"
+                    size="sm"
+                    selected={currentMaxWidth === "max-w-4xl"}
+                    onClick={() => onMaxWidthChange("max-w-4xl")}
+                  >
                     4xl
                   </Button>
-                  <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-5xl"} onClick={() => onMaxWidthChange("max-w-5xl")}>
+                  <Button
+                    variant="toggle"
+                    size="sm"
+                    selected={currentMaxWidth === "max-w-5xl"}
+                    onClick={() => onMaxWidthChange("max-w-5xl")}
+                  >
                     5xl
                   </Button>
-                  <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-6xl"} onClick={() => onMaxWidthChange("max-w-6xl")}>
+                  <Button
+                    variant="toggle"
+                    size="sm"
+                    selected={currentMaxWidth === "max-w-6xl"}
+                    onClick={() => onMaxWidthChange("max-w-6xl")}
+                  >
                     6xl
                   </Button>
-                  <Button variant="toggle" size="sm" selected={currentMaxWidth === "max-w-7xl"} onClick={() => onMaxWidthChange("max-w-7xl")}>
+                  <Button
+                    variant="toggle"
+                    size="sm"
+                    selected={currentMaxWidth === "max-w-7xl"}
+                    onClick={() => onMaxWidthChange("max-w-7xl")}
+                  >
                     7xl
                   </Button>
                 </div>
@@ -221,12 +292,12 @@ export function DesignSettings({
                 <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
                   라운드
                 </label>
-                <input 
-                  type="range" 
-                  min={0} 
-                  max={32} 
-                  value={currentRadius} 
-                  onChange={(e) => onRadiusChange(Number(e.target.value))} 
+                <input
+                  type="range"
+                  min={0}
+                  max={32}
+                  value={currentRadius}
+                  onChange={(e) => onRadiusChange(Number(e.target.value))}
                   className="w-20"
                   aria-label="라운드 값 조정"
                   title={`라운드 값: ${currentRadius}px`}
@@ -240,12 +311,12 @@ export function DesignSettings({
                 <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
                   폰트크기
                 </label>
-                <input 
-                  type="range" 
-                  min={12} 
-                  max={24} 
-                  value={currentFontSize} 
-                  onChange={(e) => onFontSizeChange(Number(e.target.value))} 
+                <input
+                  type="range"
+                  min={12}
+                  max={24}
+                  value={currentFontSize}
+                  onChange={(e) => onFontSizeChange(Number(e.target.value))}
                   className="w-20"
                   aria-label="폰트 크기 조정"
                   title={`폰트 크기: ${currentFontSize}px`}
@@ -266,7 +337,12 @@ export function DesignSettings({
                 min={2}
                 max={32}
                 value={currentSpacing.md}
-                onChange={(e) => onSpacingChange({ ...currentSpacing, md: Number(e.target.value) })}
+                onChange={(e) =>
+                  onSpacingChange({
+                    ...currentSpacing,
+                    md: Number(e.target.value),
+                  })
+                }
                 className="w-32"
                 aria-label="기본 스페이싱 조정"
                 title={`기본 스페이싱: ${currentSpacing.md}px`}
@@ -281,12 +357,12 @@ export function DesignSettings({
               <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
                 Grid Gap (갭)
               </label>
-              <input 
-                type="range" 
-                min={0} 
-                max={64} 
-                value={currentGap} 
-                onChange={(e) => onGapChange(Number(e.target.value))} 
+              <input
+                type="range"
+                min={0}
+                max={64}
+                value={currentGap}
+                onChange={(e) => onGapChange(Number(e.target.value))}
                 className="w-32"
                 aria-label="그리드 갭 조정"
                 title={`그리드 갭: ${currentGap}px`}

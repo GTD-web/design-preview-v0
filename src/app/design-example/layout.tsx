@@ -246,6 +246,8 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
           // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
           logoText="커스텀 시스템"
           logoTextShort="CS"
+          // 사이드바 아이콘은 이제 설정에서 사용자가 직접 선택할 수 있습니다
+          // collapseIcon과 expandIcon props는 필요시에만 사용하세요
         />
 
         {/* 메인 콘텐츠 */}
