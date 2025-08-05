@@ -267,8 +267,16 @@ export function Sidebar({
                         </button>
                         {/* 뱃지 - 접힌 상태 */}
                         {item.badge && (
-                          <div className="absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-1.5 py-0.5 rounded-md font-medium border border-neutral-700 whitespace-nowrap min-w-6 text-center">
-                            {item.badge}
+                          <div
+                            className="absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none"
+                            style={{ fontSize: "10px", lineHeight: "12px" }}
+                            title={item.badge}
+                          >
+                            <span className="block truncate">
+                              {item.badge.length > 3
+                                ? `${item.badge.slice(0, 2)}...`
+                                : item.badge}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -395,8 +403,13 @@ export function Sidebar({
                             </span>
                             {/* 뱃지 - 펼쳐진 상태 */}
                             {item.badge && (
-                              <div className="bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 whitespace-nowrap">
-                                {item.badge}
+                              <div
+                                className="bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden"
+                                title={item.badge}
+                              >
+                                <span className="block truncate">
+                                  {item.badge}
+                                </span>
                               </div>
                             )}
                           </div>
