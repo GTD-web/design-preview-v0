@@ -10,10 +10,10 @@ import {
   Button,
   DesignSettingsProvider,
   LayoutContainer,
-  Sidebar,
   useDesignSettings,
 } from "@lumir-company/design-system-v0";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
+import { Sidebar } from "@/packages/design-system/components/Sidebar";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -64,6 +64,7 @@ const sidebarMenuGroups = [
       {
         title: "대시보드",
         path: "/design-example/dashboard",
+        badge: "NEW",
         icon: (
           <svg
             className="w-4 h-4"
@@ -102,6 +103,7 @@ const sidebarMenuGroups = [
       {
         title: "분석",
         path: "/design-example/analytics",
+        badge: "긴급",
         icon: (
           <svg
             className="w-4 h-4"
@@ -121,6 +123,7 @@ const sidebarMenuGroups = [
       {
         title: "업무관리",
         path: "/design-example/task-management",
+        badge: "D-30",
         icon: (
           <svg
             className="w-4 h-4"

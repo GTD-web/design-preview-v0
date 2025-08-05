@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card } from "./Card";
 import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
@@ -15,6 +14,7 @@ interface SidebarMenuItem {
   title: string;
   path: string;
   icon?: React.ReactNode;
+  badge?: string;
 }
 
 /**
@@ -105,28 +105,8 @@ export function Sidebar({
   logoTextShort = "DS",
 }: SidebarProps) {
   const router = useRouter();
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(
-    new Set()
-  );
+
   const [showProfilePopup, setShowProfilePopup] = useState(false);
-
-  // 모든 메뉴 그룹에 대한 refs와 상태를 미리 생성
-  const groupRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const [groupHeights, setGroupHeights] = useState<{ [key: string]: number }>(
-    {}
-  );
-
-  const toggleGroup = (groupTitle: string) => {
-    setCollapsedGroups((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(groupTitle)) {
-        newSet.delete(groupTitle);
-      } else {
-        newSet.add(groupTitle);
-      }
-      return newSet;
-    });
-  };
 
   const handleModeToggle = () => {
     onModeToggle?.();
@@ -152,20 +132,6 @@ export function Sidebar({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showProfilePopup]);
-
-  // 모든 그룹의 높이를 업데이트
-  useEffect(() => {
-    const newHeights: { [key: string]: number } = {};
-    menuGroups.forEach((group) => {
-      const ref = groupRefs.current[group.title];
-      if (ref) {
-        newHeights[group.title] = collapsedGroups.has(group.title)
-          ? 0
-          : ref.scrollHeight;
-      }
-    });
-    setGroupHeights(newHeights);
-  }, [collapsedGroups, menuGroups]);
 
   return (
     <>
@@ -243,33 +209,40 @@ export function Sidebar({
                     className={`w-full ${groupIndex === 0 ? "mt-2" : ""}`}
                   >
                     {group.items.map((item) => (
-                      <button
-                        key={item.path}
-                        type="button"
-                        onClick={() => router.push(item.path)}
-                        className={`
-                          group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out w-10 mx-auto
-                          ${
-                            activePath === item.path
-                              ? "bg-neutral-800 dark:bg-neutral-700"
-                              : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                          }
-                        `}
-                        title={item.title}
-                      >
-                        <div
+                      <div key={item.path} className="relative">
+                        <button
+                          type="button"
+                          onClick={() => router.push(item.path)}
                           className={`
-                          flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
-                          ${
-                            activePath === item.path
-                              ? "text-white"
-                              : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
-                          }
-                        `}
+                            group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out w-10 mx-auto
+                            ${
+                              activePath === item.path
+                                ? "bg-neutral-800 dark:bg-neutral-700"
+                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                            }
+                          `}
+                          title={item.title}
                         >
-                          {item.icon}
-                        </div>
-                      </button>
+                          <div
+                            className={`
+                            flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
+                            ${
+                              activePath === item.path
+                                ? "text-white"
+                                : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
+                            }
+                          `}
+                          >
+                            {item.icon}
+                          </div>
+                        </button>
+                        {/* 뱃지 - 접힌 상태 */}
+                        {item.badge && (
+                          <div className="absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-1.5 py-0.5 rounded-md font-medium border border-neutral-700 whitespace-nowrap min-w-6 text-center">
+                            {item.badge}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 ))}
@@ -392,15 +365,23 @@ export function Sidebar({
                           >
                             {item.icon}
                           </div>
-                          <span
-                            className={`font-medium transition-all duration-200 ease-in-out ${
-                              activePath === item.path
-                                ? "text-white"
-                                : "text-neutral-600 dark:text-neutral-400"
-                            }`}
-                          >
-                            {item.title}
-                          </span>
+                          <div className="flex items-center justify-between flex-1">
+                            <span
+                              className={`font-medium transition-all duration-200 ease-in-out ${
+                                activePath === item.path
+                                  ? "text-white"
+                                  : "text-neutral-600 dark:text-neutral-400"
+                              }`}
+                            >
+                              {item.title}
+                            </span>
+                            {/* 뱃지 - 펼쳐진 상태 */}
+                            {item.badge && (
+                              <div className="bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 whitespace-nowrap">
+                                {item.badge}
+                              </div>
+                            )}
+                          </div>
                         </button>
                       ))}
                     </VStack>
