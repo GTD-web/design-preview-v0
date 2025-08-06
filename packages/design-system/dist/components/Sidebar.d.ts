@@ -6,6 +6,7 @@ interface SidebarMenuItem {
     title: string;
     path: string;
     icon?: React.ReactNode;
+    badge?: string;
 }
 /**
  * 사이드바 메뉴 그룹 타입 정의
@@ -61,6 +62,10 @@ interface SidebarProps {
     showNotification?: boolean;
     /** 설정 아이콘 표시 여부 */
     showSettings?: boolean;
+    /** 사이드바 접기 아이콘 (펼쳐진 상태에서 표시) */
+    collapseIcon?: React.ReactNode;
+    /** 사이드바 펼치기 아이콘 (접힌 상태에서 표시) */
+    expandIcon?: React.ReactNode;
 }
 /**
  * 사이드바 컴포넌트
@@ -71,5 +76,5 @@ interface SidebarProps {
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, }: SidebarProps): React.JSX.Element;
+export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, collapseIcon, expandIcon, }: SidebarProps): React.JSX.Element;
 export {};

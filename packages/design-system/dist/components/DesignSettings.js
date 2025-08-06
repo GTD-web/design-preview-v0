@@ -14,8 +14,16 @@ export const fonts = [
 export const themes = [
     { key: "light", label: "라이트", className: "" },
     { key: "dark", label: "다크", className: "theme-dark" },
-    { key: "shadcn-v0-light", label: "Shadcn V0 Light", className: "theme-shadcn-v0-light" },
-    { key: "shadcn-v0-dark", label: "Shadcn V0 Dark", className: "theme-shadcn-v0-dark" },
+    {
+        key: "shadcn-v0-light",
+        label: "Shadcn V0 Light",
+        className: "theme-shadcn-v0-light",
+    },
+    {
+        key: "shadcn-v0-dark",
+        label: "Shadcn V0 Dark",
+        className: "theme-shadcn-v0-dark",
+    },
     { key: "shadcn", label: "Shadcn", className: "theme-shadcn" },
     { key: "dracula", label: "드라큘라", className: "theme-dracula" },
     { key: "pastel", label: "파스텔", className: "theme-pastel" },
@@ -42,7 +50,8 @@ export function DesignSettings({ onFontChange, onThemeChange, onRadiusChange, on
         if (!mounted)
             return;
         function handleClickOutside(event) {
-            if (widgetRef.current && !widgetRef.current.contains(event.target)) {
+            if (widgetRef.current &&
+                !widgetRef.current.contains(event.target)) {
                 setOpen(false);
             }
         }
@@ -96,7 +105,10 @@ export function DesignSettings({ onFontChange, onThemeChange, onRadiusChange, on
                             "px"))),
                 React.createElement("div", { className: "mb-6" },
                     React.createElement("label", { className: "block text-sm font-medium mb-3 text-gray-900 dark:text-white" }, "\uAE30\uBCF8 Spacing"),
-                    React.createElement("input", { type: "range", min: 2, max: 32, value: currentSpacing.md, onChange: (e) => onSpacingChange({ ...currentSpacing, md: Number(e.target.value) }), className: "w-32", "aria-label": "\uAE30\uBCF8 \uC2A4\uD398\uC774\uC2F1 \uC870\uC815", title: `기본 스페이싱: ${currentSpacing.md}px` }),
+                    React.createElement("input", { type: "range", min: 2, max: 32, value: currentSpacing.md, onChange: (e) => onSpacingChange({
+                            ...currentSpacing,
+                            md: Number(e.target.value),
+                        }), className: "w-32", "aria-label": "\uAE30\uBCF8 \uC2A4\uD398\uC774\uC2F1 \uC870\uC815", title: `기본 스페이싱: ${currentSpacing.md}px` }),
                     React.createElement("span", { className: "ml-2 text-xs text-gray-600 dark:text-gray-400" },
                         currentSpacing.md,
                         "px")),

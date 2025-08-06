@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
 import { Button } from "./Button";
-import { useSidebarIcons, sidebarIconOptions } from "../hooks/useSidebarIcons";
+import { useSidebarIcons } from "../hooks/useSidebarIcons";
 
 /**
  * 사이드바 메뉴 아이템 타입 정의
@@ -112,14 +113,102 @@ export function Sidebar({
   expandIcon,
 }: SidebarProps) {
   const router = useRouter();
-  const { currentIcon, isLoaded, setSelectedIcon } = useSidebarIcons();
+  const { currentIcon, isLoaded } = useSidebarIcons();
 
   const [showProfilePopup, setShowProfilePopup] = useState(false);
-  const [showIconSelector, setShowIconSelector] = useState(false);
-  const [iconSelectorPosition, setIconSelectorPosition] = useState({
-    x: 0,
-    y: 0,
-  });
+
+  // 애니메이션 variants 정의
+  const expandedContentVariants: Variants = {
+    hidden: {
+      opacity: 0,
+      transition: {
+        duration: 0.4,
+        delay: 0.2,
+        ease: "easeOut",
+      },
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.4,
+        delay: 0.2,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0,
+      },
+    },
+  };
+
+  const staggerVariants: Variants = {
+    hidden: {
+      transition: {
+        staggerChildren: 0,
+      },
+    },
+    visible: {
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.25,
+      },
+    },
+    exit: {
+      transition: {
+        duration: 0,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: {
+      opacity: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0,
+      },
+    },
+  };
+
+  const collapsedContentVariants: Variants = {
+    hidden: {
+      opacity: 0,
+      transition: {
+        duration: 0.4,
+        delay: 0.2,
+        ease: "easeOut",
+      },
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.4,
+        delay: 0.2,
+        ease: "easeOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0,
+      },
+    },
+  };
 
   const handleModeToggle = () => {
     onModeToggle?.();
@@ -131,25 +220,6 @@ export function Sidebar({
     }
   };
 
-  // 아이콘 우클릭 핸들러
-  const handleIconRightClick = (event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const rect = event.currentTarget.getBoundingClientRect();
-    setIconSelectorPosition({
-      x: rect.right + 10,
-      y: rect.top,
-    });
-    setShowIconSelector(true);
-  };
-
-  // 아이콘 선택 핸들러
-  const handleIconSelect = (iconId: string) => {
-    setSelectedIcon(iconId);
-    setShowIconSelector(false);
-  };
-
   // 팝업 외부 클릭 시 닫기
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -157,16 +227,13 @@ export function Sidebar({
       if (showProfilePopup && !target.closest(".profile-popup")) {
         setShowProfilePopup(false);
       }
-      if (showIconSelector && !target.closest(".icon-selector-popup")) {
-        setShowIconSelector(false);
-      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showProfilePopup, showIconSelector]);
+  }, [showProfilePopup]);
 
   // 저장된 아이콘이 로드되지 않았으면 로딩 상태 처리
   if (!isLoaded) {
@@ -183,251 +250,278 @@ export function Sidebar({
         />
       )}
 
-      {/* 사이드바 - 접힌 상태 */}
-      {isCollapsed && (
-        <aside
-          className={`
-            fixed top-0 left-0 h-full bg-surface z-50
-            transform transition-all duration-500 ease-out
-            ${isOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0
-            shadow-lg
-            ${collapsedWidth} ${className}
-          `}
-          style={{
-            transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-        >
-          <div className="flex flex-col h-full">
+      {/* 사이드바 - 통합 */}
+      <aside
+        className={`
+          fixed top-0 left-0 h-full bg-surface z-50
+          transform transition-all duration-500 ease-out
+          overflow-x-hidden
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0
+          shadow-lg
+          ${isCollapsed ? collapsedWidth : width} ${className}
+        `}
+        style={{
+          transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        <div className="flex flex-col h-full overflow-hidden overflow-x-hidden">
+          {/* 헤더 */}
+          <div
+            className={`border-b border-border transition-all duration-500 ease-out overflow-x-hidden ${
+              isCollapsed ? "p-3" : "p-4"
+            }`}
+          >
             {/* 헤더 - 접힌 상태 */}
-            <div className="p-3 border-b border-border">
-              <div className="flex flex-col items-center gap-3">
-                {logoUrl ? (
-                  <img
-                    src={logoUrl}
-                    alt="Logo"
-                    className="w-10 h-10 object-contain"
-                  />
-                ) : (
-                  <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
-                    <span className="text-white font-bold text-base">
-                      {logoTextShort}
-                    </span>
-                  </div>
-                )}
-                {/* 접기/펼치기 버튼 */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onToggleCollapse}
-                  onContextMenu={handleIconRightClick}
-                  className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
-                  title="사이드바 펼치기 (우클릭: 아이콘 변경)"
+            <AnimatePresence>
+              {isCollapsed && (
+                <motion.div
+                  className="flex flex-col items-center gap-3"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={collapsedContentVariants}
                 >
-                  {expandIcon || currentIcon.expandIcon}
-                </Button>
-              </div>
-            </div>
-
-            {/* 메뉴 - 접힌 상태 */}
-            <nav className="flex-1 overflow-y-auto p-2 pt-4">
-              <div className="flex flex-col gap-sm items-center justify-start">
-                {menuGroups.map((group, groupIndex) => (
-                  <div
-                    key={group.title}
-                    className={`w-full ${groupIndex === 0 ? "mt-2" : ""}`}
-                  >
-                    {group.items.map((item) => (
-                      <div key={item.path} className="relative">
-                        <button
-                          type="button"
-                          onClick={() => router.push(item.path)}
-                          className={`
-                            group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out w-10 mx-auto
-                            ${
-                              activePath === item.path
-                                ? "bg-neutral-800 dark:bg-neutral-700"
-                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                            }
-                          `}
-                          title={item.title}
-                        >
-                          <div
-                            className={`
-                            flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
-                            ${
-                              activePath === item.path
-                                ? "text-white"
-                                : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
-                            }
-                          `}
-                          >
-                            {item.icon}
-                          </div>
-                        </button>
-                        {/* 뱃지 - 접힌 상태 */}
-                        {item.badge && (
-                          <div
-                            className="absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none"
-                            style={{ fontSize: "10px", lineHeight: "12px" }}
-                            title={item.badge}
-                          >
-                            <span className="block truncate">
-                              {item.badge.length > 3
-                                ? `${item.badge.slice(0, 2)}...`
-                                : item.badge}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </nav>
-
-            {/* 푸터 - 접힌 상태 */}
-            <div className="p-2 border-t border-border">
-              <div
-                className="p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer"
-                onClick={handleProfileClick}
-              >
-                <div className="flex justify-center">
-                  <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
-                    <span className="text-white font-bold text-sm">
-                      {user?.initials || user?.name?.charAt(0) || "U"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
-      )}
-
-      {/* 사이드바 - 펼쳐진 상태 */}
-      {!isCollapsed && (
-        <aside
-          className={`
-            fixed top-0 left-0 h-full bg-surface z-50
-            transform transition-transform duration-300 ease-out
-            ${isOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0
-            shadow-lg
-            ${width} ${className}
-          `}
-          style={{
-            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-        >
-          <div className="flex flex-col h-full">
-            {/* 헤더 - 펼쳐진 상태 */}
-            <div className="p-4 flex items-center justify-between border-b border-border">
-              <div className="flex items-center gap-3">
-                {logoUrl ? (
-                  <img
-                    src={logoUrl}
-                    alt="Logo"
-                    className="h-10 object-contain"
-                  />
-                ) : (
-                  <div className="flex items-center gap-3">
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt="Logo"
+                      className="w-10 h-10 object-contain transition-all duration-300"
+                    />
+                  ) : (
                     <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
                       <span className="text-white font-bold text-base">
                         {logoTextShort}
                       </span>
                     </div>
-                    <span className="font-semibold text-lg transition-all duration-300">
-                      {logoText}
-                    </span>
-                  </div>
-                )}
-                {/* 접기/펼치기 버튼 */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onToggleCollapse}
-                  onContextMenu={handleIconRightClick}
-                  className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
-                  title="사이드바 접기 (우클릭: 아이콘 변경)"
+                  )}
+                  {/* 펼치기 버튼 */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onToggleCollapse}
+                    className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
+                    title="사이드바 펼치기"
+                  >
+                    {expandIcon || currentIcon.expandIcon}
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* 헤더 - 펼쳐진 상태 */}
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div
+                  className="flex items-center justify-between"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={expandedContentVariants}
                 >
-                  {collapseIcon || currentIcon.collapseIcon}
-                </Button>
-              </div>
-            </div>
+                  <div className="flex items-center gap-3">
+                    {logoUrl ? (
+                      <img
+                        src={logoUrl}
+                        alt="Logo"
+                        className="h-10 object-contain transition-all duration-300"
+                      />
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                          <span className="text-white font-bold text-base">
+                            {logoTextShort}
+                          </span>
+                        </div>
+                        <span className="font-semibold text-lg">
+                          {logoText}
+                        </span>
+                      </div>
+                    )}
+                    {/* 접기 버튼 */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={onToggleCollapse}
+                      className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
+                      title="사이드바 접기"
+                    >
+                      {collapseIcon || currentIcon.collapseIcon}
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* 메뉴 */}
+          <nav
+            className={`flex-1 overflow-y-auto overflow-x-hidden transition-all duration-500 ease-out ${
+              isCollapsed ? "p-2 pt-4" : "p-4"
+            }`}
+          >
+            {/* 메뉴 - 접힌 상태 */}
+            <AnimatePresence>
+              {isCollapsed && (
+                <motion.div
+                  className="flex flex-col gap-sm items-center justify-start"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={collapsedContentVariants}
+                >
+                  {menuGroups.map((group, groupIndex) => (
+                    <div
+                      key={group.title}
+                      className={`w-full ${groupIndex === 0 ? "mt-2" : ""}`}
+                    >
+                      {group.items.map((item) => (
+                        <div key={item.path} className="relative">
+                          <button
+                            type="button"
+                            onClick={() => router.push(item.path)}
+                            className={`
+                           group flex items-center justify-center h-12 w-12 rounded-lg transition-all duration-200 ease-in-out mx-auto relative
+                           ${
+                             activePath === item.path
+                               ? "bg-neutral-800 dark:bg-neutral-700"
+                               : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                           }
+                         `}
+                            title={item.title}
+                          >
+                            <div
+                              className={`
+                           flex items-center justify-center w-6 h-6 transition-all duration-200 ease-in-out
+                           ${
+                             activePath === item.path
+                               ? "text-white"
+                               : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
+                           }
+                         `}
+                            >
+                              {item.icon}
+                            </div>
+                          </button>
+                          {/* 뱃지 - 접힌 상태 */}
+                          {item.badge && (
+                            <div
+                              className="absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none"
+                              style={{ fontSize: "10px", lineHeight: "12px" }}
+                              title={item.badge}
+                            >
+                              <span className="block truncate">
+                                {item.badge.length > 3
+                                  ? `${item.badge.slice(0, 2)}...`
+                                  : item.badge}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* 메뉴 - 펼쳐진 상태 */}
-            <nav className="flex-1 overflow-y-auto p-4">
-              <VSpace gap="lg" align="stretch">
-                {menuGroups.map((group) => (
-                  <div key={group.title} className="space-y-2">
-                    <h3 className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider transition-all duration-300">
-                      {group.title}
-                    </h3>
-                    <VStack gap="sm" align="stretch">
-                      {group.items.map((item) => (
-                        <button
-                          key={item.path}
-                          type="button"
-                          onClick={() => router.push(item.path)}
-                          className={`
-                            group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out
-                            ${
-                              activePath === item.path
-                                ? "bg-neutral-800 dark:bg-neutral-700"
-                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                            }
-                          `}
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={staggerVariants}
+                >
+                  <VSpace gap="lg" align="stretch">
+                    {menuGroups.map((group) => (
+                      <motion.div
+                        key={group.title}
+                        className="space-y-2"
+                        variants={itemVariants}
+                      >
+                        <motion.h3
+                          className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider transition-all duration-300"
+                          variants={itemVariants}
                         >
-                          <div
-                            className={`
-                            flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
-                            ${
-                              activePath === item.path
-                                ? "text-white"
-                                : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
-                            }
-                          `}
-                          >
-                            {item.icon}
-                          </div>
-                          <div className="flex items-center justify-between flex-1">
-                            <span
-                              className={`font-medium transition-all duration-200 ease-in-out ${
-                                activePath === item.path
-                                  ? "text-white"
-                                  : "text-neutral-600 dark:text-neutral-400"
-                              }`}
+                          {group.title}
+                        </motion.h3>
+                        <VStack gap="sm" align="stretch">
+                          {group.items.map((item) => (
+                            <motion.button
+                              key={item.path}
+                              type="button"
+                              onClick={() => router.push(item.path)}
+                              className={`
+                                group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out overflow-hidden
+                                ${
+                                  activePath === item.path
+                                    ? "bg-neutral-800 dark:bg-neutral-700"
+                                    : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                                }
+                              `}
+                              variants={itemVariants}
                             >
-                              {item.title}
-                            </span>
-                            {/* 뱃지 - 펼쳐진 상태 */}
-                            {item.badge && (
                               <div
-                                className="bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden"
-                                title={item.badge}
+                                className={`
+                                flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out flex-shrink-0
+                                ${
+                                  activePath === item.path
+                                    ? "text-white"
+                                    : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
+                                }
+                              `}
                               >
-                                <span className="block truncate">
-                                  {item.badge}
-                                </span>
+                                {item.icon}
                               </div>
-                            )}
-                          </div>
-                        </button>
-                      ))}
-                    </VStack>
-                  </div>
-                ))}
-              </VSpace>
-            </nav>
+                              <div className="flex items-center justify-between flex-1 min-w-0">
+                                <span
+                                  className={`font-medium transition-all duration-200 ease-in-out truncate ${
+                                    activePath === item.path
+                                      ? "text-white"
+                                      : "text-neutral-600 dark:text-neutral-400"
+                                  }`}
+                                >
+                                  {item.title}
+                                </span>
+                                {/* 뱃지 - 펼쳐진 상태 */}
+                                {item.badge && (
+                                  <div
+                                    className="bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0"
+                                    title={item.badge}
+                                  >
+                                    <span className="block truncate">
+                                      {item.badge}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            </motion.button>
+                          ))}
+                        </VStack>
+                      </motion.div>
+                    ))}
+                  </VSpace>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </nav>
 
-            {/* 관리자/사용자 전환 영역 */}
-            {showModeToggle && (
-              <div className="p-4 border-b border-t">
+          {/* 관리자/사용자 전환 영역 */}
+          <AnimatePresence>
+            {showModeToggle && !isCollapsed && (
+              <motion.div
+                className="p-4 border-b border-t overflow-x-hidden"
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={expandedContentVariants}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group"
+                  className="w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group overflow-hidden"
                   onClick={handleModeToggle}
                 >
                   <div className="flex items-center justify-between w-full">
@@ -453,63 +547,130 @@ export function Sidebar({
                     </svg>
                   </div>
                 </Button>
-              </div>
+              </motion.div>
             )}
+          </AnimatePresence>
+
+          {/* 푸터 */}
+          <div
+            className={`border-t border-border transition-all duration-500 ease-out overflow-x-hidden ${
+              isCollapsed ? "p-2" : "p-4"
+            }`}
+          >
+            {/* 푸터 - 접힌 상태 */}
+            <AnimatePresence>
+              {isCollapsed && (
+                <motion.div
+                  className="p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
+                  onClick={handleProfileClick}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={collapsedContentVariants}
+                >
+                  <div className="flex justify-center">
+                    <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                      <span className="text-white font-bold text-sm">
+                        {user?.initials || user?.name?.charAt(0) || "U"}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* 푸터 - 펼쳐진 상태 */}
-            <div className="p-4">
-              <div
-                className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer"
-                onClick={handleProfileClick}
-              >
-                {/* 사용자 프로필 정보 - 첫 번째 줄 */}
-                <div className="flex items-center justify-between ">
-                  <div className="flex-1 min-w-0 transition-all duration-300">
-                    <p className="text-sm font-medium text-[var(--foreground)] truncate">
-                      {user?.name || "사용자"}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {/* 알림 버튼 */}
-                    {showNotification && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log("알림 클릭");
-                        }}
-                        title="알림"
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          fill="none"
-                          viewBox="0 0 20 20"
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div
+                  className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
+                  onClick={handleProfileClick}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={expandedContentVariants}
+                >
+                  {/* 사용자 프로필 정보 - 첫 번째 줄 */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0 transition-all duration-300">
+                      <p className="text-sm font-medium text-[var(--foreground)] truncate">
+                        {user?.name || "사용자"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {/* 알림 버튼 */}
+                      {showNotification && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log("알림 클릭");
+                          }}
+                          title="알림"
                         >
-                          <path
-                            d="M10 18a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2Zm6-4V9a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </Button>
-                    )}
+                          <svg
+                            width="16"
+                            height="16"
+                            fill="none"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              d="M10 18a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2Zm6-4V9a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Button>
+                      )}
 
-                    {/* 설정 버튼 */}
-                    {showSettings && (
+                      {/* 설정 버튼 */}
+                      {showSettings && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log("설정 클릭");
+                          }}
+                          title="설정"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10.325 4.317c.426-1.756 2.924-1.756 3.50 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                        </Button>
+                      )}
+
+                      {/* 로그아웃 버튼 */}
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200"
+                        className="h-8 w-8 p-0 text-danger hover:text-danger hover:bg-danger/10 transition-all duration-200"
                         onClick={(e) => {
                           e.stopPropagation();
-                          console.log("설정 클릭");
+                          onLogout?.();
                         }}
-                        title="설정"
+                        title="로그아웃"
                       >
                         <svg
                           className="w-4 h-4"
@@ -521,50 +682,18 @@ export function Sidebar({
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                           />
                         </svg>
                       </Button>
-                    )}
-
-                    {/* 로그아웃 버튼 */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 w-8 p-0 text-danger hover:text-danger hover:bg-danger/10 transition-all duration-200"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onLogout?.();
-                      }}
-                      title="로그아웃"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                        />
-                      </svg>
-                    </Button>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        </aside>
-      )}
+        </div>
+      </aside>
 
       {/* 프로필 팝업 */}
       {showProfilePopup && isCollapsed && (
@@ -735,68 +864,6 @@ export function Sidebar({
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* 아이콘 선택 팝업 */}
-      {showIconSelector && (
-        <>
-          {/* 팝업 오버레이 */}
-          <div
-            className="fixed inset-0 bg-black/20 z-50"
-            onClick={() => setShowIconSelector(false)}
-          />
-
-          {/* 팝업 컨테이너 */}
-          <div
-            className="icon-selector-popup fixed bg-surface rounded-lg shadow-2xl border border-border w-72 max-h-96 overflow-hidden transform transition-all duration-200 ease-in-out z-50"
-            style={{
-              left: iconSelectorPosition.x,
-              top: iconSelectorPosition.y,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-4">
-              <h3 className="text-sm font-semibold text-foreground mb-3">
-                사이드바 아이콘 선택
-              </h3>
-
-              <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
-                {sidebarIconOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => handleIconSelect(option.id)}
-                    className={`
-                      flex flex-col items-center gap-2 p-3 rounded-lg border transition-all duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800
-                      ${
-                        option.id === currentIcon.id
-                          ? "bg-neutral-900 dark:bg-neutral-700 text-white border-neutral-900 dark:border-neutral-700"
-                          : "border-neutral-200 dark:border-neutral-700"
-                      }
-                    `}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center justify-center">
-                        {option.expandIcon}
-                      </div>
-                      <div className="flex items-center justify-center">
-                        {option.collapseIcon}
-                      </div>
-                    </div>
-                    <span
-                      className={`text-xs font-medium ${
-                        option.id === currentIcon.id
-                          ? "text-white"
-                          : "text-neutral-600 dark:text-neutral-400"
-                      }`}
-                    >
-                      {option.name}
-                    </span>
-                  </button>
-                ))}
               </div>
             </div>
           </div>
