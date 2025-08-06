@@ -10,7 +10,7 @@ export function LayoutContainer({ type = "centered", maxWidth = "max-w-6xl", pad
     const getLayoutClasses = () => {
         const baseClasses = `min-h-screen ${padding} bg-[var(--color-background)]`;
         const sidebarMargin = hasSidebar
-            ? `transition-all duration-100 ease-out ${sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"}`
+            ? `transition-all duration-500 ease-out ${sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"}`
             : "";
         // 패딩 값에서 숫자 추출 (예: "p-6" -> 6, "px-4 py-8" -> 4)
         const paddingValue = padding.includes("p-")

@@ -2,7 +2,7 @@ import React from "react";
 /**
  * 사이드바 메뉴 아이템 타입 정의
  */
-interface SidebarMenuItem {
+export interface SidebarMenuItem {
     title: string;
     path: string;
     icon?: React.ReactNode;
@@ -11,9 +11,67 @@ interface SidebarMenuItem {
 /**
  * 사이드바 메뉴 그룹 타입 정의
  */
-interface SidebarMenuGroup {
+export interface SidebarMenuGroup {
     title: string;
     items: SidebarMenuItem[];
+}
+/**
+ * 공통 사이드바 Props 인터페이스
+ */
+export interface SidebarBaseProps {
+    /** 로고 이미지 URL */
+    logoUrl?: string;
+    /** 로고 텍스트 (전체) */
+    logoText?: string;
+    /** 로고 텍스트 (축약) */
+    logoTextShort?: string;
+    /** 현재 활성 메뉴 경로 */
+    activePath?: string;
+    /** 메뉴 그룹 목록 */
+    menuGroups: SidebarMenuGroup[];
+    /** 추가 클래스명 */
+    className?: string;
+    /** 사용자 정보 */
+    user?: {
+        name: string;
+        email: string;
+        avatar?: string;
+        initials?: string;
+    };
+    /** 로그아웃 함수 */
+    onLogout?: () => void;
+    /** 관리자 모드 여부 */
+    isAdminMode?: boolean;
+    /** 관리자/사용자 모드 전환 함수 */
+    onModeToggle?: () => void;
+    /** 화면 이동 버튼 표시 여부 */
+    showModeToggle?: boolean;
+    /** 알림 아이콘 표시 여부 */
+    showNotification?: boolean;
+    /** 설정 아이콘 표시 여부 */
+    showSettings?: boolean;
+}
+/**
+ * 접힌 사이드바 Props 인터페이스
+ */
+export interface SidebarCollapsedProps extends Omit<SidebarBaseProps, "logoText"> {
+    /** 사이드바 펼치기 토글 함수 */
+    onToggleExpand: () => void;
+    /** 사이드바 펼치기 아이콘 */
+    expandIcon?: React.ReactNode;
+    /** 접힌 사이드바 너비 */
+    width?: string;
+}
+/**
+ * 펼쳐진 사이드바 Props 인터페이스
+ */
+export interface SidebarExpandedProps extends SidebarBaseProps {
+    /** 사이드바 접기 토글 함수 */
+    onToggleCollapse: () => void;
+    /** 사이드바 접기 아이콘 */
+    collapseIcon?: React.ReactNode;
+    /** 펼쳐진 사이드바 너비 */
+    width?: string;
 }
 /**
  * Sidebar 컴포넌트 Props 인터페이스
@@ -68,7 +126,15 @@ interface SidebarProps {
     expandIcon?: React.ReactNode;
 }
 /**
- * 사이드바 컴포넌트
+ * 접힌 사이드바 컴포넌트
+ */
+export declare function SidebarCollapsed({ logoUrl, logoTextShort, activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, onToggleExpand, expandIcon, }: SidebarCollapsedProps): React.JSX.Element;
+/**
+ * 펼쳐진 사이드바 컴포넌트
+ */
+export declare function SidebarExpanded({ logoUrl, logoText, logoTextShort, activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, onToggleCollapse, collapseIcon, }: SidebarExpandedProps): React.JSX.Element;
+/**
+ * 사이드바 컴포넌트 (통합)
  *
  * 기능:
  * - 네비게이션 메뉴 제공

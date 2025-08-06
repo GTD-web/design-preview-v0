@@ -10,7 +10,7 @@ export { HStack, VStack, VSpace } from "./components/Stack";
 export { Text, TextSpan, TextP, TextDiv, TextHeading, TextValue, TextLabel, } from "./components/Text";
 export { Drawer } from "./components/Drawer";
 export { LayoutContainer } from "./components/LayoutContainer";
-export { Sidebar } from "./components/Sidebar";
+export { Sidebar, SidebarCollapsed, SidebarExpanded, } from "./components/Sidebar";
 export { DesignSettings } from "./components/DesignSettings";
 // Hooks
 export { useDesignSettings, DesignSettingsProvider, } from "./hooks/useDesignSettings";
