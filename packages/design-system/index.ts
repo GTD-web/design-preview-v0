@@ -18,7 +18,16 @@ export {
 } from "./components/Text";
 export { Drawer } from "./components/Drawer";
 export { LayoutContainer } from "./components/LayoutContainer";
-export { Sidebar } from "./components/Sidebar";
+export {
+  Sidebar,
+  SidebarCollapsed,
+  SidebarExpanded,
+  type SidebarMenuItem,
+  type SidebarMenuGroup,
+  type SidebarBaseProps,
+  type SidebarCollapsedProps,
+  type SidebarExpandedProps,
+} from "./components/Sidebar";
 export { DesignSettings } from "./components/DesignSettings";
 
 // Hooks

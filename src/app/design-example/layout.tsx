@@ -9,9 +9,9 @@ import Loading from "../loading";
 import {
   Button,
   DesignSettingsProvider,
-  LayoutContainer,
   useDesignSettings,
 } from "@lumir-company/design-system-v0";
+import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
 import { Sidebar } from "@/packages/design-system/components/Sidebar";
 

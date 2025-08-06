@@ -44,7 +44,7 @@ export function LayoutContainer({
   const getLayoutClasses = () => {
     const baseClasses = `min-h-screen ${padding} bg-[var(--color-background)]`;
     const sidebarMargin = hasSidebar
-      ? `transition-all duration-100 ease-out ${
+      ? `transition-all duration-500 ease-out ${
           sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
         }`
       : "";
