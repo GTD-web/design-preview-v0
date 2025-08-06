@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
 import { Button } from "./Button";
-import { useSidebarIcons, sidebarIconOptions } from "../hooks/useSidebarIcons";
+import { useSidebarIcons } from "../hooks/useSidebarIcons";
 /**
  * 사이드바 컴포넌트
  *
@@ -17,13 +18,97 @@ import { useSidebarIcons, sidebarIconOptions } from "../hooks/useSidebarIcons";
  */
 export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", collapseIcon, expandIcon, }) {
     const router = useRouter();
-    const { currentIcon, isLoaded, setSelectedIcon } = useSidebarIcons();
+    const { currentIcon, isLoaded } = useSidebarIcons();
     const [showProfilePopup, setShowProfilePopup] = useState(false);
-    const [showIconSelector, setShowIconSelector] = useState(false);
-    const [iconSelectorPosition, setIconSelectorPosition] = useState({
-        x: 0,
-        y: 0,
-    });
+    // 애니메이션 variants 정의
+    const expandedContentVariants = {
+        hidden: {
+            opacity: 0,
+            transition: {
+                duration: 0.4,
+                delay: 0.2,
+                ease: "easeOut",
+            },
+        },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.4,
+                delay: 0.2,
+                ease: "easeOut",
+            },
+        },
+        exit: {
+            opacity: 0,
+            transition: {
+                duration: 0,
+            },
+        },
+    };
+    const staggerVariants = {
+        hidden: {
+            transition: {
+                staggerChildren: 0,
+            },
+        },
+        visible: {
+            transition: {
+                staggerChildren: 0.05,
+                delayChildren: 0.25,
+            },
+        },
+        exit: {
+            transition: {
+                duration: 0,
+            },
+        },
+    };
+    const itemVariants = {
+        hidden: {
+            opacity: 0,
+            transition: {
+                duration: 0.3,
+                ease: "easeOut",
+            },
+        },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.3,
+                ease: "easeOut",
+            },
+        },
+        exit: {
+            opacity: 0,
+            transition: {
+                duration: 0,
+            },
+        },
+    };
+    const collapsedContentVariants = {
+        hidden: {
+            opacity: 0,
+            transition: {
+                duration: 0.4,
+                delay: 0.2,
+                ease: "easeOut",
+            },
+        },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.4,
+                delay: 0.2,
+                ease: "easeOut",
+            },
+        },
+        exit: {
+            opacity: 0,
+            transition: {
+                duration: 0,
+            },
+        },
+    };
     const handleModeToggle = () => {
         onModeToggle?.();
     };
@@ -32,22 +117,6 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
             setShowProfilePopup(!showProfilePopup);
         }
     };
-    // 아이콘 우클릭 핸들러
-    const handleIconRightClick = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const rect = event.currentTarget.getBoundingClientRect();
-        setIconSelectorPosition({
-            x: rect.right + 10,
-            y: rect.top,
-        });
-        setShowIconSelector(true);
-    };
-    // 아이콘 선택 핸들러
-    const handleIconSelect = (iconId) => {
-        setSelectedIcon(iconId);
-        setShowIconSelector(false);
-    };
     // 팝업 외부 클릭 시 닫기
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -55,110 +124,96 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
             if (showProfilePopup && !target.closest(".profile-popup")) {
                 setShowProfilePopup(false);
             }
-            if (showIconSelector && !target.closest(".icon-selector-popup")) {
-                setShowIconSelector(false);
-            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [showProfilePopup, showIconSelector]);
+    }, [showProfilePopup]);
     // 저장된 아이콘이 로드되지 않았으면 로딩 상태 처리
     if (!isLoaded) {
         return null;
     }
     return (React.createElement(React.Fragment, null,
         isOpen && (React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose })),
-        isCollapsed && (React.createElement("aside", { className: `
-            fixed top-0 left-0 h-full bg-surface z-50
-            transform transition-all duration-500 ease-out
-            ${isOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0
-            shadow-lg
-            ${collapsedWidth} ${className}
-          `, style: {
+        React.createElement("aside", { className: `
+          fixed top-0 left-0 h-full bg-surface z-50
+          transform transition-all duration-500 ease-out
+          overflow-x-hidden
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0
+          shadow-lg
+          ${isCollapsed ? collapsedWidth : width} ${className}
+        `, style: {
                 transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
             } },
-            React.createElement("div", { className: "flex flex-col h-full" },
-                React.createElement("div", { className: "p-3 border-b border-border" },
-                    React.createElement("div", { className: "flex flex-col items-center gap-3" },
-                        logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "w-10 h-10 object-contain" })) : (React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
+            React.createElement("div", { className: "flex flex-col h-full overflow-hidden overflow-x-hidden" },
+                React.createElement("div", { className: `border-b border-border transition-all duration-500 ease-out overflow-x-hidden ${isCollapsed ? "p-3" : "p-4"}` },
+                    React.createElement(AnimatePresence, null, isCollapsed && (React.createElement(motion.div, { className: "flex flex-col items-center gap-3", initial: "hidden", animate: "visible", exit: "exit", variants: collapsedContentVariants },
+                        logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "w-10 h-10 object-contain transition-all duration-300" })) : (React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
                             React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort))),
-                        React.createElement(Button, { variant: "ghost", size: "sm", onClick: onToggleCollapse, onContextMenu: handleIconRightClick, className: "p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200", title: "\uC0AC\uC774\uB4DC\uBC14 \uD3BC\uCE58\uAE30 (\uC6B0\uD074\uB9AD: \uC544\uC774\uCF58 \uBCC0\uACBD)" }, expandIcon || currentIcon.expandIcon))),
-                React.createElement("nav", { className: "flex-1 overflow-y-auto p-2 pt-4" },
-                    React.createElement("div", { className: "flex flex-col gap-sm items-center justify-start" }, menuGroups.map((group, groupIndex) => (React.createElement("div", { key: group.title, className: `w-full ${groupIndex === 0 ? "mt-2" : ""}` }, group.items.map((item) => (React.createElement("div", { key: item.path, className: "relative" },
+                        React.createElement(Button, { variant: "ghost", size: "sm", onClick: onToggleCollapse, className: "p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200", title: "\uC0AC\uC774\uB4DC\uBC14 \uD3BC\uCE58\uAE30" }, expandIcon || currentIcon.expandIcon)))),
+                    React.createElement(AnimatePresence, null, !isCollapsed && (React.createElement(motion.div, { className: "flex items-center justify-between", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
+                        React.createElement("div", { className: "flex items-center gap-3" },
+                            logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "h-10 object-contain transition-all duration-300" })) : (React.createElement("div", { className: "flex items-center gap-3" },
+                                React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
+                                    React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort)),
+                                React.createElement("span", { className: "font-semibold text-lg" }, logoText))),
+                            React.createElement(Button, { variant: "ghost", size: "sm", onClick: onToggleCollapse, className: "p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200", title: "\uC0AC\uC774\uB4DC\uBC14 \uC811\uAE30" }, collapseIcon || currentIcon.collapseIcon)))))),
+                React.createElement("nav", { className: `flex-1 overflow-y-auto overflow-x-hidden transition-all duration-500 ease-out ${isCollapsed ? "p-2 pt-4" : "p-4"}` },
+                    React.createElement(AnimatePresence, null, isCollapsed && (React.createElement(motion.div, { className: "flex flex-col gap-sm items-center justify-start", initial: "hidden", animate: "visible", exit: "exit", variants: collapsedContentVariants }, menuGroups.map((group, groupIndex) => (React.createElement("div", { key: group.title, className: `w-full ${groupIndex === 0 ? "mt-2" : ""}` }, group.items.map((item) => (React.createElement("div", { key: item.path, className: "relative" },
                         React.createElement("button", { type: "button", onClick: () => router.push(item.path), className: `
-                            group flex items-center justify-center h-10 rounded-lg transition-all duration-200 ease-in-out w-10 mx-auto
-                            ${activePath === item.path
+                           group flex items-center justify-center h-12 w-12 rounded-lg transition-all duration-200 ease-in-out mx-auto relative
+                           ${activePath === item.path
                                 ? "bg-neutral-800 dark:bg-neutral-700"
                                 : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"}
-                          `, title: item.title },
+                         `, title: item.title },
                             React.createElement("div", { className: `
-                            flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
-                            ${activePath === item.path
+                           flex items-center justify-center w-6 h-6 transition-all duration-200 ease-in-out
+                           ${activePath === item.path
                                     ? "text-white"
                                     : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"}
-                          ` }, item.icon)),
+                         ` }, item.icon)),
                         item.badge && (React.createElement("div", { className: "absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none", style: { fontSize: "10px", lineHeight: "12px" }, title: item.badge },
                             React.createElement("span", { className: "block truncate" }, item.badge.length > 3
                                 ? `${item.badge.slice(0, 2)}...`
-                                : item.badge))))))))))),
-                React.createElement("div", { className: "p-2 border-t border-border" },
-                    React.createElement("div", { className: "p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer", onClick: handleProfileClick },
-                        React.createElement("div", { className: "flex justify-center" },
-                            React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
-                                React.createElement("span", { className: "text-white font-bold text-sm" }, user?.initials || user?.name?.charAt(0) || "U")))))))),
-        !isCollapsed && (React.createElement("aside", { className: `
-            fixed top-0 left-0 h-full bg-surface z-50
-            transform transition-transform duration-300 ease-out
-            ${isOpen ? "translate-x-0" : "-translate-x-full"}
-            lg:translate-x-0
-            shadow-lg
-            ${width} ${className}
-          `, style: {
-                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-            } },
-            React.createElement("div", { className: "flex flex-col h-full" },
-                React.createElement("div", { className: "p-4 flex items-center justify-between border-b border-border" },
-                    React.createElement("div", { className: "flex items-center gap-3" },
-                        logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "h-10 object-contain" })) : (React.createElement("div", { className: "flex items-center gap-3" },
-                            React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
-                                React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort)),
-                            React.createElement("span", { className: "font-semibold text-lg transition-all duration-300" }, logoText))),
-                        React.createElement(Button, { variant: "ghost", size: "sm", onClick: onToggleCollapse, onContextMenu: handleIconRightClick, className: "p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200", title: "\uC0AC\uC774\uB4DC\uBC14 \uC811\uAE30 (\uC6B0\uD074\uB9AD: \uC544\uC774\uCF58 \uBCC0\uACBD)" }, collapseIcon || currentIcon.collapseIcon))),
-                React.createElement("nav", { className: "flex-1 overflow-y-auto p-4" },
-                    React.createElement(VSpace, { gap: "lg", align: "stretch" }, menuGroups.map((group) => (React.createElement("div", { key: group.title, className: "space-y-2" },
-                        React.createElement("h3", { className: "text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider transition-all duration-300" }, group.title),
-                        React.createElement(VStack, { gap: "sm", align: "stretch" }, group.items.map((item) => (React.createElement("button", { key: item.path, type: "button", onClick: () => router.push(item.path), className: `
-                            group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out
-                            ${activePath === item.path
-                                ? "bg-neutral-800 dark:bg-neutral-700"
-                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"}
-                          ` },
-                            React.createElement("div", { className: `
-                            flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out
-                            ${activePath === item.path
-                                    ? "text-white"
-                                    : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"}
-                          ` }, item.icon),
-                            React.createElement("div", { className: "flex items-center justify-between flex-1" },
-                                React.createElement("span", { className: `font-medium transition-all duration-200 ease-in-out ${activePath === item.path
+                                : item.badge)))))))))))),
+                    React.createElement(AnimatePresence, null, !isCollapsed && (React.createElement(motion.div, { initial: "hidden", animate: "visible", exit: "exit", variants: staggerVariants },
+                        React.createElement(VSpace, { gap: "lg", align: "stretch" }, menuGroups.map((group) => (React.createElement(motion.div, { key: group.title, className: "space-y-2", variants: itemVariants },
+                            React.createElement(motion.h3, { className: "text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider transition-all duration-300", variants: itemVariants }, group.title),
+                            React.createElement(VStack, { gap: "sm", align: "stretch" }, group.items.map((item) => (React.createElement(motion.button, { key: item.path, type: "button", onClick: () => router.push(item.path), className: `
+                                group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out overflow-hidden
+                                ${activePath === item.path
+                                    ? "bg-neutral-800 dark:bg-neutral-700"
+                                    : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"}
+                              `, variants: itemVariants },
+                                React.createElement("div", { className: `
+                                flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out flex-shrink-0
+                                ${activePath === item.path
                                         ? "text-white"
-                                        : "text-neutral-600 dark:text-neutral-400"}` }, item.title),
-                                item.badge && (React.createElement("div", { className: "bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden", title: item.badge },
-                                    React.createElement("span", { className: "block truncate" }, item.badge))))))))))))),
-                showModeToggle && (React.createElement("div", { className: "p-4 border-b border-t" },
-                    React.createElement(Button, { variant: "ghost", size: "sm", className: "w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group", onClick: handleModeToggle },
+                                        : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"}
+                              ` }, item.icon),
+                                React.createElement("div", { className: "flex items-center justify-between flex-1 min-w-0" },
+                                    React.createElement("span", { className: `font-medium transition-all duration-200 ease-in-out truncate ${activePath === item.path
+                                            ? "text-white"
+                                            : "text-neutral-600 dark:text-neutral-400"}` }, item.title),
+                                    item.badge && (React.createElement("div", { className: "bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0", title: item.badge },
+                                        React.createElement("span", { className: "block truncate" }, item.badge)))))))))))))))),
+                React.createElement(AnimatePresence, null, showModeToggle && !isCollapsed && (React.createElement(motion.div, { className: "p-4 border-b border-t overflow-x-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
+                    React.createElement(Button, { variant: "ghost", size: "sm", className: "w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group overflow-hidden", onClick: handleModeToggle },
                         React.createElement("div", { className: "flex items-center justify-between w-full" },
                             React.createElement("span", { className: "text-sm font-medium" }, isAdminMode
                                 ? "사용자 화면으로 이동"
                                 : "관리자 화면으로 이동"),
                             React.createElement("svg", { width: "16", height: "16", fill: "none", viewBox: "0 0 24 24", className: "text-secondary group-hover:text-primary transition-colors duration-200" },
-                                React.createElement("path", { d: "M9 5l7 7-7 7", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" })))))),
-                React.createElement("div", { className: "p-4" },
-                    React.createElement("div", { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-200 ease-in-out cursor-pointer", onClick: handleProfileClick },
-                        React.createElement("div", { className: "flex items-center justify-between " },
+                                React.createElement("path", { d: "M9 5l7 7-7 7", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }))))))),
+                React.createElement("div", { className: `border-t border-border transition-all duration-500 ease-out overflow-x-hidden ${isCollapsed ? "p-2" : "p-4"}` },
+                    React.createElement(AnimatePresence, null, isCollapsed && (React.createElement(motion.div, { className: "p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", onClick: handleProfileClick, initial: "hidden", animate: "visible", exit: "exit", variants: collapsedContentVariants },
+                        React.createElement("div", { className: "flex justify-center" },
+                            React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
+                                React.createElement("span", { className: "text-white font-bold text-sm" }, user?.initials || user?.name?.charAt(0) || "U")))))),
+                    React.createElement(AnimatePresence, null, !isCollapsed && (React.createElement(motion.div, { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", onClick: handleProfileClick, initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
+                        React.createElement("div", { className: "flex items-center justify-between" },
                             React.createElement("div", { className: "flex-1 min-w-0 transition-all duration-300" },
                                 React.createElement("p", { className: "text-sm font-medium text-[var(--foreground)] truncate" }, user?.name || "사용자")),
                             React.createElement("div", { className: "flex items-center gap-1" },
@@ -173,14 +228,14 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                                         console.log("설정 클릭");
                                     }, title: "\uC124\uC815" },
                                     React.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
-                                        React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" }),
+                                        React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10.325 4.317c.426-1.756 2.924-1.756 3.50 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" }),
                                         React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M15 12a3 3 0 11-6 0 3 3 0 016 0z" })))),
                                 React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0 text-danger hover:text-danger hover:bg-danger/10 transition-all duration-200", onClick: (e) => {
                                         e.stopPropagation();
                                         onLogout?.();
                                     }, title: "\uB85C\uADF8\uC544\uC6C3" },
                                     React.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
-                                        React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" })))))))))),
+                                        React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" }))))))))))),
         showProfilePopup && isCollapsed && (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "fixed inset-0 bg-black/50 z-50", onClick: () => setShowProfilePopup(false) },
                 React.createElement("div", { className: "profile-popup fixed bg-surface rounded-lg shadow-2xl border border-border w-80 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out", style: {
@@ -228,25 +283,5 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                                         React.createElement("div", { className: "flex items-center w-full" },
                                             React.createElement("svg", { className: "w-5 h-5 mr-3 flex-shrink-0", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" })),
-                                            React.createElement("span", { className: "text-left" }, "\uB85C\uADF8\uC544\uC6C3"))))))))))),
-        showIconSelector && (React.createElement(React.Fragment, null,
-            React.createElement("div", { className: "fixed inset-0 bg-black/20 z-50", onClick: () => setShowIconSelector(false) }),
-            React.createElement("div", { className: "icon-selector-popup fixed bg-surface rounded-lg shadow-2xl border border-border w-72 max-h-96 overflow-hidden transform transition-all duration-200 ease-in-out z-50", style: {
-                    left: iconSelectorPosition.x,
-                    top: iconSelectorPosition.y,
-                }, onClick: (e) => e.stopPropagation() },
-                React.createElement("div", { className: "p-4" },
-                    React.createElement("h3", { className: "text-sm font-semibold text-foreground mb-3" }, "\uC0AC\uC774\uB4DC\uBC14 \uC544\uC774\uCF58 \uC120\uD0DD"),
-                    React.createElement("div", { className: "grid grid-cols-2 gap-2 max-h-64 overflow-y-auto" }, sidebarIconOptions.map((option) => (React.createElement("button", { key: option.id, onClick: () => handleIconSelect(option.id), className: `
-                      flex flex-col items-center gap-2 p-3 rounded-lg border transition-all duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800
-                      ${option.id === currentIcon.id
-                            ? "bg-neutral-900 dark:bg-neutral-700 text-white border-neutral-900 dark:border-neutral-700"
-                            : "border-neutral-200 dark:border-neutral-700"}
-                    ` },
-                        React.createElement("div", { className: "flex items-center gap-2" },
-                            React.createElement("div", { className: "flex items-center justify-center" }, option.expandIcon),
-                            React.createElement("div", { className: "flex items-center justify-center" }, option.collapseIcon)),
-                        React.createElement("span", { className: `text-xs font-medium ${option.id === currentIcon.id
-                                ? "text-white"
-                                : "text-neutral-600 dark:text-neutral-400"}` }, option.name)))))))))));
+                                            React.createElement("span", { className: "text-left" }, "\uB85C\uADF8\uC544\uC6C3")))))))))))));
 }
