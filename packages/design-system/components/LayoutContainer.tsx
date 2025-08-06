@@ -44,9 +44,7 @@ export function LayoutContainer({
   const getLayoutClasses = () => {
     const baseClasses = `min-h-screen ${padding} bg-[var(--color-background)]`;
     const sidebarMargin = hasSidebar
-      ? `transition-all duration-500 ease-out ${
-          sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
-        }`
+      ? `transition-all ease-out ${sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"}`
       : "";
 
     // 패딩 값에서 숫자 추출 (예: "p-6" -> 6, "px-4 py-8" -> 4)
@@ -81,5 +79,15 @@ export function LayoutContainer({
     }
   };
 
-  return <div className={`${getLayoutClasses()} ${className}`}>{children}</div>;
+  // 사이드바가 있을 때 CSS 직접 스타일 적용
+  const transitionStyle = hasSidebar ? { transitionDuration: "450ms" } : {};
+
+  return (
+    <div
+      className={`${getLayoutClasses()} ${className}`}
+      style={transitionStyle}
+    >
+      {children}
+    </div>
+  );
 }

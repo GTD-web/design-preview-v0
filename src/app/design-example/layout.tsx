@@ -187,7 +187,8 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
 
   // 사이드바 상태 관리
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // 초기 상태: 펼쳐진 사이드바
+  const [isHoverEnabled, setIsHoverEnabled] = useState(false);
   const pathname = usePathname();
 
   // 관리자/사용자 화면 상태 관리
@@ -223,6 +224,19 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // 호버 모드 토글 함수
+  const handleHoverToggle = () => {
+    if (isHoverEnabled) {
+      // 호버 모드 비활성화 → 펼친 사이드바로 변경
+      setIsHoverEnabled(false);
+      setSidebarCollapsed(false);
+    } else {
+      // 호버 모드 활성화 → 접힌 사이드바로 변경
+      setIsHoverEnabled(true);
+      setSidebarCollapsed(true);
+    }
+  };
+
   return (
     <ClientOnly fallback={<Loading />}>
       <div className="lg:flex h-screen">
@@ -231,7 +245,19 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
           isCollapsed={sidebarCollapsed}
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onToggleCollapse={() => {
+            if (isHoverEnabled) {
+              // 호버 모드에서는 단순히 접기/펼치기만 수행 (호버 이벤트용)
+              setSidebarCollapsed(!sidebarCollapsed);
+            } else if (!sidebarCollapsed) {
+              // 펼쳐진 상태에서 접기 버튼 클릭 → 호버 모드 활성화 + 접기
+              setIsHoverEnabled(true);
+              setSidebarCollapsed(true);
+            } else {
+              // 일반 접힌 상태에서 펼치기
+              setSidebarCollapsed(false);
+            }
+          }}
           activePath={pathname}
           menuGroups={sidebarMenuGroups}
           user={user}
@@ -241,11 +267,14 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
           showModeToggle={true}
           showNotification={true}
           showSettings={true}
+          isHoverEnabled={isHoverEnabled}
+          onToggleHover={handleHoverToggle}
           // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
           // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
           // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
           logoText="커스텀 시스템"
           logoTextShort="CS"
+
           // 사이드바 아이콘은 이제 설정에서 사용자가 직접 선택할 수 있습니다
           // collapseIcon과 expandIcon props는 필요시에만 사용하세요
         />

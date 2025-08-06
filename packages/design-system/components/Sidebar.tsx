@@ -62,6 +62,8 @@ export interface SidebarBaseProps {
   showNotification?: boolean;
   /** 설정 아이콘 표시 여부 */
   showSettings?: boolean;
+  /** 호버 모드 활성화 여부 */
+  isHoverEnabled?: boolean;
 }
 
 /**
@@ -75,6 +77,8 @@ export interface SidebarCollapsedProps
   expandIcon?: React.ReactNode;
   /** 접힌 사이드바 너비 */
   width?: string;
+  /** 호버 토글 함수 */
+  onToggleHover?: () => void;
 }
 
 /**
@@ -87,6 +91,8 @@ export interface SidebarExpandedProps extends SidebarBaseProps {
   collapseIcon?: React.ReactNode;
   /** 펼쳐진 사이드바 너비 */
   width?: string;
+  /** 호버 토글 함수 */
+  onToggleHover?: () => void;
 }
 
 /**
@@ -140,6 +146,10 @@ interface SidebarProps {
   collapseIcon?: React.ReactNode;
   /** 사이드바 펼치기 아이콘 (접힌 상태에서 표시) */
   expandIcon?: React.ReactNode;
+  /** 호버 모드 활성화 여부 */
+  isHoverEnabled?: boolean;
+  /** 호버 모드 토글 함수 */
+  onToggleHover?: () => void;
 }
 
 /**
@@ -161,6 +171,8 @@ export function SidebarCollapsed({
   showSettings = true,
   onToggleExpand,
   expandIcon,
+  isHoverEnabled = false,
+  onToggleHover,
 }: SidebarCollapsedProps) {
   const router = useRouter();
   const { currentIcon, isLoaded } = useSidebarIcons();
@@ -222,11 +234,28 @@ export function SidebarCollapsed({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={onToggleExpand}
-                className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
-                title="사이드바 펼치기"
+                onClick={isHoverEnabled ? onToggleExpand : onToggleHover}
+                className={`p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200 ${
+                  isHoverEnabled ? "bg-neutral-100 dark:bg-neutral-800" : ""
+                }`}
+                title={isHoverEnabled ? "사이드바 펼치기" : "호버 모드 활성화"}
               >
-                {expandIcon || currentIcon.expandIcon}
+                {isHoverEnabled ? (
+                  expandIcon || currentIcon.expandIcon
+                ) : (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                  </svg>
+                )}
               </Button>
             </div>
           </div>
@@ -494,76 +523,29 @@ export function SidebarExpanded({
   showSettings = true,
   onToggleCollapse,
   collapseIcon,
+  isHoverEnabled = false,
+  onToggleHover,
 }: SidebarExpandedProps) {
   const router = useRouter();
   const { currentIcon, isLoaded } = useSidebarIcons();
 
-  // 애니메이션 variants 정의
+  // 애니메이션 variants 정의 (opacity 제거)
   const expandedContentVariants: Variants = {
-    hidden: {
-      opacity: 0,
-      transition: {
-        duration: 0.4,
-        delay: 0.2,
-        ease: "easeOut",
-      },
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.4,
-        delay: 0.2,
-        ease: "easeOut",
-      },
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        duration: 0,
-      },
-    },
+    hidden: {},
+    visible: {},
+    exit: {},
   };
 
   const staggerVariants: Variants = {
-    hidden: {
-      transition: {
-        staggerChildren: 0,
-      },
-    },
-    visible: {
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.25,
-      },
-    },
-    exit: {
-      transition: {
-        duration: 0,
-      },
-    },
+    hidden: {},
+    visible: {},
+    exit: {},
   };
 
   const itemVariants: Variants = {
-    hidden: {
-      opacity: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut",
-      },
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut",
-      },
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        duration: 0,
-      },
-    },
+    hidden: {},
+    visible: {},
+    exit: {},
   };
 
   const handleModeToggle = () => {
@@ -612,11 +594,28 @@ export function SidebarExpanded({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={onToggleCollapse}
-                className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200"
-                title="사이드바 접기"
+                onClick={isHoverEnabled ? onToggleHover : onToggleCollapse}
+                className={`p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200 ${
+                  isHoverEnabled ? "bg-neutral-100 dark:bg-neutral-800" : ""
+                }`}
+                title={isHoverEnabled ? "호버 모드 비활성화" : "사이드바 접기"}
               >
-                {collapseIcon || currentIcon.collapseIcon}
+                {isHoverEnabled ? (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                  </svg>
+                ) : (
+                  collapseIcon || currentIcon.collapseIcon
+                )}
               </Button>
             </div>
           </motion.div>
@@ -705,7 +704,7 @@ export function SidebarExpanded({
         <AnimatePresence>
           {showModeToggle && (
             <motion.div
-              className="p-4 border-b border-t overflow-x-hidden"
+              className="p-4 border-t overflow-x-hidden"
               initial="hidden"
               animate="visible"
               exit="exit"
@@ -880,9 +879,15 @@ export function Sidebar({
   logoTextShort = "DS",
   collapseIcon,
   expandIcon,
+  isHoverEnabled = false,
+  onToggleHover,
 }: SidebarProps) {
   const { isLoaded } = useSidebarIcons();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [hoverTimeoutId, setHoverTimeoutId] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // 화면 크기 감지
   useEffect(() => {
@@ -895,6 +900,73 @@ export function Sidebar({
 
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
+
+  // 호버 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutId) {
+        clearTimeout(hoverTimeoutId);
+      }
+    };
+  }, [hoverTimeoutId]);
+
+  // 호버 이벤트 핸들러
+  const handleMouseEnter = () => {
+    if (!isHoverEnabled || !isCollapsed || isAnimating) return;
+
+    if (hoverTimeoutId) {
+      clearTimeout(hoverTimeoutId);
+      setHoverTimeoutId(null);
+    }
+
+    // 애니메이션 상태 설정
+    setIsAnimating(true);
+
+    // 호버 시 사이드바 펼치기
+    onToggleCollapse?.();
+
+    // 애니메이션 완료 후 상태 리셋
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 250); // 애니메이션 시간보다 약간 길게
+  };
+
+  const handleMouseLeave = () => {
+    if (!isHoverEnabled || isCollapsed || isAnimating) return;
+
+    const timeoutId = setTimeout(() => {
+      if (!isAnimating) {
+        // 애니메이션 상태 설정
+        setIsAnimating(true);
+
+        // 호버 해제 시 사이드바 접기
+        onToggleCollapse?.();
+
+        // 애니메이션 완료 후 상태 리셋
+        setTimeout(() => {
+          setIsAnimating(false);
+        }, 0);
+      }
+      setHoverTimeoutId(null);
+    }, 0);
+
+    setHoverTimeoutId(timeoutId);
+  };
+
+  // 호버 토글 핸들러
+  const handleToggleHover = () => {
+    if (isHoverEnabled) {
+      // 호버 모드 비활성화 시 진행 중인 타이머 정리
+      if (hoverTimeoutId) {
+        clearTimeout(hoverTimeoutId);
+        setHoverTimeoutId(null);
+      }
+      // 애니메이션 상태 리셋
+      setIsAnimating(false);
+    }
+    // 부모 컴포넌트의 호버 상태 토글
+    onToggleHover?.();
+  };
 
   // 저장된 아이콘이 로드되지 않았으면 로딩 상태 처리
   if (!isLoaded) {
@@ -923,8 +995,10 @@ export function Sidebar({
           transition: "transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
           willChange: "transform",
         }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {isCollapsed ? (
             <motion.div
               key="collapsed"
@@ -932,10 +1006,16 @@ export function Sidebar({
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -80, opacity: 0 }}
               transition={{
-                duration: 0.5,
-                ease: [0.25, 0.46, 0.45, 0.94],
+                duration: 0.2,
+                ease: "easeOut",
               }}
-              style={{ position: "absolute", top: 0, left: 0, height: "100vh" }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                willChange: "transform, opacity",
+              }}
             >
               <SidebarCollapsed
                 logoUrl={logoUrl}
@@ -953,20 +1033,27 @@ export function Sidebar({
                 width={collapsedWidth}
                 onToggleExpand={onToggleCollapse}
                 expandIcon={expandIcon}
+                isHoverEnabled={isHoverEnabled}
+                onToggleHover={handleToggleHover}
               />
             </motion.div>
-          ) : null}
-          {!isCollapsed ? (
+          ) : (
             <motion.div
               key="expanded"
-              initial={{ x: -256, opacity: 0 }}
+              initial={{ x: -80, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -256, opacity: 0 }}
+              exit={{ x: -80, opacity: 0 }}
               transition={{
-                duration: 0.5,
-                ease: [0.25, 0.46, 0.45, 0.94],
+                duration: 0.2,
+                ease: "easeOut",
               }}
-              style={{ position: "absolute", top: 0, left: 0, height: "100vh" }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                willChange: "transform, opacity",
+              }}
             >
               <SidebarExpanded
                 logoUrl={logoUrl}
@@ -985,9 +1072,11 @@ export function Sidebar({
                 width={width}
                 onToggleCollapse={onToggleCollapse}
                 collapseIcon={collapseIcon}
+                isHoverEnabled={isHoverEnabled}
+                onToggleHover={handleToggleHover}
               />
             </motion.div>
-          ) : null}
+          )}
         </AnimatePresence>
       </div>
     </>
