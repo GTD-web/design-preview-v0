@@ -50,6 +50,25 @@ export default function ComponentLibrary() {
     useState<DateRange>({});
   const [selectedDateRangeOutlined, setSelectedDateRangeOutlined] =
     useState<DateRange>({});
+  const [selectedDateButton, setSelectedDateButton] = useState<
+    Date | undefined
+  >();
+  const [selectedDateRangeButton, setSelectedDateRangeButton] =
+    useState<DateRange>({});
+  const [selectedDateDefault, setSelectedDateDefault] = useState<
+    Date | undefined
+  >();
+  const [selectedDateLong, setSelectedDateLong] = useState<Date | undefined>();
+  const [selectedDateShort, setSelectedDateShort] = useState<
+    Date | undefined
+  >();
+  const [selectedDateRangeDefault, setSelectedDateRangeDefault] =
+    useState<DateRange>({});
+  const [selectedDateRangeLong, setSelectedDateRangeLong] = useState<DateRange>(
+    {}
+  );
+  const [selectedDateRangeShort, setSelectedDateRangeShort] =
+    useState<DateRange>({});
 
   const handleDateChange = (date: Date | undefined) => {
     console.log("Page - DayPicker onChange called with:", date);
@@ -494,6 +513,364 @@ export default function ComponentLibrary() {
                   </Card>
                 </GridItem>
               </Grid>
+            </VStack>
+          </section>
+
+          {/* DayPicker & DayRangePicker Button Trigger 컴포넌트 */}
+          <section>
+            <TextHeading className="text-2xl font-bold mb-6">
+              DatePicker Button Trigger 컴포넌트
+            </TextHeading>
+            <VStack gap="lg">
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  Button Trigger DayPicker
+                </TextHeading>
+                <VStack gap="md">
+                  <DayPicker
+                    triggerType="button"
+                    placeholder="날짜를 선택하세요"
+                    value={selectedDateButton}
+                    onChange={setSelectedDateButton}
+                    variant="outlined"
+                    size="md"
+                  />
+                  {selectedDateButton && (
+                    <TextP className="text-sm text-gray-600">
+                      선택된 날짜:{" "}
+                      {selectedDateButton.toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        weekday: "long",
+                      })}
+                    </TextP>
+                  )}
+                </VStack>
+              </Card>
+
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  Button Trigger DayRangePicker
+                </TextHeading>
+                <VStack gap="md">
+                  <DayRangePicker
+                    triggerType="button"
+                    placeholder="날짜 범위를 선택하세요"
+                    value={selectedDateRangeButton}
+                    onChange={setSelectedDateRangeButton}
+                    variant="outlined"
+                    size="md"
+                  />
+                  {(selectedDateRangeButton.startDate ||
+                    selectedDateRangeButton.endDate) && (
+                    <VStack gap="xs">
+                      <TextP className="text-sm text-gray-600">
+                        {selectedDateRangeButton.startDate && (
+                          <>
+                            시작일:{" "}
+                            {selectedDateRangeButton.startDate.toLocaleDateString(
+                              "ko-KR"
+                            )}
+                          </>
+                        )}
+                      </TextP>
+                      <TextP className="text-sm text-gray-600">
+                        {selectedDateRangeButton.endDate && (
+                          <>
+                            종료일:{" "}
+                            {selectedDateRangeButton.endDate.toLocaleDateString(
+                              "ko-KR"
+                            )}
+                          </>
+                        )}
+                      </TextP>
+                      {selectedDateRangeButton.startDate &&
+                        selectedDateRangeButton.endDate && (
+                          <TextP className="text-sm text-primary font-medium">
+                            총{" "}
+                            {Math.ceil(
+                              (selectedDateRangeButton.endDate.getTime() -
+                                selectedDateRangeButton.startDate.getTime()) /
+                                (1000 * 60 * 60 * 24) +
+                                1
+                            )}
+                            일
+                          </TextP>
+                        )}
+                    </VStack>
+                  )}
+                </VStack>
+              </Card>
+
+              <Grid cols={3} gap="md">
+                <GridItem>
+                  <Card className="p-6">
+                    <TextHeading className="text-lg mb-4">
+                      Secondary Button Style
+                    </TextHeading>
+                    <VStack gap="md">
+                      <DayPicker
+                        triggerType="button"
+                        placeholder="Secondary 스타일"
+                        value={selectedDateButton}
+                        onChange={setSelectedDateButton}
+                        variant="default"
+                        size="sm"
+                      />
+                      <DayRangePicker
+                        triggerType="button"
+                        placeholder="Secondary 범위 선택"
+                        value={selectedDateRangeButton}
+                        onChange={setSelectedDateRangeButton}
+                        variant="default"
+                        size="sm"
+                      />
+                    </VStack>
+                  </Card>
+                </GridItem>
+                <GridItem>
+                  <Card className="p-6">
+                    <TextHeading className="text-lg mb-4">
+                      Outline Button Style
+                    </TextHeading>
+                    <VStack gap="md">
+                      <DayPicker
+                        triggerType="button"
+                        placeholder="Outline 스타일"
+                        value={selectedDateButton}
+                        onChange={setSelectedDateButton}
+                        variant="outlined"
+                        size="lg"
+                      />
+                      <DayRangePicker
+                        triggerType="button"
+                        placeholder="Outline 범위 선택"
+                        value={selectedDateRangeButton}
+                        onChange={setSelectedDateRangeButton}
+                        variant="outlined"
+                        size="lg"
+                      />
+                    </VStack>
+                  </Card>
+                </GridItem>
+                <GridItem>
+                  <Card className="p-6">
+                    <TextHeading className="text-lg mb-4">
+                      Filled Button Style
+                    </TextHeading>
+                    <VStack gap="md">
+                      <DayPicker
+                        triggerType="button"
+                        placeholder="Filled 스타일"
+                        value={selectedDateButton}
+                        onChange={setSelectedDateButton}
+                        variant="filled"
+                        size="md"
+                      />
+                      <DayRangePicker
+                        triggerType="button"
+                        placeholder="Filled 범위 선택"
+                        value={selectedDateRangeButton}
+                        onChange={setSelectedDateRangeButton}
+                        variant="filled"
+                        size="md"
+                      />
+                    </VStack>
+                  </Card>
+                </GridItem>
+              </Grid>
+            </VStack>
+          </section>
+
+          {/* DatePicker Format 컴포넌트 */}
+          <section>
+            <TextHeading className="text-2xl font-bold mb-6">
+              DatePicker Format 컴포넌트
+            </TextHeading>
+            <VStack gap="lg">
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  DayPicker 날짜 포맷 옵션
+                </TextHeading>
+                <Grid cols={3} gap="md">
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Default Format</TextLabel>
+                      <TextP className="text-sm text-gray-600 mb-2">
+                        2025.08.15
+                      </TextP>
+                      <DayPicker
+                        dateFormat="default"
+                        placeholder="기본 형식"
+                        value={selectedDateDefault}
+                        onChange={setSelectedDateDefault}
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Long Format</TextLabel>
+                      <TextP className="text-sm text-gray-600 mb-2">
+                        2025년 08월 15일 (금요일)
+                      </TextP>
+                      <DayPicker
+                        dateFormat="long"
+                        placeholder="긴 형식"
+                        value={selectedDateLong}
+                        onChange={setSelectedDateLong}
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Short Format</TextLabel>
+                      <TextP className="text-sm text-gray-600 mb-2">
+                        2025.08.15 (금)
+                      </TextP>
+                      <DayPicker
+                        dateFormat="short"
+                        placeholder="짧은 형식"
+                        value={selectedDateShort}
+                        onChange={setSelectedDateShort}
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                </Grid>
+              </Card>
+
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  DayRangePicker 날짜 포맷 옵션
+                </TextHeading>
+                <Grid cols={3} gap="md">
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Default Format</TextLabel>
+                      <TextP className="text-sm text-gray-600 mb-2">
+                        2025. 08. 01 - 2025. 08. 15
+                      </TextP>
+                      <DayRangePicker
+                        dateFormat="default"
+                        placeholder="기본 형식 범위"
+                        value={selectedDateRangeDefault}
+                        onChange={setSelectedDateRangeDefault}
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Long Format</TextLabel>
+                      <TextP className="text-sm text-gray-600 mb-2">
+                        2025년 08월 01일 (목요일) - 2025년 08월 15일 (금요일)
+                      </TextP>
+                      <DayRangePicker
+                        dateFormat="long"
+                        placeholder="긴 형식 범위"
+                        value={selectedDateRangeLong}
+                        onChange={setSelectedDateRangeLong}
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Short Format</TextLabel>
+                      <TextP className="text-sm text-gray-600 mb-2">
+                        2025.08.01 (목) - 2025.08.15 (금)
+                      </TextP>
+                      <DayRangePicker
+                        dateFormat="short"
+                        placeholder="짧은 형식 범위"
+                        value={selectedDateRangeShort}
+                        onChange={setSelectedDateRangeShort}
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                </Grid>
+              </Card>
+
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  Button Trigger with Format
+                </TextHeading>
+                <Grid cols={3} gap="md">
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Default Format Button</TextLabel>
+                      <DayPicker
+                        triggerType="button"
+                        dateFormat="default"
+                        placeholder="기본 형식"
+                        value={selectedDateDefault}
+                        onChange={setSelectedDateDefault}
+                        variant="outlined"
+                        size="sm"
+                      />
+                      <DayRangePicker
+                        triggerType="button"
+                        dateFormat="default"
+                        placeholder="기본 형식 범위"
+                        value={selectedDateRangeDefault}
+                        onChange={setSelectedDateRangeDefault}
+                        variant="outlined"
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Long Format Button</TextLabel>
+                      <DayPicker
+                        triggerType="button"
+                        dateFormat="long"
+                        placeholder="긴 형식"
+                        value={selectedDateLong}
+                        onChange={setSelectedDateLong}
+                        variant="outlined"
+                        size="sm"
+                      />
+                      <DayRangePicker
+                        triggerType="button"
+                        dateFormat="long"
+                        placeholder="긴 형식 범위"
+                        value={selectedDateRangeLong}
+                        onChange={setSelectedDateRangeLong}
+                        variant="outlined"
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                  <GridItem>
+                    <VStack gap="md">
+                      <TextLabel>Short Format Button</TextLabel>
+                      <DayPicker
+                        triggerType="button"
+                        dateFormat="short"
+                        placeholder="짧은 형식"
+                        value={selectedDateShort}
+                        onChange={setSelectedDateShort}
+                        variant="outlined"
+                        size="sm"
+                      />
+                      <DayRangePicker
+                        triggerType="button"
+                        dateFormat="short"
+                        placeholder="짧은 형식 범위"
+                        value={selectedDateRangeShort}
+                        onChange={setSelectedDateRangeShort}
+                        variant="outlined"
+                        size="sm"
+                      />
+                    </VStack>
+                  </GridItem>
+                </Grid>
+              </Card>
             </VStack>
           </section>
 

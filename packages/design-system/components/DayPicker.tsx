@@ -32,6 +32,7 @@ import {
 } from "date-fns";
 import { ko } from "date-fns/locale";
 import { Input } from "./Input";
+import { Button } from "./Button";
 import { useDesignSettings } from "../hooks/useDesignSettings";
 
 export interface DayPickerProps {
@@ -47,6 +48,8 @@ export interface DayPickerProps {
   error?: boolean;
   size?: "sm" | "md" | "lg";
   variant?: "default" | "filled" | "outlined";
+  triggerType?: "input" | "button";
+  dateFormat?: "default" | "long" | "short";
 }
 
 export function DayPicker({
@@ -62,6 +65,8 @@ export function DayPicker({
   error = false,
   size = "md",
   variant = "default",
+  triggerType = "input",
+  dateFormat = "default",
 }: DayPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -69,6 +74,22 @@ export function DayPicker({
   const { theme } = useDesignSettings();
   const arrowRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // 날짜 포맷팅 함수
+  const formatDisplayDate = useCallback(
+    (date: Date) => {
+      switch (dateFormat) {
+        case "long":
+          return format(date, "yyyy년 MM월 dd일 (EEEE)", { locale: ko });
+        case "short":
+          return format(date, "yyyy.MM.dd (E)", { locale: ko });
+        case "default":
+        default:
+          return format(date, "yyyy. MM. dd", { locale: ko });
+      }
+    },
+    [dateFormat]
+  );
 
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -85,7 +106,7 @@ export function DayPicker({
   // value가 변경되면 input 값과 currentMonth 업데이트 (최적화된 버전)
   useEffect(() => {
     if (value && isValid(value)) {
-      const formattedValue = format(value, "yyyy. MM. dd", { locale: ko });
+      const formattedValue = formatDisplayDate(value);
 
       // 상태 업데이트를 일괄 처리하여 깜박거림 방지
       requestAnimationFrame(() => {
@@ -99,7 +120,7 @@ export function DayPicker({
         setInputValue((prev) => (prev !== "" ? "" : prev));
       });
     }
-  }, [value]);
+  }, [value, formatDisplayDate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -148,36 +169,28 @@ export function DayPicker({
         // 날짜 범위 체크
         if (minDate && isBefore(parsedDate, minDate)) {
           // 잘못된 날짜면 원래 값으로 복원
-          setInputValue(
-            value ? format(value, "yyyy. MM. dd", { locale: ko }) : ""
-          );
+          setInputValue(value ? formatDisplayDate(value) : "");
           return;
         }
         if (maxDate && isAfter(parsedDate, maxDate)) {
           // 잘못된 날짜면 원래 값으로 복원
-          setInputValue(
-            value ? format(value, "yyyy. MM. dd", { locale: ko }) : ""
-          );
+          setInputValue(value ? formatDisplayDate(value) : "");
           return;
         }
 
-        // 성공적으로 파싱된 경우 표준 형식으로 변환하여 표시
-        const formattedValue = format(parsedDate, "yyyy. MM. dd", {
-          locale: ko,
-        });
+        // 성공적으로 파싱된 경우 설정된 형식으로 변환하여 표시
+        const formattedValue = formatDisplayDate(parsedDate);
         setInputValue(formattedValue);
 
         onChange?.(parsedDate);
         setCurrentMonth(parsedDate);
       } else {
         // 파싱 실패 시 원래 값으로 복원
-        setInputValue(
-          value ? format(value, "yyyy. MM. dd", { locale: ko }) : ""
-        );
+        setInputValue(value ? formatDisplayDate(value) : "");
       }
     } catch {
       // 파싱 실패 시 원래 값으로 복원
-      setInputValue(value ? format(value, "yyyy. MM. dd", { locale: ko }) : "");
+      setInputValue(value ? formatDisplayDate(value) : "");
     }
   };
 
@@ -253,12 +266,12 @@ export function DayPicker({
     }
   }, [isOpen, refs.floating, refs.reference]);
 
-  // 캘린더 날짜 생성 (메모이제이션)
+  // 캘린더 날짜 생성 (메모이제이션) - 월요일 시작
   const calendarDays = useMemo(() => {
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
-    const startDate = startOfWeek(monthStart, { locale: ko });
-    const endDate = endOfWeek(monthEnd, { locale: ko });
+    const startDate = startOfWeek(monthStart, { locale: ko, weekStartsOn: 1 });
+    const endDate = endOfWeek(monthEnd, { locale: ko, weekStartsOn: 1 });
 
     const days = [];
     let currentDate = startDate;
@@ -289,31 +302,60 @@ export function DayPicker({
   );
 
   const weekDays = useMemo(
-    () => ["일", "월", "화", "수", "목", "금", "토"],
+    () => ["월", "화", "수", "목", "금", "토", "일"],
     []
   );
 
   return (
     <div className={className}>
       <div ref={refs.setReference}>
-        <Input
-          ref={inputRef}
-          value={inputValue}
-          onChange={handleInputChange}
-          onBlur={handleInputBlur}
-          onClick={handleInputClick}
-          onFocus={handleInputFocus}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          disabled={disabled}
-          label={label}
-          helperText={helperText}
-          error={error}
-          size={size}
-          variant={variant}
-          clearable={inputValue.length > 0}
-          onClear={handleClear}
-          rightIcon={
+        {triggerType === "input" ? (
+          <Input
+            ref={inputRef}
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleInputBlur}
+            onClick={handleInputClick}
+            onFocus={handleInputFocus}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            disabled={disabled}
+            label={label}
+            helperText={helperText}
+            error={error}
+            size={size}
+            variant={variant}
+            clearable={inputValue.length > 0}
+            onClear={handleClear}
+            rightIcon={
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            }
+          />
+        ) : (
+          <Button
+            onClick={handleInputClick}
+            disabled={disabled}
+            variant={variant === "outlined" ? "outline" : "secondary"}
+            size={size}
+            className={`justify-between w-full ${
+              error ? "border-red-500" : ""
+            }`}
+          >
+            <span className="text-left">
+              {value ? formatDisplayDate(value) : placeholder}
+            </span>
             <svg
               className="w-4 h-4"
               fill="none"
@@ -327,8 +369,8 @@ export function DayPicker({
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-          }
-        />
+          </Button>
+        )}
       </div>
 
       {isOpen && (

@@ -54,6 +54,8 @@ export interface DayRangePickerProps {
   error?: boolean;
   size?: "sm" | "md" | "lg";
   variant?: "default" | "filled" | "outlined";
+  triggerType?: "input" | "button";
+  dateFormat?: "default" | "long" | "short";
 }
 
 export function DayRangePicker({
@@ -69,6 +71,8 @@ export function DayRangePicker({
   error = false,
   size = "md",
   variant = "default",
+  triggerType = "input",
+  dateFormat = "default",
 }: DayRangePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -77,6 +81,30 @@ export function DayRangePicker({
   const arrowRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { theme } = useDesignSettings();
+
+  // 날짜 포맷팅 함수
+  const formatDisplayDate = useCallback(
+    (date: Date) => {
+      switch (dateFormat) {
+        case "long":
+          return format(date, "yyyy년 MM월 dd일 (EEEE)", { locale: ko });
+        case "short":
+          return format(date, "yyyy.MM.dd (E)", { locale: ko });
+        case "default":
+        default:
+          return format(date, "yyyy. MM. dd", { locale: ko });
+      }
+    },
+    [dateFormat]
+  );
+
+  // 날짜 범위 포맷팅 함수
+  const formatDisplayRange = useCallback(
+    (startDate: Date, endDate: Date) => {
+      return `${formatDisplayDate(startDate)} - ${formatDisplayDate(endDate)}`;
+    },
+    [formatDisplayDate]
+  );
 
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -95,21 +123,15 @@ export function DayRangePicker({
     const { startDate, endDate } = value;
 
     if (startDate && endDate) {
-      setInputValue(
-        `${format(startDate, "yyyy. MM. dd", { locale: ko })} - ${format(
-          endDate,
-          "yyyy. MM. dd",
-          { locale: ko }
-        )}`
-      );
+      setInputValue(formatDisplayRange(startDate, endDate));
       setCurrentMonth(startDate);
     } else if (startDate) {
-      setInputValue(`${format(startDate, "yyyy. MM. dd", { locale: ko })} - `);
+      setInputValue(`${formatDisplayDate(startDate)} - `);
       setCurrentMonth(startDate);
     } else {
       setInputValue("");
     }
-  }, [value]);
+  }, [value, formatDisplayDate, formatDisplayRange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -195,11 +217,7 @@ export function DayRangePicker({
             // 잘못된 날짜면 원래 값으로 복원
             const { startDate: origStart, endDate: origEnd } = value;
             if (origStart && origEnd) {
-              setInputValue(
-                `${format(origStart, "yyyy. MM. dd", {
-                  locale: ko,
-                })} - ${format(origEnd, "yyyy. MM. dd", { locale: ko })}`
-              );
+              setInputValue(formatDisplayRange(origStart, origEnd));
             } else {
               setInputValue("");
             }
@@ -209,21 +227,15 @@ export function DayRangePicker({
             // 잘못된 날짜면 원래 값으로 복원
             const { startDate: origStart, endDate: origEnd } = value;
             if (origStart && origEnd) {
-              setInputValue(
-                `${format(origStart, "yyyy. MM. dd", {
-                  locale: ko,
-                })} - ${format(origEnd, "yyyy. MM. dd", { locale: ko })}`
-              );
+              setInputValue(formatDisplayRange(origStart, origEnd));
             } else {
               setInputValue("");
             }
             return;
           }
 
-          // 성공적으로 파싱된 경우 표준 형식으로 변환하여 표시
-          const formattedValue = `${format(startDate, "yyyy. MM. dd", {
-            locale: ko,
-          })} - ${format(endDate, "yyyy. MM. dd", { locale: ko })}`;
+          // 성공적으로 파싱된 경우 설정된 형식으로 변환하여 표시
+          const formattedValue = formatDisplayRange(startDate, endDate);
           setInputValue(formattedValue);
 
           onChange?.({ startDate, endDate });
@@ -232,13 +244,7 @@ export function DayRangePicker({
           // 파싱 실패 시 원래 값으로 복원
           const { startDate: origStart, endDate: origEnd } = value;
           if (origStart && origEnd) {
-            setInputValue(
-              `${format(origStart, "yyyy. MM. dd", { locale: ko })} - ${format(
-                origEnd,
-                "yyyy. MM. dd",
-                { locale: ko }
-              )}`
-            );
+            setInputValue(formatDisplayRange(origStart, origEnd));
           } else {
             setInputValue("");
           }
@@ -247,13 +253,7 @@ export function DayRangePicker({
         // 파싱 실패 시 원래 값으로 복원
         const { startDate: origStart, endDate: origEnd } = value;
         if (origStart && origEnd) {
-          setInputValue(
-            `${format(origStart, "yyyy. MM. dd", { locale: ko })} - ${format(
-              origEnd,
-              "yyyy. MM. dd",
-              { locale: ko }
-            )}`
-          );
+          setInputValue(formatDisplayRange(origStart, origEnd));
         } else {
           setInputValue("");
         }
@@ -262,13 +262,7 @@ export function DayRangePicker({
       // 파싱 실패 시 원래 값으로 복원
       const { startDate: origStart, endDate: origEnd } = value;
       if (origStart && origEnd) {
-        setInputValue(
-          `${format(origStart, "yyyy. MM. dd", { locale: ko })} - ${format(
-            origEnd,
-            "yyyy. MM. dd",
-            { locale: ko }
-          )}`
-        );
+        setInputValue(formatDisplayRange(origStart, origEnd));
       } else {
         setInputValue("");
       }
@@ -364,12 +358,12 @@ export function DayRangePicker({
     }
   }, [isOpen, refs.floating, refs.reference]);
 
-  // 캘린더 날짜 생성 (메모이제이션)
+  // 캘린더 날짜 생성 (메모이제이션) - 월요일 시작
   const calendarDays = useMemo(() => {
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(currentMonth);
-    const startDate = startOfWeek(monthStart, { locale: ko });
-    const endDate = endOfWeek(monthEnd, { locale: ko });
+    const startDate = startOfWeek(monthStart, { locale: ko, weekStartsOn: 1 });
+    const endDate = endOfWeek(monthEnd, { locale: ko, weekStartsOn: 1 });
 
     const days = [];
     let currentDate = startDate;
@@ -456,31 +450,64 @@ export function DayRangePicker({
   );
 
   const weekDays = useMemo(
-    () => ["일", "월", "화", "수", "목", "금", "토"],
+    () => ["월", "화", "수", "목", "금", "토", "일"],
     []
   );
 
   return (
     <div className={className}>
       <div ref={refs.setReference}>
-        <Input
-          ref={inputRef}
-          value={inputValue}
-          onChange={handleInputChange}
-          onBlur={handleInputBlur}
-          onClick={handleInputClick}
-          onFocus={handleInputFocus}
-          onKeyDown={handleKeyDown}
-          placeholder={placeholder}
-          disabled={disabled}
-          label={label}
-          helperText={helperText}
-          error={error}
-          size={size}
-          variant={variant}
-          clearable={inputValue.length > 0}
-          onClear={handleClear}
-          rightIcon={
+        {triggerType === "input" ? (
+          <Input
+            ref={inputRef}
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleInputBlur}
+            onClick={handleInputClick}
+            onFocus={handleInputFocus}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+            disabled={disabled}
+            label={label}
+            helperText={helperText}
+            error={error}
+            size={size}
+            variant={variant}
+            clearable={inputValue.length > 0}
+            onClear={handleClear}
+            rightIcon={
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            }
+          />
+        ) : (
+          <Button
+            onClick={handleInputClick}
+            disabled={disabled}
+            variant={variant === "outlined" ? "outline" : "secondary"}
+            size={size}
+            className={`justify-between w-full ${
+              error ? "border-red-500" : ""
+            }`}
+          >
+            <span className="text-left">
+              {value.startDate && value.endDate
+                ? formatDisplayRange(value.startDate, value.endDate)
+                : value.startDate
+                ? `${formatDisplayDate(value.startDate)} - `
+                : placeholder}
+            </span>
             <svg
               className="w-4 h-4"
               fill="none"
@@ -494,8 +521,8 @@ export function DayRangePicker({
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-          }
-        />
+          </Button>
+        )}
       </div>
 
       {isOpen && (
@@ -549,9 +576,7 @@ export function DayRangePicker({
                       <div>
                         {value.startDate && (
                           <span className="text-primary font-medium">
-                            {format(value.startDate, "yyyy. MM. dd", {
-                              locale: ko,
-                            })}
+                            {formatDisplayDate(value.startDate)}
                           </span>
                         )}
                         {value.startDate && value.endDate && (
@@ -561,9 +586,7 @@ export function DayRangePicker({
                         )}
                         {value.endDate && (
                           <span className="text-primary font-medium">
-                            {format(value.endDate, "yyyy. MM. dd", {
-                              locale: ko,
-                            })}
+                            {formatDisplayDate(value.endDate)}
                           </span>
                         )}
                       </div>

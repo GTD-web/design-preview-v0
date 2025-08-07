@@ -1,6 +1,7 @@
 import React, { forwardRef, InputHTMLAttributes } from "react";
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
+interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   size?: "sm" | "md" | "lg";
   variant?: "default" | "filled" | "outlined";
   error?: boolean;
@@ -91,8 +92,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer z-10"
               aria-label="지우기"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           );
@@ -128,19 +139,39 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const InputElement = (
       <div className={`relative ${className}`}>
-        {leftIcon && <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10">{leftIcon}</div>}
+        {leftIcon && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10">
+            {leftIcon}
+          </div>
+        )}
         <input ref={ref} className={inputClasses} value={value} {...props} />
         {renderClearButton()}
-        {rightIcon && !showClearButton && <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10">{rightIcon}</div>}
+        {rightIcon && !showClearButton && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10">
+            {rightIcon}
+          </div>
+        )}
       </div>
     );
 
     if (label || helperText) {
       return (
         <div className="w-full">
-          {label && <label className="block text-sm font-medium mb-1 text-foreground">{label}</label>}
+          {label && (
+            <label className="block text-sm font-medium mb-1 text-foreground">
+              {label}
+            </label>
+          )}
           {InputElement}
-          {helperText && <p className={`mt-1 text-xs ${error ? "text-danger" : "text-gray-500"}`}>{helperText}</p>}
+          {helperText && (
+            <p
+              className={`mt-1 text-xs ${
+                error ? "text-danger" : "text-gray-500"
+              }`}
+            >
+              {helperText}
+            </p>
+          )}
         </div>
       );
     }
