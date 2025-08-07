@@ -11,6 +11,8 @@ export { Drawer } from "./components/Drawer";
 export { LayoutContainer } from "./components/LayoutContainer";
 export { Sidebar, SidebarCollapsed, SidebarExpanded, type SidebarMenuItem, type SidebarMenuGroup, type SidebarBaseProps, type SidebarCollapsedProps, type SidebarExpandedProps, } from "./components/Sidebar";
 export { DesignSettings } from "./components/DesignSettings";
+export { DayPicker } from "./components/DayPicker";
+export { DayRangePicker, type DateRange } from "./components/DayRangePicker";
 export { useDesignSettings, DesignSettingsProvider, } from "./hooks/useDesignSettings";
 export { useSidebarIcons } from "./hooks/useSidebarIcons";
 export { getShadcnTokenPath, getAvailableTokenVersions, getTokenConfig, SHADCN_TOKEN_CONFIGS, type ShadcnTokenVersion, type TokenConfig, } from "./styles/tokens";

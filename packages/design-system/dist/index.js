@@ -12,6 +12,8 @@ export { Drawer } from "./components/Drawer";
 export { LayoutContainer } from "./components/LayoutContainer";
 export { Sidebar, SidebarCollapsed, SidebarExpanded, } from "./components/Sidebar";
 export { DesignSettings } from "./components/DesignSettings";
+export { DayPicker } from "./components/DayPicker";
+export { DayRangePicker } from "./components/DayRangePicker";
 // Hooks
 export { useDesignSettings, DesignSettingsProvider, } from "./hooks/useDesignSettings";
 export { useSidebarIcons } from "./hooks/useSidebarIcons";

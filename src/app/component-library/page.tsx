@@ -22,17 +22,53 @@ import {
   Drawer,
   LayoutContainer,
 } from "@lumir-company/design-system-v0";
+import {
+  DayRangePicker,
+  DateRange,
+} from "@/packages/design-system/components/DayRangePicker";
+
+import { DayPicker } from "@/packages/design-system/components/DayPicker";
 
 export default function ComponentLibrary() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectValue, setSelectValue] = useState("");
-  
-  const {
-    theme,
-    setShadcnV0Light,
-    setShadcnV0Dark,
-  } = useDesignSettings();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({});
+  const [selectedDateLimited, setSelectedDateLimited] = useState<
+    Date | undefined
+  >();
+  const [selectedDateSmall, setSelectedDateSmall] = useState<
+    Date | undefined
+  >();
+  const [selectedDateLarge, setSelectedDateLarge] = useState<
+    Date | undefined
+  >();
+  const [selectedDateRangeLimited, setSelectedDateRangeLimited] =
+    useState<DateRange>({});
+  const [selectedDateRangeFilled, setSelectedDateRangeFilled] =
+    useState<DateRange>({});
+  const [selectedDateRangeOutlined, setSelectedDateRangeOutlined] =
+    useState<DateRange>({});
+
+  const handleDateChange = (date: Date | undefined) => {
+    console.log("Page - DayPicker onChange called with:", date);
+    setSelectedDate(date);
+  };
+
+  const handleDateChangeLimited = (date: Date | undefined) => {
+    setSelectedDateLimited(date);
+  };
+
+  const handleDateChangeSmall = (date: Date | undefined) => {
+    setSelectedDateSmall(date);
+  };
+
+  const handleDateChangeLarge = (date: Date | undefined) => {
+    setSelectedDateLarge(date);
+  };
+
+  const { theme, setShadcnV0Light, setShadcnV0Dark } = useDesignSettings();
 
   const selectOptions = [
     { value: "option1", label: "옵션 1" },
@@ -47,34 +83,36 @@ export default function ComponentLibrary() {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-lg font-semibold text-foreground">컴포넌트 라이브러리</h1>
-              <a 
-                href="/" 
+              <h1 className="text-lg font-semibold text-foreground">
+                컴포넌트 라이브러리
+              </h1>
+              <a
+                href="/"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 ← 홈으로
               </a>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground mr-2">테마:</span>
               <div className="flex gap-1">
-                <button 
+                <button
                   onClick={setShadcnV0Light}
                   className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                    theme === 'shadcn-v0-light'
-                      ? 'bg-blue-500 text-white shadow-md' 
-                      : 'bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700'
+                    theme === "shadcn-v0-light"
+                      ? "bg-blue-500 text-white shadow-md"
+                      : "bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700"
                   }`}
                 >
                   Shadcn V0 Light
                 </button>
-                <button 
+                <button
                   onClick={setShadcnV0Dark}
                   className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                    theme === 'shadcn-v0-dark'
-                      ? 'bg-blue-600 text-white shadow-md' 
-                      : 'bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700'
+                    theme === "shadcn-v0-dark"
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "bg-muted text-muted-foreground hover:bg-blue-100 hover:text-blue-700"
                   }`}
                 >
                   Shadcn V0 Dark
@@ -88,10 +126,11 @@ export default function ComponentLibrary() {
       {/* 메인 콘텐츠 */}
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto space-y-12">
-          
           {/* Button 컴포넌트 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Button 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Button 컴포넌트
+            </TextHeading>
             <Card className="p-6">
               <VStack gap="md">
                 <div>
@@ -103,7 +142,7 @@ export default function ComponentLibrary() {
                     <Button variant="ghost">고스트 버튼</Button>
                   </HStack>
                 </div>
-                
+
                 <div>
                   <TextLabel className="block mb-2">사이즈</TextLabel>
                   <HStack gap="md">
@@ -112,42 +151,70 @@ export default function ComponentLibrary() {
                     <Button size="lg">큰 버튼</Button>
                   </HStack>
                 </div>
-                
+
                 <div>
                   <TextLabel className="block mb-2">특수 버튼</TextLabel>
                   <HStack gap="md">
                     <Button variant="toggle">토글 버튼</Button>
-                    <Button variant="toggle" selected>선택된 토글</Button>
+                    <Button variant="toggle" selected>
+                      선택된 토글
+                    </Button>
                   </HStack>
                 </div>
 
                 <div>
                   <TextLabel className="block mb-2">Gradient 버튼</TextLabel>
                   <HStack gap="md">
-                    <Button gradient gradientType="primary">Primary Gradient</Button>
-                    <Button gradient gradientType="sunset">Sunset Gradient</Button>
-                    <Button gradient gradientType="ocean">Ocean Gradient</Button>
+                    <Button gradient gradientType="primary">
+                      Primary Gradient
+                    </Button>
+                    <Button gradient gradientType="sunset">
+                      Sunset Gradient
+                    </Button>
+                    <Button gradient gradientType="ocean">
+                      Ocean Gradient
+                    </Button>
                   </HStack>
                 </div>
-                
+
                 <div>
-                  <TextLabel className="block mb-2">비활성화 상태 (Disabled)</TextLabel>
+                  <TextLabel className="block mb-2">
+                    비활성화 상태 (Disabled)
+                  </TextLabel>
                   <VStack gap="sm">
                     <HStack gap="md">
                       <Button disabled>기본 비활성화</Button>
-                      <Button disabled variant="primary">Primary 비활성화</Button>
-                      <Button disabled variant="secondary">Secondary 비활성화</Button>
-                      <Button disabled variant="outline">Outline 비활성화</Button>
+                      <Button disabled variant="primary">
+                        Primary 비활성화
+                      </Button>
+                      <Button disabled variant="secondary">
+                        Secondary 비활성화
+                      </Button>
+                      <Button disabled variant="outline">
+                        Outline 비활성화
+                      </Button>
                     </HStack>
                     <HStack gap="md">
-                      <Button disabled variant="ghost">Ghost 비활성화</Button>
-                      <Button disabled variant="toggle">Toggle 비활성화</Button>
-                      <Button disabled size="sm">작은 비활성화</Button>
-                      <Button disabled size="lg">큰 비활성화</Button>
+                      <Button disabled variant="ghost">
+                        Ghost 비활성화
+                      </Button>
+                      <Button disabled variant="toggle">
+                        Toggle 비활성화
+                      </Button>
+                      <Button disabled size="sm">
+                        작은 비활성화
+                      </Button>
+                      <Button disabled size="lg">
+                        큰 비활성화
+                      </Button>
                     </HStack>
                     <HStack gap="md">
-                      <Button disabled gradient gradientType="primary">Gradient 비활성화</Button>
-                      <Button disabled gradient gradientType="sunset">Sunset 비활성화</Button>
+                      <Button disabled gradient gradientType="primary">
+                        Gradient 비활성화
+                      </Button>
+                      <Button disabled gradient gradientType="sunset">
+                        Sunset 비활성화
+                      </Button>
                     </HStack>
                   </VStack>
                 </div>
@@ -157,7 +224,9 @@ export default function ComponentLibrary() {
 
           {/* Input 컴포넌트 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Input 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Input 컴포넌트
+            </TextHeading>
             <Card className="p-6">
               <VStack gap="md">
                 <div className="w-full max-w-md">
@@ -170,17 +239,11 @@ export default function ComponentLibrary() {
                 </div>
                 <div className="w-full max-w-md">
                   <TextLabel className="block mb-2">비밀번호 입력</TextLabel>
-                  <Input
-                    type="password"
-                    placeholder="비밀번호를 입력하세요"
-                  />
+                  <Input type="password" placeholder="비밀번호를 입력하세요" />
                 </div>
                 <div className="w-full max-w-md">
                   <TextLabel className="block mb-2">비활성화 입력</TextLabel>
-                  <Input
-                    placeholder="비활성화된 입력"
-                    disabled
-                  />
+                  <Input placeholder="비활성화된 입력" disabled />
                 </div>
               </VStack>
             </Card>
@@ -188,7 +251,9 @@ export default function ComponentLibrary() {
 
           {/* Select 컴포넌트 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Select 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Select 컴포넌트
+            </TextHeading>
             <Card className="p-6">
               <div className="w-full max-w-md">
                 <TextLabel className="block mb-2">선택 컴포넌트</TextLabel>
@@ -203,7 +268,9 @@ export default function ComponentLibrary() {
 
           {/* Badge 컴포넌트 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Badge 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Badge 컴포넌트
+            </TextHeading>
             <Card className="p-6">
               <HStack gap="md">
                 <Badge color="primary">기본</Badge>
@@ -218,11 +285,16 @@ export default function ComponentLibrary() {
 
           {/* Text 컴포넌트들 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Text 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Text 컴포넌트
+            </TextHeading>
             <Card className="p-6">
               <VStack gap="md">
                 <TextHeading>이것은 제목입니다</TextHeading>
-                <TextP>이것은 단락 텍스트입니다. 일반적인 본문 내용을 표시할 때 사용합니다.</TextP>
+                <TextP>
+                  이것은 단락 텍스트입니다. 일반적인 본문 내용을 표시할 때
+                  사용합니다.
+                </TextP>
                 <TextDiv>이것은 div 텍스트입니다.</TextDiv>
                 <div>
                   <TextLabel>레이블:</TextLabel>
@@ -235,27 +307,33 @@ export default function ComponentLibrary() {
 
           {/* Layout 컴포넌트들 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Layout 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Layout 컴포넌트
+            </TextHeading>
             <Card className="p-6">
               <VStack gap="lg">
                 <div>
                   <TextLabel className="block mb-2">Box 컴포넌트</TextLabel>
-                  <Box className="p-4 bg-muted rounded">
-                    Box 컴포넌트 예시
-                  </Box>
+                  <Box className="p-4 bg-muted rounded">Box 컴포넌트 예시</Box>
                 </div>
-                
+
                 <div>
                   <TextLabel className="block mb-2">Grid 컴포넌트</TextLabel>
                   <Grid cols={3} gap="md">
                     <GridItem>
-                      <Box className="p-4 bg-muted rounded text-center">Grid 1</Box>
+                      <Box className="p-4 bg-muted rounded text-center">
+                        Grid 1
+                      </Box>
                     </GridItem>
                     <GridItem>
-                      <Box className="p-4 bg-muted rounded text-center">Grid 2</Box>
+                      <Box className="p-4 bg-muted rounded text-center">
+                        Grid 2
+                      </Box>
                     </GridItem>
                     <GridItem>
-                      <Box className="p-4 bg-muted rounded text-center">Grid 3</Box>
+                      <Box className="p-4 bg-muted rounded text-center">
+                        Grid 3
+                      </Box>
                     </GridItem>
                   </Grid>
                 </div>
@@ -278,11 +356,11 @@ export default function ComponentLibrary() {
 
           {/* Drawer 컴포넌트 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Drawer 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Drawer 컴포넌트
+            </TextHeading>
             <Card className="p-6">
-              <Button onClick={() => setIsDrawerOpen(true)}>
-                Drawer 열기
-              </Button>
+              <Button onClick={() => setIsDrawerOpen(true)}>Drawer 열기</Button>
               <Drawer
                 isOpen={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}
@@ -291,9 +369,7 @@ export default function ComponentLibrary() {
                 <div className="p-4">
                   <TextP>이것은 Drawer 내용입니다.</TextP>
                   <div className="my-4" />
-                  <Button onClick={() => setIsDrawerOpen(false)}>
-                    닫기
-                  </Button>
+                  <Button onClick={() => setIsDrawerOpen(false)}>닫기</Button>
                 </div>
               </Drawer>
             </Card>
@@ -301,35 +377,236 @@ export default function ComponentLibrary() {
 
           {/* LayoutContainer 컴포넌트 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">LayoutContainer 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              LayoutContainer 컴포넌트
+            </TextHeading>
             <Card className="p-6">
               <LayoutContainer>
-                <TextP>LayoutContainer 안의 내용입니다. 이 컴포넌트는 일관된 레이아웃을 제공합니다.</TextP>
+                <TextP>
+                  LayoutContainer 안의 내용입니다. 이 컴포넌트는 일관된
+                  레이아웃을 제공합니다.
+                </TextP>
               </LayoutContainer>
             </Card>
           </section>
 
           {/* Card 컴포넌트 */}
           <section>
-            <TextHeading className="text-2xl font-bold mb-6">Card 컴포넌트</TextHeading>
+            <TextHeading className="text-2xl font-bold mb-6">
+              Card 컴포넌트
+            </TextHeading>
             <Grid cols={2} gap="md">
               <GridItem>
                 <Card className="p-4">
-                  <TextHeading className="text-lg mb-2">카드 제목 1</TextHeading>
+                  <TextHeading className="text-lg mb-2">
+                    카드 제목 1
+                  </TextHeading>
                   <TextP>카드 내용입니다.</TextP>
                 </Card>
               </GridItem>
               <GridItem>
                 <Card className="p-4">
-                  <TextHeading className="text-lg mb-2">카드 제목 2</TextHeading>
+                  <TextHeading className="text-lg mb-2">
+                    카드 제목 2
+                  </TextHeading>
                   <TextP>또 다른 카드 내용입니다.</TextP>
                 </Card>
               </GridItem>
             </Grid>
           </section>
 
+          {/* DayPicker 컴포넌트 */}
+          <section>
+            <TextHeading className="text-2xl font-bold mb-6">
+              DayPicker 컴포넌트
+            </TextHeading>
+            <VStack gap="lg">
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  기본 DayPicker
+                </TextHeading>
+                <VStack gap="md">
+                  <DayPicker
+                    label="날짜 선택"
+                    placeholder="날짜를 선택하세요"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    helperText="input에 직접 입력하거나 캘린더에서 선택하세요"
+                  />
+                  {selectedDate && (
+                    <TextP className="text-sm text-gray-600">
+                      선택된 날짜:{" "}
+                      {selectedDate.toLocaleDateString("ko-KR", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        weekday: "long",
+                      })}
+                    </TextP>
+                  )}
+                </VStack>
+              </Card>
+
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  범위 제한 DayPicker
+                </TextHeading>
+                <VStack gap="md">
+                  <DayPicker
+                    label="제한된 날짜 선택"
+                    placeholder="오늘부터 30일 후까지 선택 가능"
+                    value={selectedDateLimited}
+                    onChange={handleDateChangeLimited}
+                    minDate={new Date()}
+                    maxDate={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)}
+                    helperText="키보드 단축키: ↓ 캘린더 열기, ESC 닫기"
+                  />
+                </VStack>
+              </Card>
+
+              <Grid cols={2} gap="md">
+                <GridItem>
+                  <Card className="p-6">
+                    <TextHeading className="text-lg mb-4">
+                      Small Size
+                    </TextHeading>
+                    <DayPicker
+                      size="sm"
+                      label="작은 크기"
+                      placeholder="작은 크기 DayPicker"
+                      value={selectedDateSmall}
+                      onChange={handleDateChangeSmall}
+                    />
+                  </Card>
+                </GridItem>
+                <GridItem>
+                  <Card className="p-6">
+                    <TextHeading className="text-lg mb-4">
+                      Large Size
+                    </TextHeading>
+                    <DayPicker
+                      size="lg"
+                      label="큰 크기"
+                      placeholder="큰 크기 DayPicker"
+                      value={selectedDateLarge}
+                      onChange={handleDateChangeLarge}
+                    />
+                  </Card>
+                </GridItem>
+              </Grid>
+            </VStack>
+          </section>
+
+          {/* DayRangePicker 컴포넌트 */}
+          <section>
+            <TextHeading className="text-2xl font-bold mb-6">
+              DayRangePicker 컴포넌트
+            </TextHeading>
+            <VStack gap="lg">
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  기본 DayRangePicker
+                </TextHeading>
+                <VStack gap="md">
+                  <DayRangePicker
+                    label="날짜 범위 선택"
+                    placeholder="시작일 - 종료일"
+                    value={selectedDateRange}
+                    onChange={setSelectedDateRange}
+                    helperText="날짜 범위를 입력하거나 캘린더에서 선택하세요 (예: 2024.01.01 - 2024.01.31)"
+                  />
+                  {(selectedDateRange.startDate ||
+                    selectedDateRange.endDate) && (
+                    <VStack gap="xs">
+                      <TextP className="text-sm text-gray-600">
+                        {selectedDateRange.startDate && (
+                          <>
+                            시작일:{" "}
+                            {selectedDateRange.startDate.toLocaleDateString(
+                              "ko-KR"
+                            )}
+                          </>
+                        )}
+                      </TextP>
+                      <TextP className="text-sm text-gray-600">
+                        {selectedDateRange.endDate && (
+                          <>
+                            종료일:{" "}
+                            {selectedDateRange.endDate.toLocaleDateString(
+                              "ko-KR"
+                            )}
+                          </>
+                        )}
+                      </TextP>
+                      {selectedDateRange.startDate &&
+                        selectedDateRange.endDate && (
+                          <TextP className="text-sm text-primary font-medium">
+                            총{" "}
+                            {Math.ceil(
+                              (selectedDateRange.endDate.getTime() -
+                                selectedDateRange.startDate.getTime()) /
+                                (1000 * 60 * 60 * 24) +
+                                1
+                            )}
+                            일
+                          </TextP>
+                        )}
+                    </VStack>
+                  )}
+                </VStack>
+              </Card>
+
+              <Card className="p-6">
+                <TextHeading className="text-lg mb-4">
+                  범위 제한 DayRangePicker
+                </TextHeading>
+                <VStack gap="md">
+                  <DayRangePicker
+                    label="제한된 날짜 범위 선택"
+                    placeholder="올해 범위 내에서만 선택 가능"
+                    value={selectedDateRangeLimited}
+                    onChange={setSelectedDateRangeLimited}
+                    minDate={new Date(new Date().getFullYear(), 0, 1)}
+                    maxDate={new Date(new Date().getFullYear(), 11, 31)}
+                    helperText="올해 1월 1일부터 12월 31일까지만 선택 가능"
+                  />
+                </VStack>
+              </Card>
+
+              <Grid cols={2} gap="md">
+                <GridItem>
+                  <Card className="p-6">
+                    <TextHeading className="text-lg mb-4">
+                      Filled Variant
+                    </TextHeading>
+                    <DayRangePicker
+                      variant="filled"
+                      label="Filled 스타일"
+                      placeholder="Filled variant DayRangePicker"
+                      value={selectedDateRangeFilled}
+                      onChange={setSelectedDateRangeFilled}
+                    />
+                  </Card>
+                </GridItem>
+                <GridItem>
+                  <Card className="p-6">
+                    <TextHeading className="text-lg mb-4">
+                      Outlined Variant
+                    </TextHeading>
+                    <DayRangePicker
+                      variant="outlined"
+                      label="Outlined 스타일"
+                      placeholder="Outlined variant DayRangePicker"
+                      value={selectedDateRangeOutlined}
+                      onChange={setSelectedDateRangeOutlined}
+                    />
+                  </Card>
+                </GridItem>
+              </Grid>
+            </VStack>
+          </section>
         </div>
       </div>
     </div>
   );
-} 
+}

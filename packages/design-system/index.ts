@@ -29,6 +29,8 @@ export {
   type SidebarExpandedProps,
 } from "./components/Sidebar";
 export { DesignSettings } from "./components/DesignSettings";
+export { DayPicker } from "./components/DayPicker";
+export { DayRangePicker, type DateRange } from "./components/DayRangePicker";
 
 // Hooks
 export {
