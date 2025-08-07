@@ -16,5 +16,8 @@ export interface DayRangePickerProps {
     error?: boolean;
     size?: "sm" | "md" | "lg";
     variant?: "default" | "filled" | "outlined";
+    triggerType?: "input" | "button";
+    dateFormat?: "default" | "long" | "short";
+    calendarPosition?: number;
 }
-export declare function DayRangePicker({ value, onChange, minDate, maxDate, disabled, placeholder, className, label, helperText, error, size, variant, }: DayRangePickerProps): React.JSX.Element;
+export declare function DayRangePicker({ value, onChange, minDate, maxDate, disabled, placeholder, className, label, helperText, error, size, variant, triggerType, dateFormat, calendarPosition, }: DayRangePickerProps): React.JSX.Element;

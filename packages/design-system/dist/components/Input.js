@@ -61,15 +61,15 @@ export const Input = forwardRef(({ size = "md", variant = "default", error = fal
         }
     };
     const InputElement = (React.createElement("div", { className: `relative ${className}` },
-        leftIcon && React.createElement("div", { className: "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10" }, leftIcon),
+        leftIcon && (React.createElement("div", { className: "absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10" }, leftIcon)),
         React.createElement("input", { ref: ref, className: inputClasses, value: value, ...props }),
         renderClearButton(),
-        rightIcon && !showClearButton && React.createElement("div", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10" }, rightIcon)));
+        rightIcon && !showClearButton && (React.createElement("div", { className: "absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10" }, rightIcon))));
     if (label || helperText) {
         return (React.createElement("div", { className: "w-full" },
-            label && React.createElement("label", { className: "block text-sm font-medium mb-1 text-foreground" }, label),
+            label && (React.createElement("label", { className: "block text-sm font-medium mb-1 text-foreground" }, label)),
             InputElement,
-            helperText && React.createElement("p", { className: `mt-1 text-xs ${error ? "text-danger" : "text-gray-500"}` }, helperText)));
+            helperText && (React.createElement("p", { className: `mt-1 text-xs ${error ? "text-danger" : "text-gray-500"}` }, helperText))));
     }
     return InputElement;
 });
