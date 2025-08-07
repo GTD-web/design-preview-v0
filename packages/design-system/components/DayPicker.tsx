@@ -50,6 +50,7 @@ export interface DayPickerProps {
   variant?: "default" | "filled" | "outlined";
   triggerType?: "input" | "button";
   dateFormat?: "default" | "long" | "short";
+  calendarPosition?: number; // 0-100, 0=왼쪽끝, 50=가운데, 100=오른쪽끝
 }
 
 export function DayPicker({
@@ -67,6 +68,7 @@ export function DayPicker({
   variant = "default",
   triggerType = "input",
   dateFormat = "default",
+  calendarPosition = 50,
 }: DayPickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
@@ -306,6 +308,12 @@ export function DayPicker({
     []
   );
 
+  // 캘린더 위치 계산 (0-100을 -50% ~ +50%로 변환)
+  const calendarTransformX = useMemo(() => {
+    const clampedPosition = Math.max(0, Math.min(100, calendarPosition));
+    return `${clampedPosition - 50}%`;
+  }, [calendarPosition]);
+
   return (
     <div className={className}>
       <div ref={refs.setReference}>
@@ -384,7 +392,12 @@ export function DayPicker({
           {/* 캘린더 드롭다운 */}
           <div
             ref={refs.setFloating}
-            style={floatingStyles}
+            style={{
+              ...floatingStyles,
+              transform: `${
+                floatingStyles.transform || ""
+              } translateX(${calendarTransformX})`.trim(),
+            }}
             className={`relative z-50 border border-border rounded-lg shadow-xl ${
               theme === "shadcn-v0-dark"
                 ? "bg-gray-800 border-gray-600"
@@ -409,9 +422,9 @@ export function DayPicker({
             />
 
             <div
-              className={`p-4 w-80 ${
+              className={`p-4 w-96 ${
                 theme === "shadcn-v0-dark" ? "bg-gray-800" : "bg-white"
-              }`}
+              } rounded-md`}
             >
               {/* 월 헤더 */}
               <div className="flex items-center justify-between mb-4">
@@ -470,8 +483,8 @@ export function DayPicker({
                 {weekDays.map((day) => (
                   <div
                     key={day}
-                    className="h-8 w-8 flex items-center justify-center text-xs font-medium text-muted-foreground dark:text-gray-300"
-                    style={{ minWidth: "2rem", maxWidth: "2rem" }}
+                    className="h-10 w-10 flex items-center justify-center text-xs font-medium text-muted-foreground dark:text-gray-300"
+                    style={{ minWidth: "2.5rem", maxWidth: "2.5rem" }}
                   >
                     {day}
                   </div>
@@ -510,7 +523,7 @@ export function DayPicker({
                       }}
                       disabled={isDisabled}
                       className={`
-                         h-8 w-8 p-0 text-sm font-normal rounded-md transition-colors flex items-center justify-center
+                         h-10 w-10 p-0 text-sm font-normal rounded-md transition-colors flex items-center justify-center
                          ${
                            isSelected
                              ? "bg-primary text-white hover:bg-primary hover:text-black"
@@ -530,10 +543,10 @@ export function DayPicker({
                          }
                        `.trim()}
                       style={{
-                        minWidth: "2rem",
-                        maxWidth: "2rem",
-                        minHeight: "2rem",
-                        maxHeight: "2rem",
+                        minWidth: "2.5rem",
+                        maxWidth: "2.5rem",
+                        minHeight: "2.5rem",
+                        maxHeight: "2.5rem",
                       }}
                     >
                       {format(date, "d")}
