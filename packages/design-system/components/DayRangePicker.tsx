@@ -578,43 +578,7 @@ export function DayRangePicker({
                 theme === "shadcn-v0-dark" ? "bg-gray-800" : "bg-white"
               } rounded-md`}
             >
-              {/* 선택된 범위 표시 */}
-              {(value.startDate || value.endDate) && (
-                <div className="mb-4 p-3 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm">
-                      <div className="font-medium text-primary dark:text-primary mb-1">
-                        선택된 기간:
-                      </div>
-                      <div>
-                        {value.startDate && (
-                          <span className="text-primary font-medium">
-                            {formatDisplayDate(value.startDate)}
-                          </span>
-                        )}
-                        {value.startDate && value.endDate && (
-                          <span className="mx-2 text-gray-500 dark:text-gray-400">
-                            -
-                          </span>
-                        )}
-                        {value.endDate && (
-                          <span className="text-primary font-medium">
-                            {formatDisplayDate(value.endDate)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleClear}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      초기화
-                    </Button>
-                  </div>
-                </div>
-              )}
+              {/* 선택된 범위 표시 제거됨 */}
 
               {/* 월 헤더 */}
               <div className="flex items-center justify-between mb-4">
@@ -663,10 +627,11 @@ export function DayRangePicker({
 
               {/* 요일 헤더 */}
               <div
-                className="grid gap-1 mb-2"
+                className="grid mb-2"
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(7, 1fr)",
+                  gridTemplateColumns: "repeat(7, 2.5rem)",
+                  justifyContent: "center",
                   width: "100%",
                 }}
               >
@@ -683,11 +648,13 @@ export function DayRangePicker({
 
               {/* 캘린더 날짜들 */}
               <div
-                className="grid gap-1"
+                className="grid gap-y-2"
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(7, 1fr)",
+                  gridTemplateColumns: "repeat(7, 2.5rem)",
+                  justifyContent: "center",
                   width: "100%",
+                  rowGap: "0.5rem",
                 }}
               >
                 {calendarDays.map((date, index) => {
@@ -697,36 +664,80 @@ export function DayRangePicker({
                   const isCurrentMonth = isSameMonth(date, currentMonth);
                   const isDisabled = isDateDisabled(date);
                   const isTodayDate = isToday(date);
+                  // 범위 연결 배경은 래퍼가 담당하고, 중간 날짜 버튼은 투명하게 만들어 끊김을 방지
+                  const inRangeClasses =
+                    theme === "shadcn-v0-dark"
+                      ? "bg-transparent text-white rounded-none font-medium"
+                      : "bg-transparent text-gray-800 rounded-none font-medium";
+                  const rangeContainerClass = (() => {
+                    // 단일일은 래퍼 배경 불필요
+                    if (isRangeStart && isRangeEnd) return "";
+                    // 시작/끝에서는 반쪽 오버레이를 쓰기 위한 컨테이너 속성만 적용
+                    if (isRangeStart)
+                      return "relative overflow-hidden rounded-l-md";
+                    if (isRangeEnd)
+                      return "relative overflow-hidden rounded-r-md";
+                    if (isInRange)
+                      return theme === "shadcn-v0-dark"
+                        ? "bg-gray-600"
+                        : "bg-gray-200";
+                    return "";
+                  })();
 
                   return (
-                    <button
+                    <div
                       key={index}
-                      onClick={(e) => {
-                        console.log(
-                          "Button clicked for date:",
-                          date,
-                          "disabled:",
-                          isDisabled
-                        );
-                        e.stopPropagation();
-                        if (!isDisabled) {
-                          handleDayClick(date);
-                        }
-                      }}
-                      onMouseEnter={() => setHoverDate(date)}
-                      onMouseLeave={() => setHoverDate(null)}
-                      disabled={isDisabled}
-                      className={`
+                      className={`w-full h-10 flex items-center justify-center ${rangeContainerClass}`}
+                    >
+                      {isRangeStart && !isRangeEnd && (
+                        <span
+                          className={`absolute inset-y-0 left-1/2 right-0 ${
+                            theme === "shadcn-v0-dark"
+                              ? "bg-gray-600"
+                              : "bg-gray-200"
+                          }`}
+                        />
+                      )}
+                      {isRangeEnd && !isRangeStart && (
+                        <span
+                          className={`absolute inset-y-0 left-0 right-1/2 ${
+                            theme === "shadcn-v0-dark"
+                              ? "bg-gray-600"
+                              : "bg-gray-200"
+                          }`}
+                        />
+                      )}
+                      <button
+                        onClick={(e) => {
+                          console.log(
+                            "Button clicked for date:",
+                            date,
+                            "disabled:",
+                            isDisabled
+                          );
+                          e.stopPropagation();
+                          if (!isDisabled) {
+                            handleDayClick(date);
+                          }
+                        }}
+                        onMouseEnter={() => setHoverDate(date)}
+                        onMouseLeave={() => setHoverDate(null)}
+                        disabled={isDisabled}
+                        className={`
                          h-10 w-10 p-0 text-sm font-normal transition-colors flex items-center justify-center
-                         ${
-                           isRangeStart || isRangeEnd
-                             ? "bg-primary text-white hover:bg-primary hover:text-black rounded-md"
-                             : isInRange
-                             ? "bg-primary/20 text-primary-foreground hover:bg-primary/30 rounded-none dark:bg-primary/30"
-                             : isTodayDate
-                             ? "bg-accent text-accent-foreground rounded-md dark:bg-gray-700 dark:text-white"
-                             : "hover:bg-accent hover:text-accent-foreground rounded-md text-foreground dark:!text-white dark:hover:bg-gray-700"
-                         }
+                          ${
+                            isRangeStart && isRangeEnd
+                              ? "bg-gray-700 text-white hover:bg-gray-800 hover:text-white rounded-md font-medium"
+                              : isRangeStart
+                              ? "bg-gray-700 text-white hover:bg-gray-800 hover:text-white rounded-none font-medium"
+                              : isRangeEnd
+                              ? "bg-gray-700 text-white hover:bg-gray-800 hover:text-white rounded-none font-medium"
+                              : isInRange
+                              ? inRangeClasses
+                              : isTodayDate
+                              ? "bg-accent text-accent-foreground dark:bg-gray-700 dark:text-white"
+                              : "hover:bg-accent hover:text-accent-foreground text-foreground dark:!text-white dark:hover:bg-gray-700"
+                          }
                          ${
                            !isCurrentMonth
                              ? "text-muted-foreground opacity-50 dark:text-gray-600"
@@ -738,15 +749,16 @@ export function DayRangePicker({
                              : ""
                          }
                        `.trim()}
-                      style={{
-                        minWidth: "2.5rem",
-                        maxWidth: "2.5rem",
-                        minHeight: "2.5rem",
-                        maxHeight: "2.5rem",
-                      }}
-                    >
-                      {format(date, "d")}
-                    </button>
+                        style={{
+                          minWidth: "2.5rem",
+                          maxWidth: "2.5rem",
+                          minHeight: "2.5rem",
+                          maxHeight: "2.5rem",
+                        }}
+                      >
+                        {format(date, "d")}
+                      </button>
+                    </div>
                   );
                 })}
               </div>

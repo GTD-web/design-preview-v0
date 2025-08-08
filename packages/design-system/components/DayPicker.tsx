@@ -493,11 +493,12 @@ export function DayPicker({
 
               {/* 캘린더 날짜들 */}
               <div
-                className="grid gap-1"
+                className="grid gap-x-1 gap-y-2"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(7, 1fr)",
                   width: "100%",
+                  rowGap: "0.5rem",
                 }}
               >
                 {calendarDays.map((date, index) => {
@@ -526,7 +527,7 @@ export function DayPicker({
                          h-10 w-10 p-0 text-sm font-normal rounded-md transition-colors flex items-center justify-center
                          ${
                            isSelected
-                             ? "bg-primary text-white hover:bg-primary hover:text-black"
+                             ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                              : isTodayDate
                              ? "bg-accent text-accent-foreground dark:bg-gray-700 dark:text-white"
                              : "hover:bg-accent hover:text-accent-foreground text-foreground dark:!text-white dark:hover:bg-gray-700"
