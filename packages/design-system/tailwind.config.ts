@@ -187,7 +187,7 @@ const config: Config = {
           800: "#262626",
           900: "#171717",
         },
-        dark: {
+        /* dark: {
           primary: "#fafafa",
           secondary: "#a3a3a3",
           accent: "#737373",
@@ -198,7 +198,7 @@ const config: Config = {
           surface: "#0d1117",
           background: "#010409",
           border: "#404040",
-        },
+        }, */
         gray: {
           50: "#f9fafb",
           100: "#f3f4f6",
@@ -403,7 +403,7 @@ const config: Config = {
           800: "#9f1239",
           900: "#881337",
         },
-        github: {
+        /* github: {
           primary: "#f0f6fc",
           secondary: "#7d8590",
           accent: "#58a6ff",
@@ -414,8 +414,8 @@ const config: Config = {
           surface: "#0d1117",
           background: "#010409",
           border: "#30363d",
-        },
-        midnight: {
+        }, */
+        /* midnight: {
           primary: "#e6edf3",
           secondary: "#7c3aed",
           accent: "#8b5cf6",
@@ -426,8 +426,8 @@ const config: Config = {
           surface: "#0d1117",
           background: "#010409",
           border: "#30363d",
-        },
-        ocean: {
+        }, */
+        /* ocean: {
           primary: "#e0f2fe",
           secondary: "#0ea5e9",
           accent: "#06b6d4",
@@ -438,8 +438,8 @@ const config: Config = {
           surface: "#0f172a",
           background: "#020617",
           border: "#1e293b",
-        },
-        forest: {
+        }, */
+        /* forest: {
           primary: "#dcfce7",
           secondary: "#16a34a",
           accent: "#22c55e",
@@ -450,8 +450,8 @@ const config: Config = {
           surface: "#064e3b",
           background: "#022c22",
           border: "#065f46",
-        },
-        sunset: {
+        }, */
+        /* sunset: {
           primary: "#fef3c7",
           secondary: "#f59e0b",
           accent: "#f97316",
@@ -462,8 +462,8 @@ const config: Config = {
           surface: "#451a03",
           background: "#1c1917",
           border: "#92400e",
-        },
-        aurora: {
+        }, */
+        /* aurora: {
           primary: "#f0f9ff",
           secondary: "#8b5cf6",
           accent: "#a855f7",
@@ -474,8 +474,8 @@ const config: Config = {
           surface: "#1e1b4b",
           background: "#0f0f23",
           border: "#3730a3",
-        },
-        cosmic: {
+        }, */
+        /* cosmic: {
           primary: "#fdf4ff",
           secondary: "#ec4899",
           accent: "#f472b6",
@@ -486,7 +486,7 @@ const config: Config = {
           surface: "#581c87",
           background: "#2d1b69",
           border: "#7c3aed",
-        },
+        }, */
       },
       fontFamily: {
         sans: ["Noto Sans KR", "Pretendard", "Inter", "sans-serif"],

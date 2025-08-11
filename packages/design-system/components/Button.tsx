@@ -64,7 +64,8 @@ export function Button({
   disabled = false,
   ...props
 }: ButtonProps) {
-  const baseClasses = "font-medium transition-all duration-200 rounded flex items-center justify-center gap-1";
+  const baseClasses =
+    "font-medium transition-all duration-200 rounded flex items-center justify-center gap-1";
 
   const sizeClasses = {
     sm: "px-2 py-1 text-xs",
@@ -118,17 +119,18 @@ export function Button({
       secondary: "bg-secondary text-white hover:bg-secondary/90",
       outline: "bg-transparent text-primary hover:bg-primary/10",
       ghost: "bg-transparent text-primary hover:bg-surface",
-      toggle: selected 
-        ? "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800" 
+      toggle: selected
+        ? "bg-blue-100 /*dark:bg-blue-900*/ text-blue-900 /*dark:text-blue-100*/ border-blue-300 /*dark:border-blue-700*/ hover:bg-blue-200 /*dark:hover:bg-blue-800*/"
         : "bg-transparent text-foreground border-border hover:bg-surface hover:border-primary/30",
       nav: selected
-        ? "bg-neutral-800 dark:bg-neutral-700 text-white hover:bg-neutral-700 dark:hover:bg-neutral-600"
-        : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800",
+        ? "bg-neutral-800 /*dark:bg-neutral-700*/ text-white hover:bg-neutral-700 /*dark:hover:bg-neutral-600*/"
+        : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/",
     }[variant];
   };
 
   const getBorderStyle = () => {
-    if (disabled) return { borderColor: "rgb(209 213 219)", borderWidth: "1px" };
+    if (disabled)
+      return { borderColor: "rgb(209 213 219)", borderWidth: "1px" };
     if (gradient) return { borderColor: "transparent", borderWidth: "0" };
 
     switch (variant) {
@@ -145,11 +147,23 @@ export function Button({
     }
   };
 
-  const classes = [baseClasses, sizeClasses[size], getVariantClasses(), className].filter(Boolean).join(" ");
+  const classes = [
+    baseClasses,
+    sizeClasses[size],
+    getVariantClasses(),
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
   const borderStyle = getBorderStyle();
 
   return (
-    <button className={classes} style={{ ...borderStyle, ...style }} disabled={disabled} {...props}>
+    <button
+      className={classes}
+      style={{ ...borderStyle, ...style }}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </button>
   );

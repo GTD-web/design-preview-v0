@@ -225,7 +225,7 @@ export function SidebarCollapsed({
                   className="w-10 h-10 object-contain transition-all duration-300"
                 />
               ) : (
-                <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                <div className="w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300">
                   <span className="text-white font-bold text-base">
                     {logoTextShort}
                   </span>
@@ -235,8 +235,8 @@ export function SidebarCollapsed({
                 variant="ghost"
                 size="sm"
                 onClick={isHoverEnabled ? onToggleExpand : onToggleHover}
-                className={`p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200 ${
-                  isHoverEnabled ? "bg-neutral-100 dark:bg-neutral-800" : ""
+                className={`p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200 ${
+                  isHoverEnabled ? "bg-neutral-100 /*dark:bg-neutral-800*/" : ""
                 }`}
                 title={isHoverEnabled ? "사이드바 펼치기" : "호버 모드 활성화"}
               >
@@ -277,8 +277,8 @@ export function SidebarCollapsed({
                           group flex items-center justify-center h-12 w-12 rounded-lg transition-all duration-200 ease-in-out mx-auto relative
                           ${
                             activePath === item.path
-                              ? "bg-neutral-800 dark:bg-neutral-700"
-                              : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                              ? "bg-neutral-800 /*dark:bg-neutral-700*/"
+                              : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"
                           }
                         `}
                         title={item.title}
@@ -289,7 +289,7 @@ export function SidebarCollapsed({
                             ${
                               activePath === item.path
                                 ? "text-white"
-                                : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
+                                : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"
                             }
                           `}
                         >
@@ -298,7 +298,7 @@ export function SidebarCollapsed({
                       </button>
                       {item.badge && (
                         <div
-                          className="absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none"
+                          className="absolute -top-1 -right-1 bg-neutral-900 /*dark:bg-neutral-800*/ text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none"
                           style={{ fontSize: "10px", lineHeight: "12px" }}
                           title={item.badge}
                         >
@@ -323,7 +323,7 @@ export function SidebarCollapsed({
               onClick={handleProfileClick}
             >
               <div className="flex justify-center">
-                <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                <div className="w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300">
                   <span className="text-white font-bold text-sm">
                     {user?.initials || user?.name?.charAt(0) || "U"}
                   </span>
@@ -583,7 +583,7 @@ export function SidebarExpanded({
                 />
               ) : (
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300">
+                  <div className="w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300">
                     <span className="text-white font-bold text-base">
                       {logoTextShort}
                     </span>
@@ -595,8 +595,8 @@ export function SidebarExpanded({
                 variant="ghost"
                 size="sm"
                 onClick={isHoverEnabled ? onToggleHover : onToggleCollapse}
-                className={`p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200 ${
-                  isHoverEnabled ? "bg-neutral-100 dark:bg-neutral-800" : ""
+                className={`p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200 ${
+                  isHoverEnabled ? "bg-neutral-100 /*dark:bg-neutral-800*/" : ""
                 }`}
                 title={isHoverEnabled ? "호버 모드 비활성화" : "사이드바 접기"}
               >
@@ -637,7 +637,7 @@ export function SidebarExpanded({
                   variants={itemVariants}
                 >
                   <motion.h3
-                    className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider transition-all duration-300"
+                    className="text-xs font-semibold text-neutral-500 /*dark:text-neutral-400*/ uppercase tracking-wider transition-all duration-300"
                     variants={itemVariants}
                   >
                     {group.title}
@@ -652,8 +652,8 @@ export function SidebarExpanded({
                           group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out overflow-hidden
                           ${
                             activePath === item.path
-                              ? "bg-neutral-800 dark:bg-neutral-700"
-                              : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                              ? "bg-neutral-800 /*dark:bg-neutral-700*/"
+                              : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"
                           }
                         `}
                         variants={itemVariants}
@@ -664,7 +664,7 @@ export function SidebarExpanded({
                             ${
                               activePath === item.path
                                 ? "text-white"
-                                : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"
+                                : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"
                             }
                           `}
                         >
@@ -675,14 +675,14 @@ export function SidebarExpanded({
                             className={`font-medium transition-all duration-200 ease-in-out truncate ${
                               activePath === item.path
                                 ? "text-white"
-                                : "text-neutral-600 dark:text-neutral-400"
+                                : "text-neutral-600 /*dark:text-neutral-400*/"
                             }`}
                           >
                             {item.title}
                           </span>
                           {item.badge && (
                             <div
-                              className="bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0"
+                              className="bg-neutral-900 /*dark:bg-neutral-800*/ text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0"
                               title={item.badge}
                             >
                               <span className="block truncate">

@@ -50,7 +50,7 @@
   --scrollbar-width: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --color-background: #010409;
     --foreground: #fafafa;
@@ -69,7 +69,7 @@
     --scrollbar-thumb: #404040;
     --scrollbar-thumb-hover: #525252;
   }
-}
+} */
 
 body {
   color: var(--foreground);
@@ -84,7 +84,7 @@ body {
   }
 }
 
-.theme-dark {
+/* .theme-dark {
   --color-primary: #fafafa;
   --color-secondary: #a3a3a3;
   --color-accent: #737373;
@@ -98,7 +98,7 @@ body {
   --foreground: #fafafa;
   --foreground-inverse: #171717;
   --color-active-text: #000000;
-}
+} */
 
 .theme-dracula {
   --color-primary: #bd93f9;
@@ -143,7 +143,7 @@ body {
   --foreground: #000000;
 }
 
-.theme-ci.theme-dark {
+/* .theme-ci.theme-dark {
   --color-primary: #00a0e9;
   --color-secondary: #65127e;
   --color-accent: #7de3f7;
@@ -155,10 +155,10 @@ body {
   --color-background: #010409;
   --color-border: #404040;
   --foreground: #f8fafc;
-}
+} */
 
 /* 새로운 테마들 추가 */
-.theme-github {
+/* .theme-github {
   --color-primary: #f0f6fc;
   --color-secondary: #7d8590;
   --color-accent: #58a6ff;
@@ -171,7 +171,7 @@ body {
   --color-border: #30363d;
   --foreground: #f0f6fc;
   --foreground-inverse: #010409;
-}
+} */
 
 .theme-github.theme-light {
   --color-primary: #24292f;
@@ -188,7 +188,7 @@ body {
   --foreground-inverse: #ffffff;
 }
 
-.theme-midnight {
+/* .theme-midnight {
   --color-primary: #e6edf3;
   --color-secondary: #7c3aed;
   --color-accent: #8b5cf6;
@@ -201,9 +201,9 @@ body {
   --color-border: #30363d;
   --foreground: #e6edf3;
   --foreground-inverse: #010409;
-}
+} */
 
-.theme-ocean {
+/* .theme-ocean {
   --color-primary: #e0f2fe;
   --color-secondary: #0ea5e9;
   --color-accent: #06b6d4;
@@ -216,9 +216,9 @@ body {
   --color-border: #1e293b;
   --foreground: #e0f2fe;
   --foreground-inverse: #020617;
-}
+} */
 
-.theme-forest {
+/* .theme-forest {
   --color-primary: #dcfce7;
   --color-secondary: #16a34a;
   --color-accent: #22c55e;
@@ -231,9 +231,9 @@ body {
   --color-border: #065f46;
   --foreground: #dcfce7;
   --foreground-inverse: #022c22;
-}
+} */
 
-.theme-sunset {
+/* .theme-sunset {
   --color-primary: #fef3c7;
   --color-secondary: #f59e0b;
   --color-accent: #f97316;
@@ -246,9 +246,9 @@ body {
   --color-border: #92400e;
   --foreground: #fef3c7;
   --foreground-inverse: #1c1917;
-}
+} */
 
-.theme-aurora {
+/* .theme-aurora {
   --color-primary: #f0f9ff;
   --color-secondary: #8b5cf6;
   --color-accent: #a855f7;
@@ -261,9 +261,9 @@ body {
   --color-border: #3730a3;
   --foreground: #f0f9ff;
   --foreground-inverse: #0f0f23;
-}
+} */
 
-.theme-cosmic {
+/* .theme-cosmic {
   --color-primary: #fdf4ff;
   --color-secondary: #ec4899;
   --color-accent: #f472b6;
@@ -276,7 +276,7 @@ body {
   --color-border: #7c3aed;
   --foreground: #fdf4ff;
   --foreground-inverse: #2d1b69;
-}
+} */
 
 .font-noto {
   font-family: "Noto Sans KR", "Pretendard", Arial, Helvetica, sans-serif;
@@ -376,7 +376,7 @@ body {
   --color-active-text: oklch(0.985 0 0);
 }
 
-.theme-shadcn-v0-dark {
+/* .theme-shadcn-v0-dark {
   /* V0 토큰 - 다크 모드 (oklch 기반) */
   --radius: 0.625rem;
   --background: oklch(0.145 0 0);
@@ -424,4 +424,4 @@ body {
   --color-border: oklch(1 0 0 / 10%);
   --foreground-inverse: oklch(0.205 0 0);
   --color-active-text: oklch(0.205 0 0);
-}
+} */

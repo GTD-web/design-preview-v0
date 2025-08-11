@@ -156,13 +156,13 @@ export function DesignSettings({
       {open && (
         <div
           ref={widgetRef}
-          className="fixed bottom-20 right-3 md:right-6 md:bottom-24 z-[9999] w-[320px] max-w-[90vw] max-h-[75vh] md:max-h-[80vh] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col"
+          className="fixed bottom-20 right-3 md:right-6 md:bottom-24 z-[9999] w-[320px] max-w-[90vw] max-h-[75vh] md:max-h-[80vh] bg-white /*dark:bg-gray-800*/ rounded-2xl shadow-2xl border border-gray-200 /*dark:border-gray-700*/ overflow-hidden flex flex-col"
           role="dialog"
           aria-modal="true"
         >
           {/* 헤더 */}
-          <div className="flex justify-between items-center p-6 pb-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-            <span className="font-semibold text-base text-gray-900 dark:text-white">
+          <div className="flex justify-between items-center p-6 pb-4 border-b border-gray-200 /*dark:border-gray-700*/ flex-shrink-0">
+            <span className="font-semibold text-base text-gray-900 /*dark:text-white*/">
               디자인 퀵 설정
             </span>
             <Button
@@ -180,7 +180,7 @@ export function DesignSettings({
           <div className="flex-1 overflow-y-auto p-6 pt-4">
             {/* 테마 선택 섹션 */}
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+              <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                 테마
               </label>
               <div className="flex gap-3 flex-wrap">
@@ -200,7 +200,7 @@ export function DesignSettings({
 
             {/* 폰트 선택 섹션 */}
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+              <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                 폰트
               </label>
               <div className="flex gap-3 flex-wrap">
@@ -220,7 +220,7 @@ export function DesignSettings({
 
             {/* 레이아웃 타입 선택 섹션 */}
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+              <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                 레이아웃
               </label>
               <div className="flex gap-3 flex-wrap">
@@ -246,7 +246,7 @@ export function DesignSettings({
             {/* 최대 너비 선택 섹션 */}
             {currentLayoutType === "centered" && (
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+                <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                   최대 너비
                 </label>
                 <div className="flex gap-3 flex-wrap">
@@ -289,7 +289,7 @@ export function DesignSettings({
             {/* 수치 조정 섹션 */}
             <div className="mb-6 flex gap-6">
               <div>
-                <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+                <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                   라운드
                 </label>
                 <input
@@ -302,13 +302,13 @@ export function DesignSettings({
                   aria-label="라운드 값 조정"
                   title={`라운드 값: ${currentRadius}px`}
                 />
-                <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
+                <span className="ml-2 text-xs text-gray-600 /*dark:text-gray-400*/">
                   {currentRadius}px
                 </span>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+                <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                   폰트크기
                 </label>
                 <input
@@ -321,7 +321,7 @@ export function DesignSettings({
                   aria-label="폰트 크기 조정"
                   title={`폰트 크기: ${currentFontSize}px`}
                 />
-                <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
+                <span className="ml-2 text-xs text-gray-600 /*dark:text-gray-400*/">
                   {currentFontSize}px
                 </span>
               </div>
@@ -329,7 +329,7 @@ export function DesignSettings({
 
             {/* 기본 스페이싱 조정 */}
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+              <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                 기본 Spacing
               </label>
               <input
@@ -347,14 +347,14 @@ export function DesignSettings({
                 aria-label="기본 스페이싱 조정"
                 title={`기본 스페이싱: ${currentSpacing.md}px`}
               />
-              <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
+              <span className="ml-2 text-xs text-gray-600 /*dark:text-gray-400*/">
                 {currentSpacing.md}px
               </span>
             </div>
 
             {/* 그리드 갭 조정 */}
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+              <label className="block text-sm font-medium mb-3 text-gray-900 /*dark:text-white*/">
                 Grid Gap (갭)
               </label>
               <input
@@ -367,7 +367,7 @@ export function DesignSettings({
                 aria-label="그리드 갭 조정"
                 title={`그리드 갭: ${currentGap}px`}
               />
-              <span className="ml-2 text-xs text-gray-600 dark:text-gray-400">
+              <span className="ml-2 text-xs text-gray-600 /*dark:text-gray-400*/">
                 {currentGap}px
               </span>
             </div>

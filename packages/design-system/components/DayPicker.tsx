@@ -430,7 +430,7 @@ export function DayPicker({
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={handlePrevMonth}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border dark:border-gray-600 bg-background dark:!bg-gray-800 text-foreground dark:!text-white disabled:pointer-events-none disabled:opacity-50"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border /*dark:border-gray-600*/ bg-background /*dark:!bg-gray-800*/ text-foreground /*dark:!text-white*/ disabled:pointer-events-none disabled:opacity-50"
                 >
                   <svg
                     className="w-4 h-4"
@@ -447,13 +447,13 @@ export function DayPicker({
                   </svg>
                 </button>
 
-                <h2 className="text-sm font-medium text-foreground dark:!text-white">
+                <h2 className="text-sm font-medium text-foreground /*dark:!text-white*/">
                   {format(currentMonth, "yyyy년 M월", { locale: ko })}
                 </h2>
 
                 <button
                   onClick={handleNextMonth}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border dark:border-gray-600 bg-background dark:!bg-gray-800 text-foreground dark:!text-white disabled:pointer-events-none disabled:opacity-50"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border /*dark:border-gray-600*/ bg-background /*dark:!bg-gray-800*/ text-foreground /*dark:!text-white*/ disabled:pointer-events-none disabled:opacity-50"
                 >
                   <svg
                     className="w-4 h-4"
@@ -483,7 +483,7 @@ export function DayPicker({
                 {weekDays.map((day) => (
                   <div
                     key={day}
-                    className="h-10 w-10 flex items-center justify-center text-xs font-medium text-muted-foreground dark:text-gray-300"
+                    className="h-10 w-10 flex items-center justify-center text-xs font-medium text-muted-foreground /*dark:text-gray-300*/"
                     style={{ minWidth: "2.5rem", maxWidth: "2.5rem" }}
                   >
                     {day}
@@ -529,12 +529,12 @@ export function DayPicker({
                            isSelected
                              ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                              : isTodayDate
-                             ? "bg-accent text-accent-foreground dark:bg-gray-700 dark:text-white"
-                             : "hover:bg-accent hover:text-accent-foreground text-foreground dark:!text-white dark:hover:bg-gray-700"
+                             ? "bg-accent text-accent-foreground /*dark:bg-gray-700 dark:text-white*/"
+                             : "hover:bg-accent hover:text-accent-foreground text-foreground /*dark:!text-white*/ dark:hover:bg-gray-700"
                          }
                          ${
                            !isCurrentMonth
-                             ? "text-muted-foreground opacity-50 dark:text-gray-600"
+                             ? "text-muted-foreground opacity-50 /*dark:text-gray-600*/"
                              : ""
                          }
                          ${
