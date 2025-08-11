@@ -360,7 +360,7 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  
+
   /* 기본 변수들과 연결 */
   --color-background: oklch(1 0 0);
   --color-primary: oklch(0.205 0 0);
@@ -377,7 +377,7 @@ body {
 }
 
 /* .theme-shadcn-v0-dark {
-  /* V0 토큰 - 다크 모드 (oklch 기반) */
+  // V0 토큰 - 다크 모드 (oklch 기반)
   --radius: 0.625rem;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -411,7 +411,7 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
   
-  /* 기본 변수들과 연결 */
+  // 기본 변수들과 연결
   --color-background: oklch(0.145 0 0);
   --color-primary: oklch(0.985 0 0);
   --color-secondary: oklch(0.708 0 0);
@@ -424,4 +424,5 @@ body {
   --color-border: oklch(1 0 0 / 10%);
   --foreground-inverse: oklch(0.205 0 0);
   --color-active-text: oklch(0.205 0 0);
-} */
+} 
+*/
