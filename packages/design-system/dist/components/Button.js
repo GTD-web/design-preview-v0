@@ -51,11 +51,11 @@ export function Button({ variant = "primary", size = "md", selected = false, gra
             outline: "bg-transparent text-primary hover:bg-primary/10",
             ghost: "bg-transparent text-primary hover:bg-surface",
             toggle: selected
-                ? "bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100 border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800"
+                ? "bg-blue-100 /*dark:bg-blue-900*/ text-blue-900 /*dark:text-blue-100*/ border-blue-300 /*dark:border-blue-700*/ hover:bg-blue-200 /*dark:hover:bg-blue-800*/"
                 : "bg-transparent text-foreground border-border hover:bg-surface hover:border-primary/30",
             nav: selected
-                ? "bg-neutral-800 dark:bg-neutral-700 text-white hover:bg-neutral-700 dark:hover:bg-neutral-600"
-                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800",
+                ? "bg-neutral-800 /*dark:bg-neutral-700*/ text-white hover:bg-neutral-700 /*dark:hover:bg-neutral-600*/"
+                : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/",
         }[variant];
     };
     const getBorderStyle = () => {
@@ -76,7 +76,14 @@ export function Button({ variant = "primary", size = "md", selected = false, gra
                 return { borderColor: "var(--color-border)", borderWidth: "1px" };
         }
     };
-    const classes = [baseClasses, sizeClasses[size], getVariantClasses(), className].filter(Boolean).join(" ");
+    const classes = [
+        baseClasses,
+        sizeClasses[size],
+        getVariantClasses(),
+        className,
+    ]
+        .filter(Boolean)
+        .join(" ");
     const borderStyle = getBorderStyle();
     return (React.createElement("button", { className: classes, style: { ...borderStyle, ...style }, disabled: disabled, ...props }, children));
 }

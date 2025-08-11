@@ -29,10 +29,17 @@ const colorClasses = {
     info: "text-info",
     muted: "text-gray-500",
     default: "text-foreground",
-    black: "text-neutral-900 dark:text-neutral-900",
+    black: "text-neutral-900 /*dark:text-neutral-900*/",
 };
 export const Text = forwardRef(({ size = "md", weight = "normal", color = "default", variant = "span", className = "", children, ...props }, ref) => {
-    const classes = [sizeClasses[size], weightClasses[weight], colorClasses[color], className].filter(Boolean).join(" ");
+    const classes = [
+        sizeClasses[size],
+        weightClasses[weight],
+        colorClasses[color],
+        className,
+    ]
+        .filter(Boolean)
+        .join(" ");
     if (variant === "p") {
         return (React.createElement("p", { ref: ref, className: classes, ...props }, children));
     }

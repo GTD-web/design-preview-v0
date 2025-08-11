@@ -45,32 +45,32 @@ export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "
             React.createElement("div", { className: "flex flex-col h-full overflow-hidden overflow-x-hidden" },
                 React.createElement("div", { className: "border-b border-border overflow-x-hidden p-3" },
                     React.createElement("div", { className: "flex flex-col items-center gap-3" },
-                        logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "w-10 h-10 object-contain transition-all duration-300" })) : (React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
+                        logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "w-10 h-10 object-contain transition-all duration-300" })) : (React.createElement("div", { className: "w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300" },
                             React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort))),
-                        React.createElement(Button, { variant: "ghost", size: "sm", onClick: isHoverEnabled ? onToggleExpand : onToggleHover, className: `p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200 ${isHoverEnabled ? "bg-neutral-100 dark:bg-neutral-800" : ""}`, title: isHoverEnabled ? "사이드바 펼치기" : "호버 모드 활성화" }, isHoverEnabled ? (expandIcon || currentIcon.expandIcon) : (React.createElement("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" },
+                        React.createElement(Button, { variant: "ghost", size: "sm", onClick: isHoverEnabled ? onToggleExpand : onToggleHover, className: `p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200 ${isHoverEnabled ? "bg-neutral-100 /*dark:bg-neutral-800*/" : ""}`, title: isHoverEnabled ? "사이드바 펼치기" : "호버 모드 활성화" }, isHoverEnabled ? (expandIcon || currentIcon.expandIcon) : (React.createElement("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" },
                             React.createElement("path", { d: "M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" })))))),
                 React.createElement("nav", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 pt-4" },
                     React.createElement("div", { className: "flex flex-col gap-sm items-center justify-start" }, menuGroups.map((group, groupIndex) => (React.createElement("div", { key: group.title, className: `w-full ${groupIndex === 0 ? "mt-2" : ""}` }, group.items.map((item) => (React.createElement("div", { key: item.path, className: "relative" },
                         React.createElement("button", { type: "button", onClick: () => router.push(item.path), className: `
                           group flex items-center justify-center h-12 w-12 rounded-lg transition-all duration-200 ease-in-out mx-auto relative
                           ${activePath === item.path
-                                ? "bg-neutral-800 dark:bg-neutral-700"
-                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"}
+                                ? "bg-neutral-800 /*dark:bg-neutral-700*/"
+                                : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"}
                         `, title: item.title },
                             React.createElement("div", { className: `
                             flex items-center justify-center w-6 h-6 transition-all duration-200 ease-in-out
                             ${activePath === item.path
                                     ? "text-white"
-                                    : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"}
+                                    : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"}
                           ` }, item.icon)),
-                        item.badge && (React.createElement("div", { className: "absolute -top-1 -right-1 bg-neutral-900 dark:bg-neutral-800 text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none", style: { fontSize: "10px", lineHeight: "12px" }, title: item.badge },
+                        item.badge && (React.createElement("div", { className: "absolute -top-1 -right-1 bg-neutral-900 /*dark:bg-neutral-800*/ text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none", style: { fontSize: "10px", lineHeight: "12px" }, title: item.badge },
                             React.createElement("span", { className: "block truncate" }, item.badge.length > 3
                                 ? `${item.badge.slice(0, 2)}...`
                                 : item.badge))))))))))),
                 React.createElement("div", { className: "border-t border-border overflow-x-hidden p-2" },
                     React.createElement("div", { className: "p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", onClick: handleProfileClick },
                         React.createElement("div", { className: "flex justify-center" },
-                            React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
+                            React.createElement("div", { className: "w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300" },
                                 React.createElement("span", { className: "text-white font-bold text-sm" }, user?.initials || user?.name?.charAt(0) || "U"))))))),
         showProfilePopup && (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "fixed inset-0 bg-black/50 z-50", onClick: () => setShowProfilePopup(false) },
@@ -159,32 +159,32 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
                 React.createElement(motion.div, { className: "flex items-center justify-between", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
                     React.createElement("div", { className: "flex items-center gap-3" },
                         logoUrl ? (React.createElement("img", { src: logoUrl, alt: "Logo", className: "h-10 object-contain transition-all duration-300" })) : (React.createElement("div", { className: "flex items-center gap-3" },
-                            React.createElement("div", { className: "w-10 h-10 bg-neutral-800 dark:bg-neutral-700 rounded-lg flex items-center justify-center transition-all duration-300" },
+                            React.createElement("div", { className: "w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300" },
                                 React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort)),
                             React.createElement("span", { className: "font-semibold text-lg" }, logoText))),
-                        React.createElement(Button, { variant: "ghost", size: "sm", onClick: isHoverEnabled ? onToggleHover : onToggleCollapse, className: `p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-all duration-200 ${isHoverEnabled ? "bg-neutral-100 dark:bg-neutral-800" : ""}`, title: isHoverEnabled ? "호버 모드 비활성화" : "사이드바 접기" }, isHoverEnabled ? (React.createElement("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" },
+                        React.createElement(Button, { variant: "ghost", size: "sm", onClick: isHoverEnabled ? onToggleHover : onToggleCollapse, className: `p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200 ${isHoverEnabled ? "bg-neutral-100 /*dark:bg-neutral-800*/" : ""}`, title: isHoverEnabled ? "호버 모드 비활성화" : "사이드바 접기" }, isHoverEnabled ? (React.createElement("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" },
                             React.createElement("path", { d: "M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" }))) : (collapseIcon || currentIcon.collapseIcon))))),
             React.createElement("nav", { className: "flex-1 overflow-y-auto overflow-x-hidden p-4" },
                 React.createElement(motion.div, { initial: "hidden", animate: "visible", exit: "exit", variants: staggerVariants },
                     React.createElement(VSpace, { gap: "lg", align: "stretch" }, menuGroups.map((group) => (React.createElement(motion.div, { key: group.title, className: "space-y-2", variants: itemVariants },
-                        React.createElement(motion.h3, { className: "text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider transition-all duration-300", variants: itemVariants }, group.title),
+                        React.createElement(motion.h3, { className: "text-xs font-semibold text-neutral-500 /*dark:text-neutral-400*/ uppercase tracking-wider transition-all duration-300", variants: itemVariants }, group.title),
                         React.createElement(VStack, { gap: "sm", align: "stretch" }, group.items.map((item) => (React.createElement(motion.button, { key: item.path, type: "button", onClick: () => router.push(item.path), className: `
                           group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out overflow-hidden
                           ${activePath === item.path
-                                ? "bg-neutral-800 dark:bg-neutral-700"
-                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"}
+                                ? "bg-neutral-800 /*dark:bg-neutral-700*/"
+                                : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"}
                         `, variants: itemVariants },
                             React.createElement("div", { className: `
                             flex items-center justify-center w-5 h-5 transition-all duration-200 ease-in-out flex-shrink-0
                             ${activePath === item.path
                                     ? "text-white"
-                                    : "text-neutral-500 group-hover:text-neutral-700 dark:text-neutral-400 dark:group-hover:text-neutral-300"}
+                                    : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"}
                           ` }, item.icon),
                             React.createElement("div", { className: "flex items-center justify-between flex-1 min-w-0" },
                                 React.createElement("span", { className: `font-medium transition-all duration-200 ease-in-out truncate ${activePath === item.path
                                         ? "text-white"
-                                        : "text-neutral-600 dark:text-neutral-400"}` }, item.title),
-                                item.badge && (React.createElement("div", { className: "bg-neutral-900 dark:bg-neutral-800 text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0", title: item.badge },
+                                        : "text-neutral-600 /*dark:text-neutral-400*/"}` }, item.title),
+                                item.badge && (React.createElement("div", { className: "bg-neutral-900 /*dark:bg-neutral-800*/ text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0", title: item.badge },
                                     React.createElement("span", { className: "block truncate" }, item.badge)))))))))))))),
             React.createElement(AnimatePresence, null, showModeToggle && (React.createElement(motion.div, { className: "p-4 border-t overflow-x-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
                 React.createElement(Button, { variant: "ghost", size: "sm", className: "w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group overflow-hidden", onClick: handleModeToggle },

@@ -363,33 +363,27 @@ export function DayRangePicker({ value = {}, onChange, minDate, maxDate, disable
                         left: context.middlewareData.arrow?.x,
                         top: -4,
                     } }),
-                React.createElement("div", { className: `p-4 w-80 ${theme === "shadcn-v0-dark" ? "bg-gray-800" : "bg-white"} rounded-md` },
-                    (value.startDate || value.endDate) && (React.createElement("div", { className: "mb-4 p-3 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-lg" },
-                        React.createElement("div", { className: "flex items-center justify-between" },
-                            React.createElement("div", { className: "text-sm" },
-                                React.createElement("div", { className: "font-medium text-primary dark:text-primary mb-1" }, "\uC120\uD0DD\uB41C \uAE30\uAC04:"),
-                                React.createElement("div", null,
-                                    value.startDate && (React.createElement("span", { className: "text-primary font-medium" }, formatDisplayDate(value.startDate))),
-                                    value.startDate && value.endDate && (React.createElement("span", { className: "mx-2 text-gray-500 dark:text-gray-400" }, "-")),
-                                    value.endDate && (React.createElement("span", { className: "text-primary font-medium" }, formatDisplayDate(value.endDate))))),
-                            React.createElement(Button, { variant: "ghost", size: "sm", onClick: handleClear, className: "text-gray-500 hover:text-gray-700" }, "\uCD08\uAE30\uD654")))),
+                React.createElement("div", { className: `p-4 w-96 ${theme === "shadcn-v0-dark" ? "bg-gray-800" : "bg-white"} rounded-md` },
                     React.createElement("div", { className: "flex items-center justify-between mb-4" },
-                        React.createElement("button", { onClick: handlePrevMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border dark:border-gray-600 bg-background dark:!bg-gray-800 text-foreground dark:!text-white disabled:pointer-events-none disabled:opacity-50" },
+                        React.createElement("button", { onClick: handlePrevMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border /*dark:border-gray-600*/ bg-background /*dark:!bg-gray-800*/ text-foreground /*dark:!text-white*/ disabled:pointer-events-none disabled:opacity-50" },
                             React.createElement("svg", { className: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M15 19l-7-7 7-7" }))),
-                        React.createElement("h2", { className: "text-sm font-medium text-foreground dark:!text-white" }, format(currentMonth, "yyyy년 M월", { locale: ko })),
-                        React.createElement("button", { onClick: handleNextMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border dark:border-gray-600 bg-background dark:!bg-gray-800 text-foreground dark:!text-white disabled:pointer-events-none disabled:opacity-50" },
+                        React.createElement("h2", { className: "text-sm font-medium text-foreground /*dark:!text-white*/" }, format(currentMonth, "yyyy년 M월", { locale: ko })),
+                        React.createElement("button", { onClick: handleNextMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border /*dark:border-gray-600*/ bg-background /*dark:!bg-gray-800*/ text-foreground /*dark:!text-white*/ disabled:pointer-events-none disabled:opacity-50" },
                             React.createElement("svg", { className: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 5l7 7-7 7" })))),
-                    React.createElement("div", { className: "grid gap-1 mb-2", style: {
+                    React.createElement("div", { className: "grid mb-2", style: {
                             display: "grid",
-                            gridTemplateColumns: "repeat(7, 1fr)",
+                            gridTemplateColumns: "repeat(7, 2.5rem)",
+                            justifyContent: "center",
                             width: "100%",
-                        } }, weekDays.map((day) => (React.createElement("div", { key: day, className: "h-8 w-8 flex items-center justify-center text-xs font-medium text-muted-foreground dark:text-gray-300", style: { minWidth: "2rem", maxWidth: "2rem" } }, day)))),
-                    React.createElement("div", { className: "grid gap-1", style: {
+                        } }, weekDays.map((day) => (React.createElement("div", { key: day, className: "h-10 w-10 flex items-center justify-center text-xs font-medium text-muted-foreground /*dark:text-gray-300*/", style: { minWidth: "2.5rem", maxWidth: "2.5rem" } }, day)))),
+                    React.createElement("div", { className: "grid gap-y-2", style: {
                             display: "grid",
-                            gridTemplateColumns: "repeat(7, 1fr)",
+                            gridTemplateColumns: "repeat(7, 2.5rem)",
+                            justifyContent: "center",
                             width: "100%",
+                            rowGap: "0.5rem",
                         } }, calendarDays.map((date, index) => {
                         const isInRange = isDateInRange(date);
                         const isRangeStart = isDateRangeStart(date);
@@ -397,33 +391,63 @@ export function DayRangePicker({ value = {}, onChange, minDate, maxDate, disable
                         const isCurrentMonth = isSameMonth(date, currentMonth);
                         const isDisabled = isDateDisabled(date);
                         const isTodayDate = isToday(date);
-                        return (React.createElement("button", { key: index, onClick: (e) => {
-                                console.log("Button clicked for date:", date, "disabled:", isDisabled);
-                                e.stopPropagation();
-                                if (!isDisabled) {
-                                    handleDayClick(date);
-                                }
-                            }, onMouseEnter: () => setHoverDate(date), onMouseLeave: () => setHoverDate(null), disabled: isDisabled, className: `
-                         h-8 w-8 p-0 text-sm font-normal transition-colors flex items-center justify-center
-                         ${isRangeStart || isRangeEnd
-                                ? "bg-primary text-white hover:bg-primary hover:text-black rounded-md"
-                                : isInRange
-                                    ? "bg-primary/20 text-primary-foreground hover:bg-primary/30 rounded-none dark:bg-primary/30"
-                                    : isTodayDate
-                                        ? "bg-accent text-accent-foreground rounded-md dark:bg-gray-700 dark:text-white"
-                                        : "hover:bg-accent hover:text-accent-foreground rounded-md text-foreground dark:!text-white dark:hover:bg-gray-700"}
+                        // 범위 연결 배경은 래퍼가 담당하고, 중간 날짜 버튼은 투명하게 만들어 끊김을 방지
+                        const inRangeClasses = theme === "shadcn-v0-dark"
+                            ? "bg-transparent text-white rounded-none font-medium"
+                            : "bg-transparent text-gray-800 rounded-none font-medium";
+                        const rangeContainerClass = (() => {
+                            // 단일일은 래퍼 배경 불필요
+                            if (isRangeStart && isRangeEnd)
+                                return "";
+                            // 시작/끝에서는 반쪽 오버레이를 쓰기 위한 컨테이너 속성만 적용
+                            if (isRangeStart)
+                                return "relative overflow-hidden rounded-l-md";
+                            if (isRangeEnd)
+                                return "relative overflow-hidden rounded-r-md";
+                            if (isInRange)
+                                return theme === "shadcn-v0-dark"
+                                    ? "bg-gray-600"
+                                    : "bg-gray-200";
+                            return "";
+                        })();
+                        return (React.createElement("div", { key: index, className: `w-full h-10 flex items-center justify-center ${rangeContainerClass}` },
+                            isRangeStart && !isRangeEnd && (React.createElement("span", { className: `absolute inset-y-0 left-1/2 right-0 ${theme === "shadcn-v0-dark"
+                                    ? "bg-gray-600"
+                                    : "bg-gray-200"}` })),
+                            isRangeEnd && !isRangeStart && (React.createElement("span", { className: `absolute inset-y-0 left-0 right-1/2 ${theme === "shadcn-v0-dark"
+                                    ? "bg-gray-600"
+                                    : "bg-gray-200"}` })),
+                            React.createElement("button", { onClick: (e) => {
+                                    console.log("Button clicked for date:", date, "disabled:", isDisabled);
+                                    e.stopPropagation();
+                                    if (!isDisabled) {
+                                        handleDayClick(date);
+                                    }
+                                }, onMouseEnter: () => setHoverDate(date), onMouseLeave: () => setHoverDate(null), disabled: isDisabled, className: `
+                         h-10 w-10 p-0 text-sm font-normal transition-colors flex items-center justify-center
+                          ${isRangeStart && isRangeEnd
+                                    ? "bg-gray-700 text-white hover:bg-gray-800 hover:text-white rounded-md font-medium"
+                                    : isRangeStart
+                                        ? "bg-gray-700 text-white hover:bg-gray-800 hover:text-white rounded-none font-medium"
+                                        : isRangeEnd
+                                            ? "bg-gray-700 text-white hover:bg-gray-800 hover:text-white rounded-none font-medium"
+                                            : isInRange
+                                                ? inRangeClasses
+                                                : isTodayDate
+                                                    ? "bg-accent text-accent-foreground /*dark:bg-gray-700 dark:text-white*/"
+                                                    : "hover:bg-accent hover:text-accent-foreground text-foreground /*dark:!text-white dark:hover:bg-gray-700*/"}
                          ${!isCurrentMonth
-                                ? "text-muted-foreground opacity-50 dark:text-gray-600"
-                                : ""}
+                                    ? "text-muted-foreground opacity-50 /*dark:text-gray-600*/"
+                                    : ""}
                          ${isDisabled
-                                ? "text-muted-foreground opacity-50 cursor-not-allowed dark:text-gray-600"
-                                : ""}
+                                    ? "text-muted-foreground opacity-50 cursor-not-allowed /*dark:text-gray-600*/"
+                                    : ""}
                        `.trim(), style: {
-                                minWidth: "2rem",
-                                maxWidth: "2rem",
-                                minHeight: "2rem",
-                                maxHeight: "2rem",
-                            } }, format(date, "d")));
+                                    minWidth: "2.5rem",
+                                    maxWidth: "2.5rem",
+                                    minHeight: "2.5rem",
+                                    maxHeight: "2.5rem",
+                                } }, format(date, "d"))));
                     })),
                     React.createElement("div", { className: "mt-3 text-xs text-gray-500 text-center" }, !value.startDate
                         ? "시작 날짜를 선택하세요"

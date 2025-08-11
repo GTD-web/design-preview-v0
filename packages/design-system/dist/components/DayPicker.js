@@ -232,24 +232,25 @@ export function DayPicker({ value, onChange, minDate, maxDate, disabled = false,
                         left: context.middlewareData.arrow?.x,
                         top: -4,
                     } }),
-                React.createElement("div", { className: `p-4 w-80 ${theme === "shadcn-v0-dark" ? "bg-gray-800" : "bg-white"} rounded-md` },
+                React.createElement("div", { className: `p-4 w-96 ${theme === "shadcn-v0-dark" ? "bg-gray-800" : "bg-white"} rounded-md` },
                     React.createElement("div", { className: "flex items-center justify-between mb-4" },
-                        React.createElement("button", { onClick: handlePrevMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border dark:border-gray-600 bg-background dark:!bg-gray-800 text-foreground dark:!text-white disabled:pointer-events-none disabled:opacity-50" },
+                        React.createElement("button", { onClick: handlePrevMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border /*dark:border-gray-600*/ bg-background /*dark:!bg-gray-800*/ text-foreground /*dark:!text-white*/ disabled:pointer-events-none disabled:opacity-50" },
                             React.createElement("svg", { className: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M15 19l-7-7 7-7" }))),
-                        React.createElement("h2", { className: "text-sm font-medium text-foreground dark:!text-white" }, format(currentMonth, "yyyy년 M월", { locale: ko })),
-                        React.createElement("button", { onClick: handleNextMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border dark:border-gray-600 bg-background dark:!bg-gray-800 text-foreground dark:!text-white disabled:pointer-events-none disabled:opacity-50" },
+                        React.createElement("h2", { className: "text-sm font-medium text-foreground /*dark:!text-white*/" }, format(currentMonth, "yyyy년 M월", { locale: ko })),
+                        React.createElement("button", { onClick: handleNextMonth, className: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-8 w-8 border border-border /*dark:border-gray-600*/ bg-background /*dark:!bg-gray-800*/ text-foreground /*dark:!text-white*/ disabled:pointer-events-none disabled:opacity-50" },
                             React.createElement("svg", { className: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
                                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 5l7 7-7 7" })))),
                     React.createElement("div", { className: "grid gap-1 mb-2", style: {
                             display: "grid",
                             gridTemplateColumns: "repeat(7, 1fr)",
                             width: "100%",
-                        } }, weekDays.map((day) => (React.createElement("div", { key: day, className: "h-8 w-8 flex items-center justify-center text-xs font-medium text-muted-foreground dark:text-gray-300", style: { minWidth: "2rem", maxWidth: "2rem" } }, day)))),
-                    React.createElement("div", { className: "grid gap-1", style: {
+                        } }, weekDays.map((day) => (React.createElement("div", { key: day, className: "h-10 w-10 flex items-center justify-center text-xs font-medium text-muted-foreground /*dark:text-gray-300*/", style: { minWidth: "2.5rem", maxWidth: "2.5rem" } }, day)))),
+                    React.createElement("div", { className: "grid gap-x-1 gap-y-2", style: {
                             display: "grid",
                             gridTemplateColumns: "repeat(7, 1fr)",
                             width: "100%",
+                            rowGap: "0.5rem",
                         } }, calendarDays.map((date, index) => {
                         const isSelected = value && isSameDay(date, value);
                         const isCurrentMonth = isSameMonth(date, currentMonth);
@@ -262,23 +263,23 @@ export function DayPicker({ value, onChange, minDate, maxDate, disabled = false,
                                     handleDayClick(date);
                                 }
                             }, disabled: isDisabled, className: `
-                         h-8 w-8 p-0 text-sm font-normal rounded-md transition-colors flex items-center justify-center
+                         h-10 w-10 p-0 text-sm font-normal rounded-md transition-colors flex items-center justify-center
                          ${isSelected
-                                ? "bg-primary text-white hover:bg-primary hover:text-black"
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                                 : isTodayDate
-                                    ? "bg-accent text-accent-foreground dark:bg-gray-700 dark:text-white"
-                                    : "hover:bg-accent hover:text-accent-foreground text-foreground dark:!text-white dark:hover:bg-gray-700"}
+                                    ? "bg-accent text-accent-foreground /*dark:bg-gray-700 dark:text-white*/"
+                                    : "hover:bg-accent hover:text-accent-foreground text-foreground /*dark:!text-white*/ dark:hover:bg-gray-700"}
                          ${!isCurrentMonth
-                                ? "text-muted-foreground opacity-50 dark:text-gray-600"
+                                ? "text-muted-foreground opacity-50 /*dark:text-gray-600*/"
                                 : ""}
                          ${isDisabled
                                 ? "text-muted-foreground opacity-50 cursor-not-allowed dark:text-gray-600"
                                 : ""}
                        `.trim(), style: {
-                                minWidth: "2rem",
-                                maxWidth: "2rem",
-                                minHeight: "2rem",
-                                maxHeight: "2rem",
+                                minWidth: "2.5rem",
+                                maxWidth: "2.5rem",
+                                minHeight: "2.5rem",
+                                maxHeight: "2.5rem",
                             } }, format(date, "d")));
                     }))))))));
 }
