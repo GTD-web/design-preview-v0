@@ -992,70 +992,92 @@ export function Sidebar({
             : isOpen
             ? "translateX(0)"
             : "translateX(-100%)",
+          transition: "transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          willChange: "transform",
         }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {isCollapsed ? (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height: "100vh",
-            }}
-          >
-            <SidebarCollapsed
-              logoUrl={logoUrl}
-              logoTextShort={logoTextShort}
-              activePath={activePath}
-              menuGroups={menuGroups}
-              className={className}
-              user={user}
-              onLogout={onLogout}
-              isAdminMode={isAdminMode}
-              onModeToggle={onModeToggle}
-              showModeToggle={showModeToggle}
-              showNotification={showNotification}
-              showSettings={showSettings}
-              width={collapsedWidth}
-              onToggleExpand={onToggleCollapse}
-              expandIcon={expandIcon}
-              isHoverEnabled={isHoverEnabled}
-              onToggleHover={handleToggleHover}
-            />
-          </div>
-        ) : (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              height: "100vh",
-            }}
-          >
-            <SidebarExpanded
-              logoUrl={logoUrl}
-              logoText={logoText}
-              logoTextShort={logoTextShort}
-              activePath={activePath}
-              menuGroups={menuGroups}
-              className={className}
-              user={user}
-              onLogout={onLogout}
-              isAdminMode={isAdminMode}
-              onModeToggle={onModeToggle}
-              showModeToggle={showModeToggle}
-              showNotification={showNotification}
-              showSettings={showSettings}
-              width={width}
-              onToggleCollapse={onToggleCollapse}
-              collapseIcon={collapseIcon}
-              isHoverEnabled={isHoverEnabled}
-              onToggleHover={handleToggleHover}
-            />
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {isCollapsed ? (
+            <motion.div
+              key="collapsed"
+              initial={{ x: -80, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -80, opacity: 0 }}
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
+              }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                willChange: "transform, opacity",
+              }}
+            >
+              <SidebarCollapsed
+                logoUrl={logoUrl}
+                logoTextShort={logoTextShort}
+                activePath={activePath}
+                menuGroups={menuGroups}
+                className={className}
+                user={user}
+                onLogout={onLogout}
+                isAdminMode={isAdminMode}
+                onModeToggle={onModeToggle}
+                showModeToggle={showModeToggle}
+                showNotification={showNotification}
+                showSettings={showSettings}
+                width={collapsedWidth}
+                onToggleExpand={onToggleCollapse}
+                expandIcon={expandIcon}
+                isHoverEnabled={isHoverEnabled}
+                onToggleHover={handleToggleHover}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="expanded"
+              initial={{ x: -80, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -80, opacity: 0 }}
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
+              }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                willChange: "transform, opacity",
+              }}
+            >
+              <SidebarExpanded
+                logoUrl={logoUrl}
+                logoText={logoText}
+                logoTextShort={logoTextShort}
+                activePath={activePath}
+                menuGroups={menuGroups}
+                className={className}
+                user={user}
+                onLogout={onLogout}
+                isAdminMode={isAdminMode}
+                onModeToggle={onModeToggle}
+                showModeToggle={showModeToggle}
+                showNotification={showNotification}
+                showSettings={showSettings}
+                width={width}
+                onToggleCollapse={onToggleCollapse}
+                collapseIcon={collapseIcon}
+                isHoverEnabled={isHoverEnabled}
+                onToggleHover={handleToggleHover}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
