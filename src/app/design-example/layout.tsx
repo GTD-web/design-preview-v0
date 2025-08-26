@@ -274,6 +274,38 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
           // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
           logoText="커스텀 시스템"
           logoTextShort="CS"
+          hoverActiveIcon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+              />
+            </svg>
+          }
+          hoverInActiveIcon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m13.5 4.5 7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          }
 
           // 사이드바 아이콘은 이제 설정에서 사용자가 직접 선택할 수 있습니다
           // collapseIcon과 expandIcon props는 필요시에만 사용하세요

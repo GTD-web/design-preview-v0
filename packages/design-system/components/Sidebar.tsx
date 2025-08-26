@@ -64,6 +64,10 @@ export interface SidebarBaseProps {
   showSettings?: boolean;
   /** 호버 모드 활성화 여부 */
   isHoverEnabled?: boolean;
+  /** 호버 모드 활성화 상태 아이콘 */
+  hoverActiveIcon?: React.ReactNode;
+  /** 호버 모드 비활성화 상태 아이콘 */
+  hoverInActiveIcon?: React.ReactNode;
 }
 
 /**
@@ -150,6 +154,10 @@ interface SidebarProps {
   isHoverEnabled?: boolean;
   /** 호버 모드 토글 함수 */
   onToggleHover?: () => void;
+  /** 호버 모드 활성화 상태 아이콘 */
+  hoverActiveIcon?: React.ReactNode;
+  /** 호버 모드 비활성화 상태 아이콘 */
+  hoverInActiveIcon?: React.ReactNode;
 }
 
 /**
@@ -169,13 +177,9 @@ export function SidebarCollapsed({
   showModeToggle = true,
   showNotification = true,
   showSettings = true,
-  onToggleExpand,
-  expandIcon,
-  isHoverEnabled = false,
-  onToggleHover,
 }: SidebarCollapsedProps) {
   const router = useRouter();
-  const { currentIcon, isLoaded } = useSidebarIcons();
+  const { isLoaded } = useSidebarIcons();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
 
   const handleModeToggle = () => {
@@ -217,8 +221,9 @@ export function SidebarCollapsed({
         <div className="flex flex-col h-full overflow-hidden overflow-x-hidden">
           {/* 헤더 */}
           <div className="border-b border-border overflow-x-hidden p-3">
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center">
               {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={logoUrl}
                   alt="Logo"
@@ -231,32 +236,6 @@ export function SidebarCollapsed({
                   </span>
                 </div>
               )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={isHoverEnabled ? onToggleExpand : onToggleHover}
-                className={`p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200 ${
-                  isHoverEnabled ? "bg-neutral-100 /*dark:bg-neutral-800*/" : ""
-                }`}
-                title={isHoverEnabled ? "사이드바 펼치기" : "호버 모드 활성화"}
-              >
-                {isHoverEnabled ? (
-                  expandIcon || currentIcon.expandIcon
-                ) : (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-                  </svg>
-                )}
-              </Button>
             </div>
           </div>
 
@@ -525,6 +504,8 @@ export function SidebarExpanded({
   collapseIcon,
   isHoverEnabled = false,
   onToggleHover,
+  hoverActiveIcon,
+  hoverInActiveIcon,
 }: SidebarExpandedProps) {
   const router = useRouter();
   const { currentIcon, isLoaded } = useSidebarIcons();
@@ -576,6 +557,7 @@ export function SidebarExpanded({
           >
             <div className="flex items-center gap-3">
               {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={logoUrl}
                   alt="Logo"
@@ -600,22 +582,24 @@ export function SidebarExpanded({
                 }`}
                 title={isHoverEnabled ? "호버 모드 비활성화" : "사이드바 접기"}
               >
-                {isHoverEnabled ? (
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-                  </svg>
-                ) : (
-                  collapseIcon || currentIcon.collapseIcon
-                )}
+                {isHoverEnabled
+                  ? hoverActiveIcon || (
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                      </svg>
+                    )
+                  : hoverInActiveIcon ||
+                    collapseIcon ||
+                    currentIcon.collapseIcon}
               </Button>
             </div>
           </motion.div>
@@ -881,6 +865,8 @@ export function Sidebar({
   expandIcon,
   isHoverEnabled = false,
   onToggleHover,
+  hoverActiveIcon,
+  hoverInActiveIcon,
 }: SidebarProps) {
   const { isLoaded } = useSidebarIcons();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -1074,6 +1060,8 @@ export function Sidebar({
                 collapseIcon={collapseIcon}
                 isHoverEnabled={isHoverEnabled}
                 onToggleHover={handleToggleHover}
+                hoverActiveIcon={hoverActiveIcon}
+                hoverInActiveIcon={hoverInActiveIcon}
               />
             </motion.div>
           )}
