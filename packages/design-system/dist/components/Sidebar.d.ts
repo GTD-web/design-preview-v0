@@ -160,5 +160,5 @@ export declare function SidebarExpanded({ logoUrl, logoText, logoTextShort, acti
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, collapseIcon, expandIcon, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }: SidebarProps): React.JSX.Element;
+export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }: SidebarProps): React.JSX.Element;
 export {};

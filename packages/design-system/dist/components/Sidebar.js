@@ -234,7 +234,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", collapseIcon, expandIcon, isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }) {
+export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }) {
     const { isLoaded } = useSidebarIcons();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [hoverTimeoutId, setHoverTimeoutId] = useState(null);
@@ -330,7 +330,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                     height: "100vh",
                     willChange: "transform, opacity",
                 } },
-                React.createElement(SidebarCollapsed, { logoUrl: logoUrl, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: collapsedWidth, onToggleExpand: onToggleCollapse, expandIcon: expandIcon, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover }))) : (React.createElement(motion.div, { key: "expanded", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
+                React.createElement(SidebarCollapsed, { logoUrl: logoUrl, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: collapsedWidth, onToggleExpand: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover }))) : (React.createElement(motion.div, { key: "expanded", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
                     duration: 0.2,
                     ease: "easeOut",
                 }, style: {
@@ -340,5 +340,5 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
                     height: "100vh",
                     willChange: "transform, opacity",
                 } },
-                React.createElement(SidebarExpanded, { logoUrl: logoUrl, logoText: logoText, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: width, onToggleCollapse: onToggleCollapse, collapseIcon: collapseIcon, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, hoverActiveIcon: hoverActiveIcon, hoverInActiveIcon: hoverInActiveIcon })))))));
+                React.createElement(SidebarExpanded, { logoUrl: logoUrl, logoText: logoText, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: width, onToggleCollapse: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, hoverActiveIcon: hoverActiveIcon, hoverInActiveIcon: hoverInActiveIcon })))))));
 }
