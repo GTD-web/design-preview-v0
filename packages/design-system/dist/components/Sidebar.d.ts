@@ -52,6 +52,10 @@ export interface SidebarBaseProps {
     showSettings?: boolean;
     /** 호버 모드 활성화 여부 */
     isHoverEnabled?: boolean;
+    /** 호버 모드 활성화 상태 아이콘 */
+    hoverActiveIcon?: React.ReactNode;
+    /** 호버 모드 비활성화 상태 아이콘 */
+    hoverInActiveIcon?: React.ReactNode;
 }
 /**
  * 접힌 사이드바 Props 인터페이스
@@ -134,15 +138,19 @@ interface SidebarProps {
     isHoverEnabled?: boolean;
     /** 호버 모드 토글 함수 */
     onToggleHover?: () => void;
+    /** 호버 모드 활성화 상태 아이콘 */
+    hoverActiveIcon?: React.ReactNode;
+    /** 호버 모드 비활성화 상태 아이콘 */
+    hoverInActiveIcon?: React.ReactNode;
 }
 /**
  * 접힌 사이드바 컴포넌트
  */
-export declare function SidebarCollapsed({ logoUrl, logoTextShort, activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, onToggleExpand, expandIcon, isHoverEnabled, onToggleHover, }: SidebarCollapsedProps): React.JSX.Element;
+export declare function SidebarCollapsed({ logoUrl, logoTextShort, activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, }: SidebarCollapsedProps): React.JSX.Element;
 /**
  * 펼쳐진 사이드바 컴포넌트
  */
-export declare function SidebarExpanded({ logoUrl, logoText, logoTextShort, activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, onToggleCollapse, collapseIcon, isHoverEnabled, onToggleHover, }: SidebarExpandedProps): React.JSX.Element;
+export declare function SidebarExpanded({ logoUrl, logoText, logoTextShort, activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, onToggleCollapse, collapseIcon, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }: SidebarExpandedProps): React.JSX.Element;
 /**
  * 사이드바 컴포넌트 (통합)
  *
@@ -152,5 +160,5 @@ export declare function SidebarExpanded({ logoUrl, logoText, logoTextShort, acti
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, collapseIcon, expandIcon, isHoverEnabled, onToggleHover, }: SidebarProps): React.JSX.Element;
+export declare function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, collapseIcon, expandIcon, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }: SidebarProps): React.JSX.Element;
 export {};
