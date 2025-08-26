@@ -861,8 +861,6 @@ export function Sidebar({
   logoUrl,
   logoText = "디자인시스템",
   logoTextShort = "DS",
-  collapseIcon,
-  expandIcon,
   isHoverEnabled = false,
   onToggleHover,
   hoverActiveIcon,
@@ -1018,7 +1016,6 @@ export function Sidebar({
                 showSettings={showSettings}
                 width={collapsedWidth}
                 onToggleExpand={onToggleCollapse}
-                expandIcon={expandIcon}
                 isHoverEnabled={isHoverEnabled}
                 onToggleHover={handleToggleHover}
               />
@@ -1057,7 +1054,6 @@ export function Sidebar({
                 showSettings={showSettings}
                 width={width}
                 onToggleCollapse={onToggleCollapse}
-                collapseIcon={collapseIcon}
                 isHoverEnabled={isHoverEnabled}
                 onToggleHover={handleToggleHover}
                 hoverActiveIcon={hoverActiveIcon}
