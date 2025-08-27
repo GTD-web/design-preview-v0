@@ -66,14 +66,14 @@ export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "
                             React.createElement("span", { className: "block truncate" }, item.badge.length > 3
                                 ? `${item.badge.slice(0, 2)}...`
                                 : item.badge))))))))))),
-                React.createElement("div", { className: "border-t border-border overflow-x-hidden p-2" },
+                React.createElement("div", { className: "border-t overflow-x-hidden p-2" },
                     React.createElement("div", { className: "p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", onClick: handleProfileClick },
                         React.createElement("div", { className: "flex justify-center" },
                             React.createElement("div", { className: "w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300" },
                                 React.createElement("span", { className: "text-white font-bold text-sm" }, user?.initials || user?.name?.charAt(0) || "U"))))))),
         showProfilePopup && (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "fixed inset-0 bg-black/50 z-50", onClick: () => setShowProfilePopup(false) },
-                React.createElement("div", { className: "profile-popup fixed bg-surface rounded-lg shadow-2xl border border-border w-80 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out", style: {
+                React.createElement("div", { className: "profile-popup fixed bg-surface rounded-lg shadow-2xl border w-80 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out", style: {
                         bottom: "1rem",
                         left: "calc(5rem + 1rem)",
                     }, onClick: (e) => e.stopPropagation() },
@@ -154,7 +154,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
         shadow-lg ${width} ${className}
       ` },
         React.createElement("div", { className: "flex flex-col h-full overflow-hidden overflow-x-hidden" },
-            React.createElement("div", { className: "border-b border-border overflow-x-hidden p-4" },
+            React.createElement("div", { className: "border-b overflow-x-hidden p-4" },
                 React.createElement(motion.div, { className: "flex items-center justify-between", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
                     React.createElement("div", { className: "flex items-center gap-3" },
                         logoUrl ? (
@@ -199,7 +199,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
                             : "관리자 화면으로 이동"),
                         React.createElement("svg", { width: "16", height: "16", fill: "none", viewBox: "0 0 24 24", className: "text-secondary group-hover:text-primary transition-colors duration-200" },
                             React.createElement("path", { d: "M9 5l7 7-7 7", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }))))))),
-            React.createElement("div", { className: "border-t border-border overflow-x-hidden p-4" },
+            React.createElement("div", { className: "border-t overflow-x-hidden p-4" },
                 React.createElement(motion.div, { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
                     React.createElement("div", { className: "flex items-center justify-between" },
                         React.createElement("div", { className: "flex-1 min-w-0 transition-all duration-300" },
