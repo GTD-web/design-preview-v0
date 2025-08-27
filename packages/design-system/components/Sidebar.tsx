@@ -296,7 +296,7 @@ export function SidebarCollapsed({
           </nav>
 
           {/* 푸터 */}
-          <div className="border-t border-border overflow-x-hidden p-2">
+          <div className="border-t overflow-x-hidden p-2">
             <div
               className="p-2 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
               onClick={handleProfileClick}
@@ -321,7 +321,7 @@ export function SidebarCollapsed({
             onClick={() => setShowProfilePopup(false)}
           >
             <div
-              className="profile-popup fixed bg-surface rounded-lg shadow-2xl border border-border w-80 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out"
+              className="profile-popup fixed bg-surface rounded-lg shadow-2xl border w-80 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out"
               style={{
                 bottom: "1rem",
                 left: "calc(5rem + 1rem)",
@@ -547,7 +547,7 @@ export function SidebarExpanded({
     >
       <div className="flex flex-col h-full overflow-hidden overflow-x-hidden">
         {/* 헤더 */}
-        <div className="border-b border-border overflow-x-hidden p-4">
+        <div className="border-b overflow-x-hidden p-4">
           <motion.div
             className="flex items-center justify-between"
             initial="hidden"
@@ -728,7 +728,7 @@ export function SidebarExpanded({
         </AnimatePresence>
 
         {/* 푸터 */}
-        <div className="border-t border-border overflow-x-hidden p-4">
+        <div className="border-t overflow-x-hidden p-4">
           <motion.div
             className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
             initial="hidden"
