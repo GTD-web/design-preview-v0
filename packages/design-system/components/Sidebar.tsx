@@ -220,7 +220,7 @@ export function SidebarCollapsed({
       >
         <div className="flex flex-col h-full overflow-hidden overflow-x-hidden">
           {/* 헤더 */}
-          <div className="border-b border-border overflow-x-hidden p-3">
+          <div className="border-b overflow-x-hidden p-3">
             <div className="flex flex-col items-center">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
