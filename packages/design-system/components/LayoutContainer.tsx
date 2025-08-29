@@ -19,6 +19,8 @@ interface LayoutContainerProps {
   hasSidebar?: boolean;
   /** 사이드바 접힘 상태 */
   sidebarCollapsed?: boolean;
+  /** 사이드바 완전 숨김 상태 */
+  sidebarHidden?: boolean;
   /** 자식 요소 */
   children: React.ReactNode;
   /** 추가 클래스명 */
@@ -38,14 +40,18 @@ export function LayoutContainer({
   padding = "p-6",
   hasSidebar = false,
   sidebarCollapsed = false,
+  sidebarHidden = false,
   children,
   className = "",
 }: LayoutContainerProps) {
   const getLayoutClasses = () => {
     const baseClasses = `min-h-screen ${padding} bg-[var(--color-background)]`;
-    const sidebarMargin = hasSidebar
-      ? `transition-all ease-out ${sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"}`
-      : "";
+
+    // 사이드바 숨김 상태일 때는 사이드바가 없는 것처럼 처리
+    const effectiveHasSidebar = hasSidebar && !sidebarHidden;
+    const sidebarMargin = effectiveHasSidebar
+      ? `${sidebarCollapsed ? "lg:ml-20" : "lg:ml-64"}`
+      : "lg:ml-0";
 
     // 패딩 값에서 숫자 추출 (예: "p-6" -> 6, "px-4 py-8" -> 4)
     const paddingValue = padding.includes("p-")
@@ -56,7 +62,7 @@ export function LayoutContainer({
     switch (type) {
       case "full":
         // 전체 레이아웃: 사이드바와 패딩을 모두 고려한 너비
-        const fullWidthClass = hasSidebar
+        const fullWidthClass = effectiveHasSidebar
           ? sidebarCollapsed
             ? `w-[calc(100vw-5rem-${paddingRem})]`
             : `w-[calc(100vw-16rem-${paddingRem})]`
@@ -65,13 +71,13 @@ export function LayoutContainer({
 
       case "centered":
         // 중앙 정렬: 사이드바를 고려한 중앙 정렬
-        if (hasSidebar) {
+        if (effectiveHasSidebar) {
           const centeredWidthClass = sidebarCollapsed
             ? `w-full max-w-6xl lg:mr-10` // 사이드바 접힌 상태: 오른쪽 여백으로 중앙 보정
             : `w-full max-w-6xl lg:mr-32`; // 사이드바 펼쳐진 상태: 더 큰 오른쪽 여백
           return `${baseClasses} mx-auto ${centeredWidthClass} ${sidebarMargin}`;
         } else {
-          return `${baseClasses} mx-auto w-full ${maxWidth}`;
+          return `${baseClasses} mx-auto w-full ${maxWidth} ${sidebarMargin}`;
         }
 
       default:
@@ -79,8 +85,13 @@ export function LayoutContainer({
     }
   };
 
-  // 사이드바가 있을 때 CSS 직접 스타일 적용
-  const transitionStyle = hasSidebar ? { transitionDuration: "450ms" } : {};
+  // 사이드바가 있을 때 CSS 직접 스타일 적용 (숨김 상태도 포함)
+  const transitionStyle = hasSidebar
+    ? {
+        transitionDuration: "500ms",
+        transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+      }
+    : {};
 
   return (
     <div

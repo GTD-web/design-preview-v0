@@ -1,7 +1,7 @@
 "use client";
 
 import localFont from "next/font/local";
-import React, { useState } from "react";
+import React, { useState, createContext, useContext } from "react";
 import "../globals.css";
 import { usePathname } from "next/navigation";
 import ClientOnly from "@/components/ClientOnly";
@@ -163,6 +163,25 @@ const sidebarMenuGroups = [
   },
 ];
 
+// 사이드바 Context 타입 정의
+interface SidebarContextType {
+  sidebarHidden: boolean;
+  setSidebarHidden: (hidden: boolean) => void;
+  toggleSidebarHidden: () => void;
+}
+
+// 사이드바 Context 생성
+const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+
+// 사이드바 Context Hook
+export const useSidebarContext = () => {
+  const context = useContext(SidebarContext);
+  if (context === undefined) {
+    throw new Error("useSidebarContext must be used within a SidebarProvider");
+  }
+  return context;
+};
+
 // 내부 컴포넌트 - 디자인 설정 컨텍스트 사용
 function DesignExampleContent({ children }: { children: React.ReactNode }) {
   // 디자인 설정 상태 관리를 커스텀 훅으로 처리
@@ -188,6 +207,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   // 사이드바 상태 관리
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // 초기 상태: 펼쳐진 사이드바
+  const [sidebarHidden, setSidebarHidden] = useState(false); // 사이드바 완전 숨김 상태
   const [isHoverEnabled, setIsHoverEnabled] = useState(false);
   const pathname = usePathname();
 
@@ -237,129 +257,144 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // 사이드바 완전 숨김 토글 함수
+  const toggleSidebarHidden = () => {
+    setSidebarHidden(!sidebarHidden);
+  };
+
   return (
     <ClientOnly fallback={<Loading />}>
-      <div className="lg:flex h-screen">
-        {/* 사이드바 */}
-        <Sidebar
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          isCollapsed={sidebarCollapsed}
-          onToggleCollapse={() => {
-            if (isHoverEnabled) {
-              // 호버 모드에서는 단순히 접기/펼치기만 수행 (호버 이벤트용)
-              setSidebarCollapsed(!sidebarCollapsed);
-            } else if (!sidebarCollapsed) {
-              // 펼쳐진 상태에서 접기 버튼 클릭 → 호버 모드 활성화 + 접기
-              setIsHoverEnabled(true);
-              setSidebarCollapsed(true);
-            } else {
-              // 일반 접힌 상태에서 펼치기
-              setSidebarCollapsed(false);
-            }
-          }}
-          activePath={pathname}
-          menuGroups={sidebarMenuGroups}
-          user={user}
-          onLogout={handleLogout}
-          isAdminMode={isAdminMode}
-          onModeToggle={handleModeToggle}
-          showModeToggle={true}
-          showNotification={true}
-          showSettings={true}
-          isHoverEnabled={isHoverEnabled}
-          onToggleHover={handleHoverToggle}
-          // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
-          // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
-          // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
-          logoText="커스텀 시스템"
-          logoTextShort="CS"
-          hoverActiveIcon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-              />
-            </svg>
-          }
-          hoverInActiveIcon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m13.5 4.5 7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          }
-
-          // 사이드바 아이콘은 이제 설정에서 사용자가 직접 선택할 수 있습니다
-          // collapseIcon과 expandIcon props는 필요시에만 사용하세요
-        />
-
-        {/* 메인 콘텐츠 */}
-        <main className="flex-1">
-          {/* 모바일 헤더 */}
-          <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
-            <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSidebarOpen(true)}
+      <SidebarContext.Provider
+        value={{
+          sidebarHidden,
+          setSidebarHidden,
+          toggleSidebarHidden,
+        }}
+      >
+        <div className="lg:flex h-screen">
+          {/* 사이드바 */}
+          <Sidebar
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+            isCollapsed={sidebarCollapsed}
+            isHidden={sidebarHidden}
+            onToggleCollapse={() => {
+              if (isHoverEnabled) {
+                // 호버 모드에서는 단순히 접기/펼치기만 수행 (호버 이벤트용)
+                setSidebarCollapsed(!sidebarCollapsed);
+              } else if (!sidebarCollapsed) {
+                // 펼쳐진 상태에서 접기 버튼 클릭 → 호버 모드 활성화 + 접기
+                setIsHoverEnabled(true);
+                setSidebarCollapsed(true);
+              } else {
+                // 일반 접힌 상태에서 펼치기
+                setSidebarCollapsed(false);
+              }
+            }}
+            activePath={pathname}
+            menuGroups={sidebarMenuGroups}
+            user={user}
+            onLogout={handleLogout}
+            isAdminMode={isAdminMode}
+            onModeToggle={handleModeToggle}
+            showModeToggle={true}
+            showNotification={true}
+            showSettings={true}
+            isHoverEnabled={isHoverEnabled}
+            onToggleHover={handleHoverToggle}
+            // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
+            // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
+            // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
+            logoText="커스텀 시스템"
+            logoTextShort="CS"
+            hoverActiveIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-4"
               >
-                ☰
-              </Button>
-              <span className="font-semibold">디자인 예제</span>
-              <div className="w-8" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                />
+              </svg>
+            }
+            hoverInActiveIcon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m13.5 4.5 7.5 7.5-7.5 7.5"
+                />
+              </svg>
+            }
+
+            // 사이드바 아이콘은 이제 설정에서 사용자가 직접 선택할 수 있습니다
+            // collapseIcon과 expandIcon props는 필요시에만 사용하세요
+          />
+
+          {/* 메인 콘텐츠 */}
+          <main className="flex-1">
+            {/* 모바일 헤더 */}
+            <div className="lg:hidden fixed top-0 left-0 right-0 z-30 bg-surface border-b border-border p-md">
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  ☰
+                </Button>
+                <span className="font-semibold">디자인 예제</span>
+                <div className="w-8" />
+              </div>
             </div>
-          </div>
 
-          {/* 콘텐츠 영역 */}
-          <div className="lg:pt-0 pt-16">
-            <LayoutContainer
-              type={layoutType}
-              maxWidth={maxWidth}
-              hasSidebar={true}
-              sidebarCollapsed={sidebarCollapsed}
-            >
-              {children}
-            </LayoutContainer>
-          </div>
-        </main>
-      </div>
+            {/* 콘텐츠 영역 */}
+            <div className="lg:pt-0 pt-16">
+              <LayoutContainer
+                type={layoutType}
+                maxWidth={maxWidth}
+                hasSidebar={true}
+                sidebarCollapsed={sidebarCollapsed}
+                sidebarHidden={sidebarHidden}
+              >
+                {children}
+              </LayoutContainer>
+            </div>
+          </main>
+        </div>
 
-      <DesignSettings
-        onFontChange={setFont}
-        onThemeChange={setTheme}
-        onRadiusChange={setRadius}
-        onFontSizeChange={setFontSize}
-        onSpacingChange={setSpacing}
-        onGapChange={setGap}
-        onLayoutTypeChange={setLayoutType}
-        onMaxWidthChange={setMaxWidth}
-        currentFont={font}
-        currentTheme={theme}
-        currentRadius={radius}
-        currentFontSize={fontSize}
-        currentSpacing={spacing}
-        currentGap={gap}
-        currentLayoutType={layoutType}
-        currentMaxWidth={maxWidth}
-      />
+        <DesignSettings
+          onFontChange={setFont}
+          onThemeChange={setTheme}
+          onRadiusChange={setRadius}
+          onFontSizeChange={setFontSize}
+          onSpacingChange={setSpacing}
+          onGapChange={setGap}
+          onLayoutTypeChange={setLayoutType}
+          onMaxWidthChange={setMaxWidth}
+          currentFont={font}
+          currentTheme={theme}
+          currentRadius={radius}
+          currentFontSize={fontSize}
+          currentSpacing={spacing}
+          currentGap={gap}
+          currentLayoutType={layoutType}
+          currentMaxWidth={maxWidth}
+        />
+      </SidebarContext.Provider>
     </ClientOnly>
   );
 }

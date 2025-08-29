@@ -115,6 +115,8 @@ interface SidebarProps {
   onClose?: () => void;
   /** 사이드바 접힘 상태 */
   isCollapsed?: boolean;
+  /** 사이드바 완전 숨김 상태 */
+  isHidden?: boolean;
   /** 사이드바 접기/펼치기 토글 함수 */
   onToggleCollapse?: () => void;
   /** 현재 활성 메뉴 경로 */
@@ -845,6 +847,7 @@ export function Sidebar({
   isOpen = true,
   onClose,
   isCollapsed = false,
+  isHidden = false,
   onToggleCollapse,
   activePath = "",
   menuGroups,
@@ -960,7 +963,7 @@ export function Sidebar({
   return (
     <>
       {/* 모바일 오버레이 */}
-      {isOpen && (
+      {isOpen && !isHidden && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={onClose}
@@ -971,16 +974,19 @@ export function Sidebar({
       <div
         className="fixed top-0 left-0 h-screen z-50"
         style={{
-          transform: isLargeScreen
+          transform: isHidden
+            ? "translateX(-100%)"
+            : isLargeScreen
             ? "translateX(0)"
             : isOpen
             ? "translateX(0)"
             : "translateX(-100%)",
           transition: "transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
           willChange: "transform",
+          width: isCollapsed ? "5rem" : "16rem",
         }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseEnter={!isHidden ? handleMouseEnter : undefined}
+        onMouseLeave={!isHidden ? handleMouseLeave : undefined}
       >
         <AnimatePresence mode="wait">
           {isCollapsed ? (
