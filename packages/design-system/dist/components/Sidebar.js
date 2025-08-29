@@ -234,7 +234,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }) {
+export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }) {
     const { isLoaded } = useSidebarIcons();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [hoverTimeoutId, setHoverTimeoutId] = useState(null);
@@ -310,16 +310,19 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, onToggleC
         return null;
     }
     return (React.createElement(React.Fragment, null,
-        isOpen && (React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose })),
+        isOpen && !isHidden && (React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose })),
         React.createElement("div", { className: "fixed top-0 left-0 h-screen z-50", style: {
-                transform: isLargeScreen
-                    ? "translateX(0)"
-                    : isOpen
+                transform: isHidden
+                    ? "translateX(-100%)"
+                    : isLargeScreen
                         ? "translateX(0)"
-                        : "translateX(-100%)",
+                        : isOpen
+                            ? "translateX(0)"
+                            : "translateX(-100%)",
                 transition: "transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                 willChange: "transform",
-            }, onMouseEnter: handleMouseEnter, onMouseLeave: handleMouseLeave },
+                width: isCollapsed ? "5rem" : "16rem",
+            }, onMouseEnter: !isHidden ? handleMouseEnter : undefined, onMouseLeave: !isHidden ? handleMouseLeave : undefined },
             React.createElement(AnimatePresence, { mode: "wait" }, isCollapsed ? (React.createElement(motion.div, { key: "collapsed", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
                     duration: 0.2,
                     ease: "easeOut",
