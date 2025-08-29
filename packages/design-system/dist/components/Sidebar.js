@@ -43,7 +43,7 @@ export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "
           shadow-lg ${width} ${className}
         ` },
             React.createElement("div", { className: "flex flex-col h-full overflow-hidden overflow-x-hidden" },
-                React.createElement("div", { className: "border-b border-border overflow-x-hidden p-3" },
+                React.createElement("div", { className: "border-b overflow-x-hidden p-3" },
                     React.createElement("div", { className: "flex flex-col items-center" }, logoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     React.createElement("img", { src: logoUrl, alt: "Logo", className: "w-10 h-10 object-contain transition-all duration-300" })) : (React.createElement("div", { className: "w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300" },
