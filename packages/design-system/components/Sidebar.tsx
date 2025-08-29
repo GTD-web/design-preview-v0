@@ -68,10 +68,6 @@ export interface SidebarBaseProps {
   hoverActiveIcon?: React.ReactNode;
   /** 호버 모드 비활성화 상태 아이콘 */
   hoverInActiveIcon?: React.ReactNode;
-  /** 완전 접기 함수 */
-  onToggleFullyHidden?: () => void;
-  /** 완전 접기 아이콘 */
-  fullyHideIcon?: React.ReactNode;
 }
 
 /**
@@ -121,10 +117,6 @@ interface SidebarProps {
   isCollapsed?: boolean;
   /** 사이드바 접기/펼치기 토글 함수 */
   onToggleCollapse?: () => void;
-  /** 사이드바 완전 숨김 상태 */
-  isFullyHidden?: boolean;
-  /** 사이드바 완전 숨김 토글 함수 */
-  onToggleFullyHidden?: () => void;
   /** 현재 활성 메뉴 경로 */
   activePath?: string;
   /** 메뉴 그룹 목록 (2차원 배열 구조) */
@@ -158,8 +150,6 @@ interface SidebarProps {
   collapseIcon?: React.ReactNode;
   /** 사이드바 펼치기 아이콘 (접힌 상태에서 표시) */
   expandIcon?: React.ReactNode;
-  /** 완전 접기 아이콘 */
-  fullyHideIcon?: React.ReactNode;
   /** 호버 모드 활성화 여부 */
   isHoverEnabled?: boolean;
   /** 호버 모드 토글 함수 */
@@ -187,8 +177,6 @@ export function SidebarCollapsed({
   showModeToggle = true,
   showNotification = true,
   showSettings = true,
-  onToggleFullyHidden,
-  fullyHideIcon,
 }: SidebarCollapsedProps) {
   const router = useRouter();
   const { isLoaded } = useSidebarIcons();
@@ -233,7 +221,7 @@ export function SidebarCollapsed({
         <div className="flex flex-col h-full overflow-hidden overflow-x-hidden">
           {/* 헤더 */}
           <div className="border-b overflow-x-hidden p-3">
-            <div className="flex flex-col items-center space-y-2">
+            <div className="flex flex-col items-center">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -247,34 +235,6 @@ export function SidebarCollapsed({
                     {logoTextShort}
                   </span>
                 </div>
-              )}
-
-              {/* 완전 접기 버튼 */}
-              {onToggleFullyHidden && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onToggleFullyHidden}
-                  className="p-1 h-6 w-6 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded transition-all duration-200"
-                  title="사이드바 완전 접기"
-                >
-                  {fullyHideIcon || (
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M21 6H3" />
-                      <path d="M21 12H9" />
-                      <path d="M21 18H3" />
-                    </svg>
-                  )}
-                </Button>
               )}
             </div>
           </div>
@@ -546,8 +506,6 @@ export function SidebarExpanded({
   onToggleHover,
   hoverActiveIcon,
   hoverInActiveIcon,
-  onToggleFullyHidden,
-  fullyHideIcon,
 }: SidebarExpandedProps) {
   const router = useRouter();
   const { currentIcon, isLoaded } = useSidebarIcons();
@@ -615,38 +573,6 @@ export function SidebarExpanded({
                   <span className="font-semibold text-lg">{logoText}</span>
                 </div>
               )}
-            </div>
-
-            <div className="flex items-center gap-1">
-              {/* 완전 접기 버튼 */}
-              {onToggleFullyHidden && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onToggleFullyHidden}
-                  className="p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200"
-                  title="사이드바 완전 접기"
-                >
-                  {fullyHideIcon || (
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M21 6H3" />
-                      <path d="M21 12H9" />
-                      <path d="M21 18H3" />
-                    </svg>
-                  )}
-                </Button>
-              )}
-
-              {/* 접기/호버 토글 버튼 */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -920,8 +846,6 @@ export function Sidebar({
   onClose,
   isCollapsed = false,
   onToggleCollapse,
-  isFullyHidden = false,
-  onToggleFullyHidden,
   activePath = "",
   menuGroups,
   width = "w-64",
@@ -937,7 +861,6 @@ export function Sidebar({
   logoUrl,
   logoText = "디자인시스템",
   logoTextShort = "DS",
-  fullyHideIcon,
   isHoverEnabled = false,
   onToggleHover,
   hoverActiveIcon,
@@ -1034,11 +957,6 @@ export function Sidebar({
     return null;
   }
 
-  // 완전히 숨겨진 상태일 때는 아무것도 렌더링하지 않음
-  if (isFullyHidden) {
-    return null;
-  }
-
   return (
     <>
       {/* 모바일 오버레이 */}
@@ -1100,8 +1018,6 @@ export function Sidebar({
                 onToggleExpand={onToggleCollapse}
                 isHoverEnabled={isHoverEnabled}
                 onToggleHover={handleToggleHover}
-                onToggleFullyHidden={onToggleFullyHidden}
-                fullyHideIcon={fullyHideIcon}
               />
             </motion.div>
           ) : (
@@ -1142,8 +1058,6 @@ export function Sidebar({
                 onToggleHover={handleToggleHover}
                 hoverActiveIcon={hoverActiveIcon}
                 hoverInActiveIcon={hoverInActiveIcon}
-                onToggleFullyHidden={onToggleFullyHidden}
-                fullyHideIcon={fullyHideIcon}
               />
             </motion.div>
           )}
