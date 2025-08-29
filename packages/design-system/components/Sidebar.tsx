@@ -83,6 +83,10 @@ export interface SidebarCollapsedProps
   width?: string;
   /** 호버 토글 함수 */
   onToggleHover?: () => void;
+  /** 사이드바 완전 숨김 토글 함수 */
+  onToggleHidden?: () => void;
+  /** 사이드바 완전 숨김 아이콘 */
+  hideIcon?: React.ReactNode;
 }
 
 /**
@@ -97,6 +101,10 @@ export interface SidebarExpandedProps extends SidebarBaseProps {
   width?: string;
   /** 호버 토글 함수 */
   onToggleHover?: () => void;
+  /** 사이드바 완전 숨김 토글 함수 */
+  onToggleHidden?: () => void;
+  /** 사이드바 완전 숨김 아이콘 */
+  hideIcon?: React.ReactNode;
 }
 
 /**
@@ -117,6 +125,10 @@ interface SidebarProps {
   isCollapsed?: boolean;
   /** 사이드바 접기/펼치기 토글 함수 */
   onToggleCollapse?: () => void;
+  /** 사이드바 완전 숨김 상태 */
+  isHidden?: boolean;
+  /** 사이드바 완전 숨김/표시 토글 함수 */
+  onToggleHidden?: () => void;
   /** 현재 활성 메뉴 경로 */
   activePath?: string;
   /** 메뉴 그룹 목록 (2차원 배열 구조) */
@@ -158,6 +170,8 @@ interface SidebarProps {
   hoverActiveIcon?: React.ReactNode;
   /** 호버 모드 비활성화 상태 아이콘 */
   hoverInActiveIcon?: React.ReactNode;
+  /** 사이드바 완전 숨김 아이콘 */
+  hideIcon?: React.ReactNode;
 }
 
 /**
@@ -177,6 +191,8 @@ export function SidebarCollapsed({
   showModeToggle = true,
   showNotification = true,
   showSettings = true,
+  onToggleHidden,
+  hideIcon,
 }: SidebarCollapsedProps) {
   const router = useRouter();
   const { isLoaded } = useSidebarIcons();
@@ -221,7 +237,7 @@ export function SidebarCollapsed({
         <div className="flex flex-col h-full overflow-hidden overflow-x-hidden">
           {/* 헤더 */}
           <div className="border-b overflow-x-hidden p-3">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center gap-2">
               {logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -236,6 +252,30 @@ export function SidebarCollapsed({
                   </span>
                 </div>
               )}
+
+              {/* 완전 숨김 버튼 */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleHidden}
+                className="p-1 h-6 w-6 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded transition-all duration-200"
+                title="사이드바 완전 숨기기"
+              >
+                {hideIcon || (
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                )}
+              </Button>
             </div>
           </div>
 
@@ -506,6 +546,8 @@ export function SidebarExpanded({
   onToggleHover,
   hoverActiveIcon,
   hoverInActiveIcon,
+  onToggleHidden,
+  hideIcon,
 }: SidebarExpandedProps) {
   const router = useRouter();
   const { currentIcon, isLoaded } = useSidebarIcons();
@@ -555,52 +597,85 @@ export function SidebarExpanded({
             exit="exit"
             variants={expandedContentVariants}
           >
-            <div className="flex items-center gap-3">
-              {logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={logoUrl}
-                  alt="Logo"
-                  className="h-10 object-contain transition-all duration-300"
-                />
-              ) : (
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300">
-                    <span className="text-white font-bold text-base">
-                      {logoTextShort}
-                    </span>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-3">
+                {logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={logoUrl}
+                    alt="Logo"
+                    className="h-10 object-contain transition-all duration-300"
+                  />
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-neutral-800 /*dark:bg-neutral-700*/ rounded-lg flex items-center justify-center transition-all duration-300">
+                      <span className="text-white font-bold text-base">
+                        {logoTextShort}
+                      </span>
+                    </div>
+                    <span className="font-semibold text-lg">{logoText}</span>
                   </div>
-                  <span className="font-semibold text-lg">{logoText}</span>
-                </div>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={isHoverEnabled ? onToggleHover : onToggleCollapse}
-                className={`p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200 ${
-                  isHoverEnabled ? "bg-neutral-100 /*dark:bg-neutral-800*/" : ""
-                }`}
-                title={isHoverEnabled ? "호버 모드 비활성화" : "사이드바 접기"}
-              >
-                {isHoverEnabled
-                  ? hoverActiveIcon || (
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
-                      </svg>
-                    )
-                  : hoverInActiveIcon ||
-                    collapseIcon ||
-                    currentIcon.collapseIcon}
-              </Button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={isHoverEnabled ? onToggleHover : onToggleCollapse}
+                  className={`p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200 ${
+                    isHoverEnabled
+                      ? "bg-neutral-100 /*dark:bg-neutral-800*/"
+                      : ""
+                  }`}
+                  title={
+                    isHoverEnabled ? "호버 모드 비활성화" : "사이드바 접기"
+                  }
+                >
+                  {isHoverEnabled
+                    ? hoverActiveIcon || (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                        </svg>
+                      )
+                    : hoverInActiveIcon ||
+                      collapseIcon ||
+                      currentIcon.collapseIcon}
+                </Button>
+
+                {/* 완전 숨김 버튼 */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onToggleHidden}
+                  className="p-2 hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/ rounded-lg transition-all duration-200"
+                  title="사이드바 완전 숨기기"
+                >
+                  {hideIcon || (
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  )}
+                </Button>
+              </div>
             </div>
           </motion.div>
         </div>
@@ -833,6 +908,68 @@ export function SidebarExpanded({
 }
 
 /**
+ * 숨겨진 사이드바 Props 인터페이스
+ */
+export interface SidebarHiddenProps {
+  /** 사이드바 표시 토글 함수 */
+  onToggleShow: () => void;
+  /** 사이드바 표시 아이콘 */
+  showIcon?: React.ReactNode;
+  /** 추가 클래스명 */
+  className?: string;
+}
+
+/**
+ * 숨겨진 사이드바 컴포넌트 (0px 너비)
+ */
+export function SidebarHidden({
+  onToggleShow,
+  showIcon,
+  className = "",
+}: SidebarHiddenProps) {
+  const { isLoaded } = useSidebarIcons();
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  return (
+    <aside
+      className={`
+        h-screen bg-surface
+        overflow-hidden
+        w-0 ${className}
+      `}
+    >
+      <div className="fixed top-4 left-0 z-50">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onToggleShow}
+          className="p-2 bg-surface hover:bg-surface/80 shadow-lg border rounded-lg transition-all duration-200"
+          title="사이드바 표시"
+        >
+          {showIcon || (
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          )}
+        </Button>
+      </div>
+    </aside>
+  );
+}
+
+/**
  * 사이드바 컴포넌트 (통합)
  *
  * 기능:
@@ -846,6 +983,8 @@ export function Sidebar({
   onClose,
   isCollapsed = false,
   onToggleCollapse,
+  isHidden = false,
+  onToggleHidden,
   activePath = "",
   menuGroups,
   width = "w-64",
@@ -865,6 +1004,7 @@ export function Sidebar({
   onToggleHover,
   hoverActiveIcon,
   hoverInActiveIcon,
+  hideIcon,
 }: SidebarProps) {
   const { isLoaded } = useSidebarIcons();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -983,7 +1123,30 @@ export function Sidebar({
         onMouseLeave={handleMouseLeave}
       >
         <AnimatePresence mode="wait">
-          {isCollapsed ? (
+          {isHidden ? (
+            <motion.div
+              key="hidden"
+              initial={{ x: -80, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -80, opacity: 0 }}
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
+              }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                willChange: "transform, opacity",
+              }}
+            >
+              <SidebarHidden
+                onToggleShow={onToggleHidden}
+                className={className}
+              />
+            </motion.div>
+          ) : isCollapsed ? (
             <motion.div
               key="collapsed"
               initial={{ x: -80, opacity: 0 }}
@@ -1018,6 +1181,8 @@ export function Sidebar({
                 onToggleExpand={onToggleCollapse}
                 isHoverEnabled={isHoverEnabled}
                 onToggleHover={handleToggleHover}
+                onToggleHidden={onToggleHidden}
+                hideIcon={hideIcon}
               />
             </motion.div>
           ) : (
@@ -1058,6 +1223,8 @@ export function Sidebar({
                 onToggleHover={handleToggleHover}
                 hoverActiveIcon={hoverActiveIcon}
                 hoverInActiveIcon={hoverInActiveIcon}
+                onToggleHidden={onToggleHidden}
+                hideIcon={hideIcon}
               />
             </motion.div>
           )}
