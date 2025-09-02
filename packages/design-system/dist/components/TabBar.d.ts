@@ -40,8 +40,26 @@ export interface TabBarProps {
  */
 export declare function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onPageSelect, availablePages, maxTabs, className, showNewTabButton, }: TabBarProps): React.JSX.Element;
 /**
- * 기본 탭 스타일 적용을 위한 CSS 클래스
+ * TabBar 스타일 상수 - 필요시 외부에서 참조 가능
  */
 export declare const TAB_BAR_STYLES: {
-    scrollbar: string;
+    readonly colors: {
+        readonly primary: "#3b82f6";
+        readonly background: "#f3f4f6";
+        readonly foreground: "#1f2937";
+        readonly muted: "#6b7280";
+        readonly border: "#d1d5db";
+        readonly surface: "#ffffff";
+        readonly hover: "#e5e7eb";
+    };
+    readonly spacing: {
+        readonly tabPadding: "6px 12px";
+        readonly containerPadding: "4px 0";
+        readonly iconSize: "14px";
+        readonly closeButtonSize: "16px";
+    };
+    readonly animation: {
+        readonly duration: "0.15s";
+        readonly easing: "ease-in-out";
+    };
 };

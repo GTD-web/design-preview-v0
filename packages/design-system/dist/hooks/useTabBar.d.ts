@@ -24,6 +24,10 @@ export interface UseTabBarOptions {
     pathNormalizer?: (path: string) => string;
     /** 기본 페이지 정보 생성 함수 (선택적) */
     defaultPageInfoResolver?: (path: string, homePath: string) => PageInfo;
+    /** 로컬 스토리지 사용 여부 */
+    enableLocalStorage?: boolean;
+    /** 로컬 스토리지 키 (기본값: 'tabbar-tabs') */
+    localStorageKey?: string;
 }
 /**
  * useTabBar Hook 반환값
@@ -51,4 +55,4 @@ export interface UseTabBarReturn {
 /**
  * 탭 바 상태 관리를 위한 Hook
  */
-export declare function useTabBar({ initialTabs, maxTabs, pageMapping, homePath, pathNormalizer, defaultPageInfoResolver, }?: UseTabBarOptions): UseTabBarReturn;
+export declare function useTabBar({ initialTabs, maxTabs, pageMapping, homePath, pathNormalizer, defaultPageInfoResolver, enableLocalStorage, localStorageKey, }?: UseTabBarOptions): UseTabBarReturn;
