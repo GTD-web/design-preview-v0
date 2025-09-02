@@ -2,14 +2,33 @@
 
 .tabBarContainer {
   @apply flex items-end bg-gray-100 border-b border-gray-300 overflow-hidden py-1;
+  /* 드래그 중이 아니면 정상 스크롤 허용 */
+  position: relative;
+}
+
+/* 드래그 중이 아니네 Y축 스크롤 차단 제거 */
+body:not([data-dragging]) .tabBarContainer {
+  overflow-y: visible;
+}
+
+/* 드래그 중일 때만 Y축 스크롤 차단 */
+body[data-dragging] .tabBarContainer {
+  overflow-y: hidden !important;
+  overscroll-behavior-y: none !important;
+  touch-action: pan-x;
 }
 
 .tabsContainer {
   @apply flex-1 flex items-end overflow-x-auto overflow-y-hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  /* 드래그 중 스크롤 방지 */
-  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 드래그 중일 때만 추가 Y축 차단 */
+body[data-dragging] .tabsContainer {
+  overscroll-behavior: none;
+  overscroll-behavior-y: none !important;
   touch-action: pan-x;
 }
 
@@ -21,9 +40,14 @@
   @apply flex items-end min-w-max;
 }
 
+/* 드래그 중일 때만 Y축 이동 차단 */
+body[data-dragging] .tabsInnerContainer {
+  touch-action: pan-x;
+}
+
 .tabButton {
   @apply relative flex items-center gap-2 px-3 py-1.5 min-w-0 max-w-40 
-         transition-all duration-200 ease-out border-b-2 border-r-2;
+         transition-all duration-150 ease-out border-b-2 border-r-2;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
   border-bottom-left-radius: 6px;
@@ -45,11 +69,16 @@
 }
 
 .tabButtonDragging {
-  @apply cursor-grabbing shadow-xl;
-  transform: rotate(1deg) scale(1.02);
+  @apply shadow-xl bg-white border-gray-400;
+  /* transform은 JavaScript에서 처리 */
   z-index: 1000;
   user-select: none;
-  touch-action: none;
+  touch-action: pan-x;
+  transition: none !important;
+  opacity: 0.9;
+  pointer-events: auto;
+  /* Y축 이동만 차단, X축은 허용 */
+  overscroll-behavior-y: none;
 }
 
 .tabIcon {
