@@ -4,18 +4,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import styles from "./PageSelector.module.css";
 function PageItem({ page, onPageClick }) {
     const [isHovering, setIsHovering] = useState(false);
-    const iconClass = [
-        styles.pageIcon,
-        isHovering ? styles.pageIconActive : '',
-    ].filter(Boolean).join(' ');
-    const titleClass = [
-        styles.pageTitle,
-        isHovering ? styles.pageTitleHover : '',
-    ].filter(Boolean).join(' ');
+    const iconClass = [styles.pageIcon, isHovering ? styles.pageIconActive : ""]
+        .filter(Boolean)
+        .join(" ");
+    const titleClass = [styles.pageTitle, isHovering ? styles.pageTitleHover : ""]
+        .filter(Boolean)
+        .join(" ");
     const arrowClass = [
         styles.pageArrow,
-        isHovering ? styles.pageArrowActive : '',
-    ].filter(Boolean).join(' ');
+        isHovering ? styles.pageArrowActive : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
     return (React.createElement(motion.button, { className: styles.pageItem, onClick: () => onPageClick(page), onMouseEnter: () => setIsHovering(true), onMouseLeave: () => setIsHovering(false), whileHover: { x: 2 }, whileTap: { scale: 0.98 } },
         React.createElement("div", { className: iconClass }, page.icon || (React.createElement("svg", { className: styles.pageIconSvg, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
             React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.5, d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" })))),
