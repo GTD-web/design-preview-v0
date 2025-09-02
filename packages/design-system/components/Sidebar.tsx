@@ -215,7 +215,7 @@ export function SidebarCollapsed({
     <>
       <aside
         className={`
-          h-screen bg-surface
+          h-full bg-surface
           overflow-x-hidden
           shadow-lg ${width} ${className}
         `}
@@ -542,7 +542,7 @@ export function SidebarExpanded({
   return (
     <aside
       className={`
-        h-screen bg-surface
+        h-full bg-surface
         overflow-x-hidden
         shadow-lg ${width} ${className}
       `}
@@ -970,10 +970,12 @@ export function Sidebar({
         />
       )}
 
-      {/* 사이드바 렌더링 */}
+      {/* 사이드바 렌더링 - TabBar 아래에 위치 */}
       <div
-        className="fixed top-0 left-0 h-screen z-50"
+        className="fixed left-0 z-50"
         style={{
+          top: "var(--tab-bar-height, 48px)", // TabBar 높이만큼 아래에 위치
+          height: "calc(100vh - var(--tab-bar-height, 48px))", // TabBar를 제외한 높이
           transform: isHidden
             ? "translateX(-100%)"
             : isLargeScreen
@@ -1003,7 +1005,7 @@ export function Sidebar({
                 position: "absolute",
                 top: 0,
                 left: 0,
-                height: "100vh",
+                height: "100%",
                 willChange: "transform, opacity",
               }}
             >
@@ -1040,7 +1042,7 @@ export function Sidebar({
                 position: "absolute",
                 top: 0,
                 left: 0,
-                height: "100vh",
+                height: "100%",
                 willChange: "transform, opacity",
               }}
             >
