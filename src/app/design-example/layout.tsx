@@ -479,7 +479,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   // TabBar 상태 관리
   const allPagesMapping = createAllPagesMapping();
   const availablePages = createAvailablePages();
-  const { tabs, activeTabId, activateTab, removeTab, createNewTab, addTab } =
+  const { tabs, activeTabId, activateTab, removeTab, createNewTab, addTab, reorderTabs } =
     useTabBar({
       pageMapping: allPagesMapping,
       homePath: "/design-example",
@@ -583,6 +583,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               activeTabId={activeTabId}
               onTabClick={(tab) => activateTab(tab.id)}
               onTabClose={(tabId) => removeTab(tabId)}
+              onTabReorder={reorderTabs}
               onNewTab={createNewTab}
               onPageSelect={(pageInfo) => addTab(pageInfo)}
               availablePages={availablePages}

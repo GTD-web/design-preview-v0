@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { arrayMove } from "@dnd-kit/sortable";
 import type { TabItem } from "../components/TabBar";
 
 /**
@@ -50,6 +51,8 @@ export interface UseTabBarReturn {
   removeTab: (tabId: string) => void;
   /** 탭 활성화 */
   activateTab: (tabId: string) => void;
+  /** 탭 순서 변경 */
+  reorderTabs: (activeId: string, overId: string) => void;
   /** 새 탭 생성 */
   createNewTab: () => void;
   /** 모든 탭 닫기 */
@@ -351,6 +354,43 @@ export function useTabBar({
     [tabs, router, enableLocalStorage, localStorageKey]
   );
 
+  // 탭 순서 변경
+  const reorderTabs = useCallback(
+    (activeId: string, overId: string) => {
+      console.log("reorderTabs called with:", { activeId, overId });
+      
+      if (activeId === overId) {
+        console.log("Same id, returning early");
+        return;
+      }
+
+      setTabs((prevTabs) => {
+        console.log("Current tabs:", prevTabs.map(t => ({ id: t.id, title: t.title })));
+        
+        const activeIndex = prevTabs.findIndex((tab) => tab.id === activeId);
+        const overIndex = prevTabs.findIndex((tab) => tab.id === overId);
+
+        console.log("Indices:", { activeIndex, overIndex });
+
+        if (activeIndex === -1 || overIndex === -1) {
+          console.warn("Invalid indices, returning previous tabs");
+          return prevTabs;
+        }
+
+        const newTabs = arrayMove(prevTabs, activeIndex, overIndex);
+        console.log("New tabs after reorder:", newTabs.map(t => ({ id: t.id, title: t.title })));
+
+        // 로컬 스토리지에 저장
+        if (enableLocalStorage) {
+          saveTabsToStorage(localStorageKey, newTabs, activeTabId);
+        }
+
+        return newTabs;
+      });
+    },
+    [enableLocalStorage, localStorageKey, activeTabId]
+  );
+
   // 새 탭 생성
   const createNewTab = useCallback(() => {
     const newPageInfo: PageInfo = {
@@ -458,6 +498,7 @@ export function useTabBar({
     addTab,
     removeTab,
     activateTab,
+    reorderTabs,
     createNewTab,
     closeAllTabs,
     closeOtherTabs,

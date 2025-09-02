@@ -22,6 +22,8 @@ export interface TabBarProps {
     onTabClick?: (tab: TabItem) => void;
     /** 탭 닫기 시 호출되는 콜백 */
     onTabClose?: (tabId: string) => void;
+    /** 탭 순서 변경 시 호출되는 콜백 */
+    onTabReorder?: (activeId: string, overId: string) => void;
     /** 새 탭 추가 시 호출되는 콜백 (기본 홈페이지로) */
     onNewTab?: () => void;
     /** 페이지 선택해서 탭 추가 시 호출되는 콜백 */
@@ -46,7 +48,7 @@ export interface TabBarProps {
 /**
  * TabBar 컴포넌트 - 브라우저 탭과 유사한 동작을 제공하는 탭 바
  */
-export declare function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onPageSelect, availablePages, maxTabs, className, showNewTabButton, showHomeButton, onHomeClick, homeButtonActive, homePath, }: TabBarProps): React.JSX.Element;
+export declare function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages, maxTabs, className, showNewTabButton, showHomeButton, onHomeClick, homeButtonActive, homePath, }: TabBarProps): React.JSX.Element;
 /**
  * TabBar 스타일 상수 - 필요시 외부에서 참조 가능
  */

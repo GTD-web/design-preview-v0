@@ -1,7 +1,27 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  restrictToHorizontalAxis,
+  restrictToWindowEdges,
+} from "@dnd-kit/modifiers";
 import { PageSelector } from "./PageSelector";
 import type { PageInfo } from "../hooks/useTabBar";
 import styles from "./TabBar.module.css";
@@ -29,6 +49,8 @@ export interface TabBarProps {
   onTabClick?: (tab: TabItem) => void;
   /** 탭 닫기 시 호출되는 콜백 */
   onTabClose?: (tabId: string) => void;
+  /** 탭 순서 변경 시 호출되는 콜백 */
+  onTabReorder?: (activeId: string, overId: string) => void;
   /** 새 탭 추가 시 호출되는 콜백 (기본 홈페이지로) */
   onNewTab?: () => void;
   /** 페이지 선택해서 탭 추가 시 호출되는 콜백 */
@@ -61,8 +83,17 @@ interface TabProps {
   onTabClose: (tabId: string) => void;
 }
 
-function Tab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
+function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
   const [isHovering, setIsHovering] = useState(false);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: tab.id });
 
   const handleCloseClick = useCallback(
     (e: React.MouseEvent) => {
@@ -72,65 +103,98 @@ function Tab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
     [tab.id, onTabClose]
   );
 
+  const handleTabClick = useCallback(
+    (e: React.MouseEvent) => {
+      // 드래그 중일 때만 클릭 차단
+      if (isDragging) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      // 일반적인 탭 클릭은 즉시 처리
+      onTabClick(tab);
+    },
+    [tab, onTabClick, isDragging]
+  );
+
   // CSS 모듈 클래스 조합
   const tabButtonClass = [
     styles.tabButton,
     styles.tabButtonHover,
     isActive ? styles.tabButtonActive : styles.tabButtonInactive,
-  ].join(" ");
+    isDragging ? styles.tabButtonDragging : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const closeButtonClass = [
     styles.closeButton,
     isActive ? styles.closeButtonActive : styles.closeButtonInactive,
   ].join(" ");
 
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition: isDragging ? "none" : transition,
+    opacity: isDragging ? 0.8 : 1,
+    zIndex: isDragging ? 1000 : "auto",
+    touchAction: "none" as const,
+    userSelect: "none" as const,
+    willChange: isDragging ? "transform" : "auto",
+  };
+
   return (
-    <motion.button
-      layout
-      transition={{ duration: 0.15, ease: "easeInOut" }}
-      className={tabButtonClass}
-      onClick={() => onTabClick(tab)}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-      title={tab.title}
-    >
-      {/* 탭 아이콘 */}
-      {tab.icon && <div className={styles.tabIcon}>{tab.icon}</div>}
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <button
+        className={tabButtonClass}
+        onClick={handleTabClick}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+        title={tab.title}
+        {...listeners}
+      >
+        {/* 탭 아이콘 */}
+        {tab.icon && <div className={styles.tabIcon}>{tab.icon}</div>}
 
-      {/* 탭 제목 */}
-      <span className={styles.tabTitle}>{tab.title}</span>
+        {/* 탭 제목 */}
+        <span className={styles.tabTitle}>{tab.title}</span>
 
-      {/* 닫기 버튼 */}
-      {tab.closable !== false && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-            opacity: isHovering || isActive ? 1 : 0,
-            scale: isHovering || isActive ? 1 : 0.8,
-          }}
-          transition={{ duration: 0.15 }}
-          className={closeButtonClass}
-          onClick={handleCloseClick}
-          title="탭 닫기"
-        >
-          <svg
-            className={styles.closeButtonIcon}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        {/* 닫기 버튼 */}
+        {tab.closable !== false && (
+          <button
+            className={closeButtonClass}
+            onClick={handleCloseClick}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            title="탭 닫기"
+            style={{
+              opacity: isHovering || isActive ? 1 : 0,
+              transform: `scale(${isHovering || isActive ? 1 : 0.8})`,
+              transition: "opacity 0.15s, transform 0.15s",
+            }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </motion.button>
-      )}
-    </motion.button>
+            <svg
+              className={styles.closeButtonIcon}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
+      </button>
+    </div>
   );
 }
+
+// 이전 Tab 컴포넌트를 SortableTab으로 대체
+const Tab = SortableTab;
 
 /**
  * 홈 버튼 컴포넌트
@@ -187,6 +251,7 @@ export function TabBar({
   activeTabId,
   onTabClick,
   onTabClose,
+  onTabReorder,
   onPageSelect,
   availablePages = [],
   maxTabs = 10,
@@ -198,6 +263,64 @@ export function TabBar({
   homePath = "홈",
 }: TabBarProps) {
   const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
+
+  // 드래그 앤 드롭 센서 설정 - 더 엄격한 제약 조건 적용
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5, // 5px 이상 수평으로 움직여야 드래그 시작
+        tolerance: 5,
+        delay: 100, // 100ms 대기
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // 드래그 시작 핸들러
+  const handleDragStart = useCallback(() => {
+    // 페이지 스크롤 방지를 위해 body 스크롤 차단
+    document.body.style.touchAction = "none";
+    document.body.style.userSelect = "none";
+  }, []);
+
+  // 드래그 종료 핸들러
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+
+      console.log("DragEnd event:", { active: active.id, over: over?.id });
+
+      // body 스크롤 복원
+      document.body.style.touchAction = "";
+      document.body.style.userSelect = "";
+
+      if (over && active.id !== over.id) {
+        console.log(`Reordering: ${active.id} -> ${over.id}`);
+        console.log("onTabReorder function:", onTabReorder);
+        if (onTabReorder) {
+          onTabReorder(String(active.id), String(over.id));
+          console.log("onTabReorder called successfully");
+        } else {
+          console.warn("onTabReorder is not provided!");
+        }
+      } else {
+        console.log(
+          "No reordering needed - same position or no valid drop target"
+        );
+      }
+    },
+    [onTabReorder]
+  );
+
+  // 드래그 취소 핸들러
+  const handleDragCancel = useCallback(() => {
+    // body 스크롤 복원
+    document.body.style.touchAction = "";
+    document.body.style.userSelect = "";
+  }, []);
+
   const handleTabClick = useCallback(
     (tab: TabItem) => {
       onTabClick?.(tab);
@@ -246,29 +369,29 @@ export function TabBar({
       {/* 탭 컨테이너 */}
       <div className={styles.tabsContainer}>
         <div className={styles.tabsInnerContainer}>
-          <AnimatePresence mode="popLayout" initial={false}>
-            {tabs.map((tab) => (
-              <motion.div
-                key={tab.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{
-                  duration: 0.15,
-                  ease: "easeInOut",
-                }}
-                layout
-                style={{ originX: 0.5, originY: 0.5 }}
-              >
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
+            modifiers={[restrictToHorizontalAxis, restrictToWindowEdges]}
+          >
+            <SortableContext
+              items={tabs.map((tab) => tab.id)}
+              strategy={horizontalListSortingStrategy}
+            >
+              {tabs.map((tab) => (
                 <Tab
+                  key={tab.id}
                   tab={tab}
                   isActive={tab.id === activeTabId}
                   onTabClick={handleTabClick}
                   onTabClose={handleTabClose}
                 />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              ))}
+            </SortableContext>
+          </DndContext>
         </div>
       </div>
 

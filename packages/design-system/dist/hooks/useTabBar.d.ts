@@ -43,6 +43,8 @@ export interface UseTabBarReturn {
     removeTab: (tabId: string) => void;
     /** 탭 활성화 */
     activateTab: (tabId: string) => void;
+    /** 탭 순서 변경 */
+    reorderTabs: (activeId: string, overId: string) => void;
     /** 새 탭 생성 */
     createNewTab: () => void;
     /** 모든 탭 닫기 */
