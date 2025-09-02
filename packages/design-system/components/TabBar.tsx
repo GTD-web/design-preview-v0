@@ -41,6 +41,14 @@ export interface TabBarProps {
   className?: string;
   /** 새 탭 버튼 표시 여부 */
   showNewTabButton?: boolean;
+  /** 홈 버튼 표시 여부 */
+  showHomeButton?: boolean;
+  /** 홈 버튼 클릭 시 호출되는 콜백 */
+  onHomeClick?: () => void;
+  /** 홈 버튼 활성 상태 (현재 홈페이지인지 여부) */
+  homeButtonActive?: boolean;
+  /** 홈 경로 (툴팁용) */
+  homePath?: string;
 }
 
 /**
@@ -125,6 +133,53 @@ function Tab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
 }
 
 /**
+ * 홈 버튼 컴포넌트
+ */
+interface HomeButtonProps {
+  isActive?: boolean;
+  onClick?: () => void;
+  homePath?: string;
+}
+
+function HomeButton({
+  isActive = false,
+  onClick,
+  homePath = "홈",
+}: HomeButtonProps) {
+  // CSS 모듈 클래스 조합
+  const homeButtonClass = [
+    styles.homeButton,
+    isActive ? styles.homeButtonActive : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <motion.button
+      className={homeButtonClass}
+      onClick={onClick}
+      title={`${homePath}으로 이동`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <svg
+        className={styles.homeButtonIcon}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+        />
+      </svg>
+    </motion.button>
+  );
+}
+
+/**
  * TabBar 컴포넌트 - 브라우저 탭과 유사한 동작을 제공하는 탭 바
  */
 export function TabBar({
@@ -137,6 +192,10 @@ export function TabBar({
   maxTabs = 10,
   className = "",
   showNewTabButton = true,
+  showHomeButton = false,
+  onHomeClick,
+  homeButtonActive = false,
+  homePath = "홈",
 }: TabBarProps) {
   const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
   const handleTabClick = useCallback(
@@ -175,6 +234,15 @@ export function TabBar({
 
   return (
     <div className={containerClass}>
+      {/* 홈 버튼 */}
+      {showHomeButton && (
+        <HomeButton
+          isActive={homeButtonActive}
+          onClick={onHomeClick}
+          homePath={homePath}
+        />
+      )}
+
       {/* 탭 컨테이너 */}
       <div className={styles.tabsContainer}>
         <div className={styles.tabsInnerContainer}>

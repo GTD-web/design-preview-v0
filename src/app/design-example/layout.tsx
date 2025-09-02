@@ -548,6 +548,24 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     setSidebarHidden(!sidebarHidden);
   };
 
+  // 홈 버튼 클릭 핸들러
+  const handleHomeClick = useCallback(() => {
+    // "/design-example" 탭을 활성화
+    const homeTabId = tabs.find((tab) => tab.path === "/design-example")?.id;
+    if (homeTabId) {
+      activateTab(homeTabId);
+    } else {
+      // 홈 탭이 없으면 새로 추가
+      const homePageInfo = allPagesMapping["/design-example"];
+      if (homePageInfo) {
+        addTab(homePageInfo);
+      }
+    }
+  }, [tabs, activateTab, addTab, allPagesMapping]);
+
+  // 홈 버튼 활성 상태 확인
+  const isHomeActive = pathname === "/design-example";
+
   return (
     <ClientOnly fallback={<Loading />}>
       <SidebarContext.Provider
@@ -569,6 +587,10 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               onPageSelect={(pageInfo) => addTab(pageInfo)}
               availablePages={availablePages}
               showNewTabButton={true}
+              showHomeButton={true}
+              onHomeClick={handleHomeClick}
+              homeButtonActive={isHomeActive}
+              homePath="디자인토큰"
             />
           </div>
 

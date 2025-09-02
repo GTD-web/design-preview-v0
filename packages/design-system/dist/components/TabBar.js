@@ -29,10 +29,22 @@ function Tab({ tab, isActive, onTabClick, onTabClose }) {
             React.createElement("svg", { className: styles.closeButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                 React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }))))));
 }
+function HomeButton({ isActive = false, onClick, homePath = "홈", }) {
+    // CSS 모듈 클래스 조합
+    const homeButtonClass = [
+        styles.homeButton,
+        isActive ? styles.homeButtonActive : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
+    return (React.createElement(motion.button, { className: homeButtonClass, onClick: onClick, title: `${homePath}으로 이동`, whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 } },
+        React.createElement("svg", { className: styles.homeButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+            React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" }))));
+}
 /**
  * TabBar 컴포넌트 - 브라우저 탭과 유사한 동작을 제공하는 탭 바
  */
-export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onPageSelect, availablePages = [], maxTabs = 10, className = "", showNewTabButton = true, }) {
+export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onPageSelect, availablePages = [], maxTabs = 10, className = "", showNewTabButton = true, showHomeButton = false, onHomeClick, homeButtonActive = false, homePath = "홈", }) {
     const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
     const handleTabClick = useCallback((tab) => {
         onTabClick?.(tab);
@@ -55,6 +67,7 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onPageSelect
         .filter(Boolean)
         .join(" ");
     return (React.createElement("div", { className: containerClass },
+        showHomeButton && (React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, homePath: homePath })),
         React.createElement("div", { className: styles.tabsContainer },
             React.createElement("div", { className: styles.tabsInnerContainer },
                 React.createElement(AnimatePresence, { mode: "popLayout", initial: false }, tabs.map((tab) => (React.createElement(motion.div, { key: tab.id, initial: { opacity: 0, scale: 0.95 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.95 }, transition: {

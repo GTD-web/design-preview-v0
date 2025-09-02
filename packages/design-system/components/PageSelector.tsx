@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "./Button";
 import type { PageInfo } from "../hooks/useTabBar";
+import styles from "./PageSelector.module.css";
 
 /**
  * PageSelector Props
@@ -21,6 +21,86 @@ export interface PageSelectorProps {
   onClose: () => void;
   /** 트리거 요소 (+ 버튼) */
   children: React.ReactNode;
+}
+
+/**
+ * 개별 페이지 아이템 컴포넌트
+ */
+interface PageItemProps {
+  page: PageInfo;
+  onPageClick: (page: PageInfo) => void;
+}
+
+function PageItem({ page, onPageClick }: PageItemProps) {
+  const [isHovering, setIsHovering] = useState(false);
+
+  const iconClass = [styles.pageIcon, isHovering ? styles.pageIconActive : ""]
+    .filter(Boolean)
+    .join(" ");
+
+  const titleClass = [styles.pageTitle, isHovering ? styles.pageTitleHover : ""]
+    .filter(Boolean)
+    .join(" ");
+
+  const arrowClass = [
+    styles.pageArrow,
+    isHovering ? styles.pageArrowActive : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <motion.button
+      className={styles.pageItem}
+      onClick={() => onPageClick(page)}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      whileHover={{ x: 2 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {/* 아이콘 */}
+      <div className={iconClass}>
+        {page.icon || (
+          <svg
+            className={styles.pageIconSvg}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+        )}
+      </div>
+
+      {/* 페이지 정보 */}
+      <div className={styles.pageContent}>
+        <p className={titleClass}>{page.title}</p>
+        <p className={styles.pagePath}>{page.path}</p>
+      </div>
+
+      {/* 화살표 */}
+      <div className={arrowClass}>
+        <svg
+          className={styles.pageArrowIcon}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </div>
+    </motion.button>
+  );
 }
 
 /**
@@ -57,17 +137,14 @@ export function PageSelector({
   );
 
   return (
-    <div className="relative">
+    <div className={styles.container}>
       {children}
 
       <AnimatePresence>
         {isOpen && (
           <>
             {/* 백드롭 */}
-            <div
-              className="fixed inset-0 z-[200] bg-black/30"
-              onClick={handleBackdropClick}
-            />
+            <div className={styles.backdrop} onClick={handleBackdropClick} />
 
             {/* 페이지 선택 팝오버 */}
             <motion.div
@@ -75,29 +152,17 @@ export function PageSelector({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.15 }}
-              className="fixed z-[999] bg-surface border border-border rounded-lg shadow-2xl overflow-hidden"
-              style={{
-                width: "384px",
-                maxWidth: "calc(100vw - 32px)",
-                maxHeight: "calc(100vh - 120px)",
-                top: "60px", // TabBar 아래 위치
-                right: "20px", // 오른쪽 여백
-              }}
+              className={styles.popover}
             >
               {/* 헤더 */}
-              <div className="px-4 py-3 border-b border-border bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-foreground">
+              <div className={styles.header}>
+                <div className={styles.headerContent}>
+                  <h3 className={styles.headerTitle}>
                     탭으로 추가할 페이지 선택
                   </h3>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onClose}
-                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
-                  >
+                  <button className={styles.closeButton} onClick={onClose}>
                     <svg
-                      className="w-4 h-4"
+                      className={styles.closeButtonIcon}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -109,78 +174,30 @@ export function PageSelector({
                         d="M6 18L18 6M6 6l12 12"
                       />
                     </svg>
-                  </Button>
+                  </button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className={styles.headerDescription}>
                   {selectablePages.length}개의 페이지를 추가할 수 있습니다
                 </p>
               </div>
 
               {/* 페이지 목록 */}
-              <div className="max-h-80 overflow-y-auto">
+              <div className={styles.scrollArea}>
                 {selectablePages.length > 0 ? (
-                  <div className="p-2">
+                  <div className={styles.pageList}>
                     {selectablePages.map((page) => (
-                      <motion.button
+                      <PageItem
                         key={page.path}
-                        className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-md hover:bg-muted/50 transition-colors duration-150 group"
-                        onClick={() => handlePageClick(page)}
-                        whileHover={{ x: 2 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        {/* 아이콘 */}
-                        <div className="flex-shrink-0 w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors">
-                          {page.icon || (
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                              />
-                            </svg>
-                          )}
-                        </div>
-
-                        {/* 페이지 정보 */}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">
-                            {page.title}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {page.path}
-                          </p>
-                        </div>
-
-                        {/* 화살표 */}
-                        <div className="flex-shrink-0 w-4 h-4 text-muted-foreground group-hover:text-foreground transition-all duration-150 group-hover:translate-x-1">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1.5}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </div>
-                      </motion.button>
+                        page={page}
+                        onPageClick={handlePageClick}
+                      />
                     ))}
                   </div>
                 ) : (
-                  <div className="p-8 text-center">
-                    <div className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50">
+                  <div className={styles.emptyState}>
+                    <div className={styles.emptyStateIcon}>
                       <svg
-                        className="w-12 h-12"
+                        className={styles.emptyStateIconSvg}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -193,10 +210,10 @@ export function PageSelector({
                         />
                       </svg>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className={styles.emptyStateTitle}>
                       추가할 수 있는 페이지가 없습니다
                     </p>
-                    <p className="text-xs text-muted-foreground/80 mt-1">
+                    <p className={styles.emptyStateDescription}>
                       모든 페이지가 이미 탭으로 열려있습니다
                     </p>
                   </div>
@@ -205,10 +222,8 @@ export function PageSelector({
 
               {/* 푸터 */}
               {selectablePages.length > 0 && (
-                <div className="px-4 py-2 border-t border-border bg-muted/20">
-                  <p className="text-xs text-muted-foreground text-center">
-                    클릭하여 새 탭으로 추가
-                  </p>
+                <div className={styles.footer}>
+                  <p className={styles.footerText}>클릭하여 새 탭으로 추가</p>
                 </div>
               )}
             </motion.div>
