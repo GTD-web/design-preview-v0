@@ -3,10 +3,19 @@ import React, { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, } from "@dnd-kit/core";
 import { SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy, useSortable, } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { restrictToHorizontalAxis, restrictToWindowEdges, } from "@dnd-kit/modifiers";
+import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { PageSelector } from "./PageSelector";
 import styles from "./TabBar.module.css";
+// Y축 움직임을 완전히 차단하는 강력한 modifier
+const restrictToHorizontalAxisStrict = ({ transform }) => {
+    // Y축 이동을 완전히 차단하고, X축만 허용
+    return {
+        x: transform.x || 0, // X축 변화만 허용
+        y: 0, // Y축 변화를 강제로 0으로 설정
+        scaleX: 1, // 스케일 변화도 방지
+        scaleY: 1,
+    };
+};
 function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
     const [isHovering, setIsHovering] = useState(false);
     const { attributes, listeners, setNodeRef, transform, transition, isDragging, } = useSortable({ id: tab.id });
@@ -14,16 +23,10 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
         e.stopPropagation();
         onTabClose(tab.id);
     }, [tab.id, onTabClose]);
-    const handleTabClick = useCallback((e) => {
-        // 드래그 중일 때만 클릭 차단
-        if (isDragging) {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
-        // 일반적인 탭 클릭은 즉시 처리
+    const handleTabClick = useCallback(() => {
+        // 일반적인 탭 클릭은 항상 즉시 처리 (드래그 상태 무시)
         onTabClick(tab);
-    }, [tab, onTabClick, isDragging]);
+    }, [tab, onTabClick]);
     // CSS 모듈 클래스 조합
     const tabButtonClass = [
         styles.tabButton,
@@ -38,11 +41,13 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
         isActive ? styles.closeButtonActive : styles.closeButtonInactive,
     ].join(" ");
     const style = {
-        transform: CSS.Transform.toString(transform),
+        transform: transform
+            ? `translate3d(${transform.x || 0}px, 0px, 0px) scale(${isDragging ? 1.05 : 1}) rotate(${isDragging ? "1deg" : "0deg"})`
+            : undefined, // Y축을 강제로 0으로 고정, X축만 이동
         transition: isDragging ? "none" : transition,
         opacity: isDragging ? 0.8 : 1,
         zIndex: isDragging ? 1000 : "auto",
-        touchAction: "none",
+        touchAction: "pan-x", // 수평 방향 터치만 허용
         userSelect: "none",
         willChange: isDragging ? "transform" : "auto",
     };
@@ -77,31 +82,34 @@ function HomeButton({ isActive = false, onClick, homePath = "홈", }) {
  */
 export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages = [], maxTabs = 10, className = "", showNewTabButton = true, showHomeButton = false, onHomeClick, homeButtonActive = false, homePath = "홈", }) {
     const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
-    const [activeId, setActiveId] = useState(null);
-    // 드래그 앤 드롭 센서 설정 - 더 엄격한 제약 조건 적용
+    // 드래그 앤 드롭 센서 설정 - 수평 방향 드래그만 엄격하게 감지
     const sensors = useSensors(useSensor(PointerSensor, {
         activationConstraint: {
-            distance: 5, // 5px 이상 수평으로 움직여야 드래그 시작
-            tolerance: 5,
-            delay: 100, // 100ms 대기
+            distance: 12, // 12px 이상 움직여야 드래그 시작
+            tolerance: 5, // 더 엄격한 tolerance
+            delay: 100, // 100ms 딜레이로 의도적인 드래그만 감지
         },
     }), useSensor(KeyboardSensor, {
         coordinateGetter: sortableKeyboardCoordinates,
     }));
-    // 드래그 시작 핸들러
-    const handleDragStart = useCallback((event) => {
-        setActiveId(String(event.active.id));
-        // 페이지 스크롤 방지를 위해 body 스크롤 차단
-        document.body.style.touchAction = "none";
+    // 드래그 시작 핸들러 - 탭 영역에서만 Y축 이동 차단
+    const handleDragStart = useCallback(() => {
+        // 현재 스크롤 위치 저장
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        // 드래그 상태 표시
+        document.body.setAttribute("data-dragging", "true");
+        // 최소한의 스크롤 차단 - 너무 강력하지 않게
         document.body.style.userSelect = "none";
+        // 저장된 스크롤 위치
+        window.__savedScrollTop = scrollTop;
     }, []);
     // 드래그 종료 핸들러
     const handleDragEnd = useCallback((event) => {
         const { active, over } = event;
         console.log("DragEnd event:", { active: active.id, over: over?.id });
-        setActiveId(null);
-        // body 스크롤 복원
-        document.body.style.touchAction = "";
+        // 드래그 상태 제거
+        document.body.removeAttribute("data-dragging");
+        // body 스타일 복원
         document.body.style.userSelect = "";
         if (over && active.id !== over.id) {
             console.log(`Reordering: ${active.id} -> ${over.id}`);
@@ -120,9 +128,9 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
     }, [onTabReorder]);
     // 드래그 취소 핸들러
     const handleDragCancel = useCallback(() => {
-        setActiveId(null);
-        // body 스크롤 복원
-        document.body.style.touchAction = "";
+        // 드래그 상태 제거
+        document.body.removeAttribute("data-dragging");
+        // body 스타일 복원
         document.body.style.userSelect = "";
     }, []);
     const handleTabClick = useCallback((tab) => {
@@ -149,7 +157,7 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         showHomeButton && (React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, homePath: homePath })),
         React.createElement("div", { className: styles.tabsContainer },
             React.createElement("div", { className: styles.tabsInnerContainer },
-                React.createElement(DndContext, { sensors: sensors, collisionDetection: closestCenter, onDragStart: handleDragStart, onDragEnd: handleDragEnd, onDragCancel: handleDragCancel, modifiers: [restrictToHorizontalAxis, restrictToWindowEdges] },
+                React.createElement(DndContext, { sensors: sensors, collisionDetection: closestCenter, onDragStart: handleDragStart, onDragEnd: handleDragEnd, onDragCancel: handleDragCancel, modifiers: [restrictToHorizontalAxisStrict, restrictToWindowEdges] },
                     React.createElement(SortableContext, { items: tabs.map((tab) => tab.id), strategy: horizontalListSortingStrategy }, tabs.map((tab) => (React.createElement(Tab, { key: tab.id, tab: tab, isActive: tab.id === activeTabId, onTabClick: handleTabClick, onTabClose: handleTabClose }))))))),
         showNewTabButton && (React.createElement(PageSelector, { availablePages: availablePages, openTabPaths: openTabPaths, onPageSelect: handlePageSelect, isOpen: isPageSelectorOpen, onClose: () => setIsPageSelectorOpen(false) },
             React.createElement(motion.button, { className: newTabButtonClass, onClick: () => {
