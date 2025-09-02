@@ -4,6 +4,7 @@ import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageSelector } from "./PageSelector";
 import type { PageInfo } from "../hooks/useTabBar";
+import styles from "./TabBar.module.css";
 
 /**
  * 탭 아이템 타입 정의
@@ -63,43 +64,33 @@ function Tab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
     [tab.id, onTabClose]
   );
 
+  // CSS 모듈 클래스 조합
+  const tabButtonClass = [
+    styles.tabButton,
+    styles.tabButtonHover,
+    isActive ? styles.tabButtonActive : styles.tabButtonInactive,
+  ].join(" ");
+
+  const closeButtonClass = [
+    styles.closeButton,
+    isActive ? styles.closeButtonActive : styles.closeButtonInactive,
+  ].join(" ");
+
   return (
     <motion.button
       layout
       transition={{ duration: 0.15, ease: "easeInOut" }}
-      className={`
-        group relative flex items-center gap-2 px-3 py-1.5 min-w-0 max-w-40 
-        transition-all duration-200 ease-out
-        border-b-2 hover:bg-surface/50
-        border-r-2
-        ${
-          isActive
-            ? "bg-white border-primary text-foreground shadow-lg relative z-10"
-            : "bg-gray-100 border-transparent text-muted-foreground hover:text-foreground hover:border-border hover:bg-gray-200"
-        }
-      `}
-      style={{
-        borderTopLeftRadius: "6px",
-        borderTopRightRadius: "6px",
-        borderBottomLeftRadius: "6px",
-        borderBottomRightRadius: "6px",
-      }}
+      className={tabButtonClass}
       onClick={() => onTabClick(tab)}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       title={tab.title}
     >
       {/* 탭 아이콘 */}
-      {tab.icon && (
-        <div className="flex-shrink-0 w-3.5 h-3.5 flex items-center justify-center">
-          {tab.icon}
-        </div>
-      )}
+      {tab.icon && <div className={styles.tabIcon}>{tab.icon}</div>}
 
       {/* 탭 제목 */}
-      <span className="flex-1 text-xs font-medium truncate min-w-0">
-        {tab.title}
-      </span>
+      <span className={styles.tabTitle}>{tab.title}</span>
 
       {/* 닫기 버튼 */}
       {tab.closable !== false && (
@@ -110,20 +101,12 @@ function Tab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
             scale: isHovering || isActive ? 1 : 0.8,
           }}
           transition={{ duration: 0.15 }}
-          className={`
-            flex-shrink-0 w-4 h-4 flex items-center justify-center rounded-full
-            transition-colors duration-200 hover:bg-muted-foreground/20
-            ${
-              isActive
-                ? "text-muted-foreground hover:text-foreground"
-                : "text-muted-foreground/60"
-            }
-          `}
+          className={closeButtonClass}
           onClick={handleCloseClick}
           title="탭 닫기"
         >
           <svg
-            className="w-2.5 h-2.5"
+            className={styles.closeButtonIcon}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -136,18 +119,6 @@ function Tab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
             />
           </svg>
         </motion.button>
-      )}
-
-      {/* 활성 탭 표시 */}
-      {isActive && (
-        <motion.div
-          layoutId="activeTab"
-          className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-          style={{
-            borderBottomLeftRadius: "2px",
-            borderBottomRightRadius: "2px",
-          }}
-        />
       )}
     </motion.button>
   );
@@ -191,16 +162,22 @@ export function TabBar({
 
   const openTabPaths = tabs.map((tab) => tab.path);
 
+  // CSS 모듈 클래스 조합
+  const containerClass = [styles.tabBarContainer, className]
+    .filter(Boolean)
+    .join(" ");
+  const newTabButtonClass = [
+    styles.newTabButton,
+    tabs.length >= maxTabs ? styles.newTabButtonDisabled : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      className={`
-        flex items-end bg-gray-100 border-b border-border overflow-hidden py-1
-        ${className}
-      `}
-    >
+    <div className={containerClass}>
       {/* 탭 컨테이너 */}
-      <div className="flex-1 flex items-end overflow-x-auto overflow-y-hidden scrollbar-hide">
-        <div className="flex items-end min-w-max">
+      <div className={styles.tabsContainer}>
+        <div className={styles.tabsInnerContainer}>
           <AnimatePresence mode="popLayout" initial={false}>
             {tabs.map((tab) => (
               <motion.div
@@ -237,12 +214,7 @@ export function TabBar({
           onClose={() => setIsPageSelectorOpen(false)}
         >
           <motion.button
-            className={`
-                flex-shrink-0 inline-flex items-center justify-center w-4 h-4 mx-1
-                text-muted-foreground hover:text-foreground hover:bg-gray-200
-                rounded-md transition-colors duration-200 relative
-                ${tabs.length >= maxTabs ? "opacity-50 cursor-not-allowed" : ""}
-              `}
+            className={newTabButtonClass}
             onClick={() => {
               if (tabs.length < maxTabs) {
                 setIsPageSelectorOpen(!isPageSelectorOpen);
@@ -254,7 +226,7 @@ export function TabBar({
             whileTap={{ scale: 0.95 }}
           >
             <svg
-              className="w-3 h-3"
+              className={styles.newTabButtonIcon}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -274,16 +246,28 @@ export function TabBar({
 }
 
 /**
- * 기본 탭 스타일 적용을 위한 CSS 클래스
+ * TabBar 스타일 상수 - 필요시 외부에서 참조 가능
  */
 export const TAB_BAR_STYLES = {
-  scrollbar: `
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  `,
-};
+  // CSS Modules를 사용하여 스타일이 완전히 격리됨
+  // 더 이상 외부 CSS 클래스나 인라인 스타일이 필요하지 않음
+  colors: {
+    primary: "#3b82f6",
+    background: "#f3f4f6",
+    foreground: "#1f2937",
+    muted: "#6b7280",
+    border: "#d1d5db",
+    surface: "#ffffff",
+    hover: "#e5e7eb",
+  },
+  spacing: {
+    tabPadding: "6px 12px",
+    containerPadding: "4px 0",
+    iconSize: "14px",
+    closeButtonSize: "16px",
+  },
+  animation: {
+    duration: "0.15s",
+    easing: "ease-in-out",
+  },
+} as const;

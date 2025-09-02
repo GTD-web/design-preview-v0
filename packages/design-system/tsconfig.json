@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "types": ["react", "react-dom"]
   },
-  "include": ["components/**/*", "index.ts"]
+  "include": ["components/**/*", "index.ts", "types.d.ts"]
 }

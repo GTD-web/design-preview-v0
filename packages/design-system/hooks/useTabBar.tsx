@@ -30,6 +30,10 @@ export interface UseTabBarOptions {
   pathNormalizer?: (path: string) => string;
   /** 기본 페이지 정보 생성 함수 (선택적) */
   defaultPageInfoResolver?: (path: string, homePath: string) => PageInfo;
+  /** 로컬 스토리지 사용 여부 */
+  enableLocalStorage?: boolean;
+  /** 로컬 스토리지 키 (기본값: 'tabbar-tabs') */
+  localStorageKey?: string;
 }
 
 /**
@@ -57,6 +61,51 @@ export interface UseTabBarReturn {
 }
 
 /**
+ * 로컬 스토리지에서 탭 데이터 로드
+ */
+const loadTabsFromStorage = (
+  key: string
+): { tabs: TabItem[]; activeTabId?: string } | null => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const saved = localStorage.getItem(key);
+    if (!saved) return null;
+
+    const parsed = JSON.parse(saved);
+    return {
+      tabs: parsed.tabs || [],
+      activeTabId: parsed.activeTabId,
+    };
+  } catch (error) {
+    console.warn("Failed to load tabs from localStorage:", error);
+    return null;
+  }
+};
+
+/**
+ * 로컬 스토리지에 탭 데이터 저장
+ */
+const saveTabsToStorage = (
+  key: string,
+  tabs: TabItem[],
+  activeTabId?: string
+) => {
+  if (typeof window === "undefined") return;
+
+  try {
+    const data = {
+      tabs: tabs.map((tab) => ({ ...tab, icon: undefined })), // icon은 serialize 불가능하므로 제외
+      activeTabId,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.warn("Failed to save tabs to localStorage:", error);
+  }
+};
+
+/**
  * 탭 바 상태 관리를 위한 Hook
  */
 export function useTabBar({
@@ -66,14 +115,44 @@ export function useTabBar({
   homePath = "/design-example",
   pathNormalizer,
   defaultPageInfoResolver,
+  enableLocalStorage = true,
+  localStorageKey = "tabbar-tabs",
 }: UseTabBarOptions = {}): UseTabBarReturn {
   const router = useRouter();
   const pathname = usePathname();
 
+  // 로컬 스토리지에서 초기 데이터 로드
+  const getInitialState = useCallback(() => {
+    if (enableLocalStorage) {
+      const saved = loadTabsFromStorage(localStorageKey);
+      if (saved && saved.tabs.length > 0) {
+        // 저장된 탭들을 복원하면서 아이콘을 pageMapping에서 찾아서 추가
+        const restoredTabs = saved.tabs.map((tab) => {
+          const pageInfo = pageMapping[tab.path];
+          return {
+            ...tab,
+            icon: pageInfo?.icon || tab.icon,
+          };
+        });
+
+        return {
+          tabs: restoredTabs,
+          activeTabId: saved.activeTabId,
+        };
+      }
+    }
+    return {
+      tabs: initialTabs,
+      activeTabId: initialTabs.find((tab) => tab.path === pathname)?.id,
+    };
+  }, [enableLocalStorage, localStorageKey, initialTabs, pathname, pageMapping]);
+
+  const [initialState] = useState(getInitialState);
+
   // 탭 상태
-  const [tabs, setTabs] = useState<TabItem[]>(initialTabs);
+  const [tabs, setTabs] = useState<TabItem[]>(initialState.tabs);
   const [activeTabId, setActiveTabId] = useState<string | undefined>(
-    initialTabs.find((tab) => tab.path === pathname)?.id
+    initialState.activeTabId
   );
   const [isRemovingTab, setIsRemovingTab] = useState(false);
 
@@ -147,7 +226,7 @@ export function useTabBar({
         if (prevTabs.length >= maxTabs) {
           // 가장 오래된 탭을 제거 (첫 번째 탭 제외 - 보통 홈탭)
           const newTabs = prevTabs.slice(1, -1);
-          return [
+          const updatedTabs = [
             prevTabs[0], // 홈 탭 유지
             ...newTabs,
             {
@@ -158,10 +237,17 @@ export function useTabBar({
               closable: pageInfo.closable,
             },
           ];
+
+          // 로컬 스토리지에 저장
+          if (enableLocalStorage) {
+            saveTabsToStorage(localStorageKey, updatedTabs, tabId);
+          }
+
+          return updatedTabs;
         }
 
         // 새 탭 추가
-        return [
+        const updatedTabs = [
           ...prevTabs,
           {
             id: tabId,
@@ -171,11 +257,18 @@ export function useTabBar({
             closable: pageInfo.closable,
           },
         ];
+
+        // 로컬 스토리지에 저장
+        if (enableLocalStorage) {
+          saveTabsToStorage(localStorageKey, updatedTabs, tabId);
+        }
+
+        return updatedTabs;
       });
 
       setActiveTabId(tabId);
     },
-    [generateTabId, maxTabs]
+    [generateTabId, maxTabs, enableLocalStorage, localStorageKey]
   );
 
   // 탭 제거
@@ -202,6 +295,11 @@ export function useTabBar({
           );
           const newActiveTab = newTabs[nextActiveIndex];
 
+          // 로컬 스토리지에 저장
+          if (enableLocalStorage) {
+            saveTabsToStorage(localStorageKey, newTabs, newActiveTab.id);
+          }
+
           // 비동기로 상태 업데이트하여 렌더링 후 실행
           setTimeout(() => {
             setActiveTabId(newActiveTab.id);
@@ -211,6 +309,10 @@ export function useTabBar({
           }, 0);
         } else if (activeTabId === tabId && newTabs.length === 0) {
           // 모든 탭이 닫힌 경우
+          if (enableLocalStorage) {
+            saveTabsToStorage(localStorageKey, newTabs, undefined);
+          }
+
           setTimeout(() => {
             setActiveTabId(undefined);
             router.push(homePath);
@@ -219,13 +321,16 @@ export function useTabBar({
           }, 0);
         } else {
           // 비활성 탭을 닫은 경우
+          if (enableLocalStorage) {
+            saveTabsToStorage(localStorageKey, newTabs, activeTabId);
+          }
           setIsRemovingTab(false);
         }
 
         return newTabs;
       });
     },
-    [activeTabId, router, homePath]
+    [activeTabId, router, homePath, enableLocalStorage, localStorageKey]
   );
 
   // 탭 활성화
@@ -234,10 +339,16 @@ export function useTabBar({
       const tab = tabs.find((t) => t.id === tabId);
       if (tab) {
         setActiveTabId(tabId);
+
+        // 로컬 스토리지에 저장
+        if (enableLocalStorage) {
+          saveTabsToStorage(localStorageKey, tabs, tabId);
+        }
+
         router.push(tab.path);
       }
     },
-    [tabs, router]
+    [tabs, router, enableLocalStorage, localStorageKey]
   );
 
   // 새 탭 생성
@@ -259,32 +370,54 @@ export function useTabBar({
     if (homeTabs.length > 0) {
       const homeTab = homeTabs[0];
       setActiveTabId(homeTab.id);
+
+      // 로컬 스토리지에 저장
+      if (enableLocalStorage) {
+        saveTabsToStorage(localStorageKey, homeTabs, homeTab.id);
+      }
+
       router.push(homeTab.path);
     } else {
       setActiveTabId(undefined);
-      router.push(homePath);
-    }
-  }, [tabs, homePath, router]);
 
-  // 다른 탭 모두 닫기
-  const closeOtherTabs = useCallback((keepTabId: string) => {
-    setTabs((prevTabs) => {
-      const keepTab = prevTabs.find((tab) => tab.id === keepTabId);
-      const homeTabs = prevTabs.filter((tab) => !tab.closable);
-
-      if (keepTab) {
-        const newTabs = [...homeTabs];
-        if (!newTabs.find((tab) => tab.id === keepTabId)) {
-          newTabs.push(keepTab);
-        }
-        return newTabs;
+      // 로컬 스토리지에 저장
+      if (enableLocalStorage) {
+        saveTabsToStorage(localStorageKey, homeTabs, undefined);
       }
 
-      return homeTabs;
-    });
+      router.push(homePath);
+    }
+  }, [tabs, homePath, router, enableLocalStorage, localStorageKey]);
 
-    setActiveTabId(keepTabId);
-  }, []);
+  // 다른 탭 모두 닫기
+  const closeOtherTabs = useCallback(
+    (keepTabId: string) => {
+      setTabs((prevTabs) => {
+        const keepTab = prevTabs.find((tab) => tab.id === keepTabId);
+        const homeTabs = prevTabs.filter((tab) => !tab.closable);
+
+        let newTabs: TabItem[] = [];
+        if (keepTab) {
+          newTabs = [...homeTabs];
+          if (!newTabs.find((tab) => tab.id === keepTabId)) {
+            newTabs.push(keepTab);
+          }
+        } else {
+          newTabs = homeTabs;
+        }
+
+        // 로컬 스토리지에 저장
+        if (enableLocalStorage) {
+          saveTabsToStorage(localStorageKey, newTabs, keepTabId);
+        }
+
+        return newTabs;
+      });
+
+      setActiveTabId(keepTabId);
+    },
+    [enableLocalStorage, localStorageKey]
+  );
 
   // 현재 페이지를 탭으로 추가
   const addCurrentPageAsTab = useCallback(() => {
