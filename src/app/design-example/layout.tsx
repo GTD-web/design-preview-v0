@@ -559,7 +559,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
       >
         <div className="flex flex-col h-screen">
           {/* TabBar - 상단 고정, 사이드바보다 위에 배치 */}
-          <div className="flex-shrink-0 bg-background border-b border-border z-[60] relative">
+          <div className="flex-shrink-0 bg-background z-[60] relative">
             <TabBar
               tabs={tabs}
               activeTabId={activeTabId}

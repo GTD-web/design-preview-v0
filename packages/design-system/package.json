@@ -1,6 +1,6 @@
 {
   "name": "@lumir-company/design-system-v0",
-  "version": "0.0.51",
+  "version": "0.0.52",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -15,7 +15,8 @@
   },
   "style": "styles/tailwind.css",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "node copy-css.js",
     "release:patch": "npm run build && npm version patch && npm publish --access public",
     "release:minor": "npm run build && npm version minor && npm publish --access public",
     "release:major": "npm run build && npm version major && npm publish --access public"
