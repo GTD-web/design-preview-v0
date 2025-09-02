@@ -38,7 +38,7 @@ export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "
     }
     return (React.createElement(React.Fragment, null,
         React.createElement("aside", { className: `
-          h-screen bg-surface
+          h-full bg-surface
           overflow-x-hidden
           shadow-lg ${width} ${className}
         ` },
@@ -149,7 +149,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
         return null;
     }
     return (React.createElement("aside", { className: `
-        h-screen bg-surface
+        h-full bg-surface
         overflow-x-hidden
         shadow-lg ${width} ${className}
       ` },
@@ -311,7 +311,9 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden 
     }
     return (React.createElement(React.Fragment, null,
         isOpen && !isHidden && (React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose })),
-        React.createElement("div", { className: "fixed top-0 left-0 h-screen z-50", style: {
+        React.createElement("div", { className: "fixed left-0 z-50", style: {
+                top: "var(--tab-bar-height, 48px)", // TabBar 높이만큼 아래에 위치
+                height: "calc(100vh - var(--tab-bar-height, 48px))", // TabBar를 제외한 높이
                 transform: isHidden
                     ? "translateX(-100%)"
                     : isLargeScreen
@@ -330,7 +332,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden 
                     position: "absolute",
                     top: 0,
                     left: 0,
-                    height: "100vh",
+                    height: "100%",
                     willChange: "transform, opacity",
                 } },
                 React.createElement(SidebarCollapsed, { logoUrl: logoUrl, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: collapsedWidth, onToggleExpand: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover }))) : (React.createElement(motion.div, { key: "expanded", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
@@ -340,7 +342,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden 
                     position: "absolute",
                     top: 0,
                     left: 0,
-                    height: "100vh",
+                    height: "100%",
                     willChange: "transform, opacity",
                 } },
                 React.createElement(SidebarExpanded, { logoUrl: logoUrl, logoText: logoText, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: width, onToggleCollapse: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, hoverActiveIcon: hoverActiveIcon, hoverInActiveIcon: hoverInActiveIcon })))))));

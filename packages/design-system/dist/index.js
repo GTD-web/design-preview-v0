@@ -14,8 +14,11 @@ export { Sidebar, SidebarCollapsed, SidebarExpanded, } from "./components/Sideba
 export { DesignSettings } from "./components/DesignSettings";
 export { DayPicker } from "./components/DayPicker";
 export { DayRangePicker } from "./components/DayRangePicker";
+export { TabBar } from "./components/TabBar";
+export { PageSelector, } from "./components/PageSelector";
 // Hooks
 export { useDesignSettings, DesignSettingsProvider, } from "./hooks/useDesignSettings";
 export { useSidebarIcons } from "./hooks/useSidebarIcons";
+export { useTabBar, } from "./hooks/useTabBar";
 // Tokens
 export { getShadcnTokenPath, getAvailableTokenVersions, getTokenConfig, SHADCN_TOKEN_CONFIGS, } from "./styles/tokens";
