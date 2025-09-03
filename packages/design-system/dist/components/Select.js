@@ -7,7 +7,8 @@ export function Select({ selectSize = "md", variant = "default", options, value,
     const dropdownRef = useRef(null);
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            if (dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false);
             }
         };
@@ -25,8 +26,8 @@ export function Select({ selectSize = "md", variant = "default", options, value,
         lg: "px-4 py-3 text-base",
     };
     const variantClasses = {
-        default: "border-border bg-surface text-foreground",
-        outline: "border-border bg-transparent text-foreground",
+        default: "bg-surface text-foreground",
+        outline: "bg-transparent text-foreground",
     };
     const buttonClasses = [
         baseClasses,
@@ -54,8 +55,10 @@ export function Select({ selectSize = "md", variant = "default", options, value,
                     React.createElement("span", { className: "truncate" }, selectedOption?.label || "선택하세요"),
                     React.createElement("svg", { className: `w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                         React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" }))),
-                isOpen && (React.createElement("div", { className: "absolute z-50 w-full mt-1 bg-surface border border-border rounded-md shadow-lg" },
-                    React.createElement("div", { className: "py-1 max-h-60 overflow-auto" }, options.map((option) => (React.createElement("button", { key: option.value, type: "button", className: `w-full text-left px-3 py-2 text-sm hover:bg-primary/5 flex items-center justify-between ${selectedOption?.value === option.value ? "bg-primary/10 text-primary" : "text-foreground"}`, onClick: () => handleSelect(option) },
+                isOpen && (React.createElement("div", { className: "absolute z-50 w-full mt-1 bg-surface border rounded-md shadow-lg" },
+                    React.createElement("div", { className: "py-1 max-h-60 overflow-auto" }, options.map((option) => (React.createElement("button", { key: option.value, type: "button", className: `w-full text-left px-3 py-2 text-sm hover:bg-primary/5 flex items-center justify-between ${selectedOption?.value === option.value
+                            ? "bg-primary/10 text-primary"
+                            : "text-foreground"}`, onClick: () => handleSelect(option) },
                         React.createElement("span", null, option.label),
                         selectedOption?.value === option.value && React.createElement(CheckIcon, null)))))))))),
         !label && (React.createElement("div", { className: "relative" },
@@ -63,10 +66,12 @@ export function Select({ selectSize = "md", variant = "default", options, value,
                 React.createElement("span", { className: "truncate" }, selectedOption?.label || "선택하세요"),
                 React.createElement("svg", { className: `w-4 h-4 text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                     React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: "2", d: "M19 9l-7 7-7-7" }))),
-            isOpen && (React.createElement("div", { className: "absolute z-50 w-full mt-1 bg-surface border border-border rounded-md shadow-lg" },
-                React.createElement("div", { className: "py-1 max-h-60 overflow-auto" }, options.map((option) => (React.createElement("button", { key: option.value, type: "button", className: `w-full text-left px-3 py-2 text-sm hover:bg-primary/5 flex items-center justify-between ${selectedOption?.value === option.value ? "bg-primary/10 text-primary" : "text-foreground"}`, onClick: () => handleSelect(option) },
+            isOpen && (React.createElement("div", { className: "absolute z-50 w-full mt-1 bg-surface border rounded-md shadow-lg" },
+                React.createElement("div", { className: "py-1 max-h-60 overflow-auto" }, options.map((option) => (React.createElement("button", { key: option.value, type: "button", className: `w-full text-left px-3 py-2 text-sm hover:bg-primary/5 flex items-center justify-between ${selectedOption?.value === option.value
+                        ? "bg-primary/10 text-primary"
+                        : "text-foreground"}`, onClick: () => handleSelect(option) },
                     React.createElement("span", null, option.label),
                     selectedOption?.value === option.value && React.createElement(CheckIcon, null))))))))),
         error && React.createElement("p", { className: "mt-xs text-xs text-danger" }, error),
-        helperText && !error && React.createElement("p", { className: "mt-xs text-xs text-gray-600" }, helperText)));
+        helperText && !error && (React.createElement("p", { className: "mt-xs text-xs text-gray-600" }, helperText))));
 }
