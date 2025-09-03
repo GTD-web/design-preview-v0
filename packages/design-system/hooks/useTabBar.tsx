@@ -158,6 +158,9 @@ export function useTabBar({
     initialState.activeTabId
   );
   const [isRemovingTab, setIsRemovingTab] = useState(false);
+  const [recentlyRemovedTabId, setRecentlyRemovedTabId] = useState<
+    string | null
+  >(null);
 
   // 경로 정규화 (외부에서 제공되면 사용, 아니면 기본 정규화)
   const normalizePath = useCallback(
@@ -279,11 +282,13 @@ export function useTabBar({
     (tabId: string) => {
       // 탭 제거 중 상태 설정
       setIsRemovingTab(true);
+      setRecentlyRemovedTabId(tabId);
 
       setTabs((prevTabs) => {
         const tabIndex = prevTabs.findIndex((tab) => tab.id === tabId);
         if (tabIndex === -1) {
           setIsRemovingTab(false);
+          setRecentlyRemovedTabId(null);
           return prevTabs;
         }
 
@@ -307,8 +312,12 @@ export function useTabBar({
           setTimeout(() => {
             setActiveTabId(newActiveTab.id);
             router.push(newActiveTab.path);
-            // 네비게이션 완료 후 상태 리셋
-            setTimeout(() => setIsRemovingTab(false), 100);
+            // 네비게이션 완료 후 상태 리셋 (더 긴 딜레이로 확실하게 방지)
+            setTimeout(() => {
+              setIsRemovingTab(false);
+              // 최근 제거된 탭 ID는 더 오래 유지하여 재생성 방지
+              setTimeout(() => setRecentlyRemovedTabId(null), 500);
+            }, 200);
           }, 0);
         } else if (activeTabId === tabId && newTabs.length === 0) {
           // 모든 탭이 닫힌 경우
@@ -319,8 +328,12 @@ export function useTabBar({
           setTimeout(() => {
             setActiveTabId(undefined);
             router.push(homePath);
-            // 네비게이션 완료 후 상태 리셋
-            setTimeout(() => setIsRemovingTab(false), 100);
+            // 네비게이션 완료 후 상태 리셋 (더 긴 딜레이로 확실하게 방지)
+            setTimeout(() => {
+              setIsRemovingTab(false);
+              // 최근 제거된 탭 ID는 더 오래 유지하여 재생성 방지
+              setTimeout(() => setRecentlyRemovedTabId(null), 500);
+            }, 200);
           }, 0);
         } else {
           // 비활성 탭을 닫은 경우
@@ -328,6 +341,8 @@ export function useTabBar({
             saveTabsToStorage(localStorageKey, newTabs, activeTabId);
           }
           setIsRemovingTab(false);
+          // 비활성 탭 제거 시에도 일정 시간 재생성 방지
+          setTimeout(() => setRecentlyRemovedTabId(null), 500);
         }
 
         return newTabs;
@@ -486,6 +501,13 @@ export function useTabBar({
     }
 
     const tabId = generateTabId(normalizedPathname);
+
+    // 최근에 제거된 탭과 같은 ID라면 재생성하지 않음
+    if (recentlyRemovedTabId === tabId) {
+      console.log(`Tab ${tabId} was recently removed, skipping auto-creation`);
+      return;
+    }
+
     const existingTab = tabs.find((tab) => tab.id === tabId);
 
     if (existingTab) {
@@ -503,6 +525,7 @@ export function useTabBar({
     addTab,
     normalizePath,
     isRemovingTab,
+    recentlyRemovedTabId,
     defaultPageInfoResolver,
     homePath,
   ]);
