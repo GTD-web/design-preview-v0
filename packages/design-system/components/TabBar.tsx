@@ -442,16 +442,18 @@ export function TabBar({
 
   return (
     <div className={containerClass}>
-      {/* 홈 버튼 */}
+      {/* 홈 버튼 - 드래그 앤 드롭 영역 밖에 배치 */}
       {showHomeButton && (
-        <HomeButton
-          isActive={homeButtonActive}
-          onClick={onHomeClick}
-          homePath={homePath}
-        />
+        <div className={styles.homeButtonContainer}>
+          <HomeButton
+            isActive={homeButtonActive}
+            onClick={onHomeClick}
+            homePath={homePath}
+          />
+        </div>
       )}
 
-      {/* 탭 컨테이너 */}
+      {/* 탭 컨테이너 - 드래그 앤 드롭 영역 */}
       <div className={styles.tabsContainer}>
         <div className={styles.tabsInnerContainer}>
           <DndContext
