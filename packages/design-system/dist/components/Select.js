@@ -48,7 +48,7 @@ export function Select({ selectSize = "md", variant = "default", options, value,
     const CheckIcon = () => (React.createElement("svg", { className: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
         React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M5 13l4 4L19 7" })));
     return (React.createElement("div", { className: `${width ? "" : "w-full"}`, style: { width: width }, ref: dropdownRef },
-        label && (React.createElement(HStack, { justify: "between", className: "mb-sm" },
+        label && (React.createElement(HStack, { justify: "between" },
             React.createElement("label", { className: "text-sm font-medium text-foreground whitespace-nowrap" }, label),
             React.createElement("div", { className: "relative", style: { width: "160px" } },
                 React.createElement("button", { type: "button", className: buttonClasses, onClick: () => setIsOpen(!isOpen), ...props },
