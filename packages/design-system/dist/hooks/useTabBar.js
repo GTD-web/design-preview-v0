@@ -76,6 +76,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
     const [tabs, setTabs] = useState(initialState.tabs);
     const [activeTabId, setActiveTabId] = useState(initialState.activeTabId);
     const [isRemovingTab, setIsRemovingTab] = useState(false);
+    const [recentlyRemovedTabId, setRecentlyRemovedTabId] = useState(null);
     // 경로 정규화 (외부에서 제공되면 사용, 아니면 기본 정규화)
     const normalizePath = useCallback((path) => {
         if (pathNormalizer) {
@@ -164,10 +165,12 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
     const removeTab = useCallback((tabId) => {
         // 탭 제거 중 상태 설정
         setIsRemovingTab(true);
+        setRecentlyRemovedTabId(tabId);
         setTabs((prevTabs) => {
             const tabIndex = prevTabs.findIndex((tab) => tab.id === tabId);
             if (tabIndex === -1) {
                 setIsRemovingTab(false);
+                setRecentlyRemovedTabId(null);
                 return prevTabs;
             }
             const newTabs = prevTabs.filter((tab) => tab.id !== tabId);
@@ -184,8 +187,12 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                 setTimeout(() => {
                     setActiveTabId(newActiveTab.id);
                     router.push(newActiveTab.path);
-                    // 네비게이션 완료 후 상태 리셋
-                    setTimeout(() => setIsRemovingTab(false), 100);
+                    // 네비게이션 완료 후 상태 리셋 (더 긴 딜레이로 확실하게 방지)
+                    setTimeout(() => {
+                        setIsRemovingTab(false);
+                        // 최근 제거된 탭 ID는 더 오래 유지하여 재생성 방지
+                        setTimeout(() => setRecentlyRemovedTabId(null), 500);
+                    }, 200);
                 }, 0);
             }
             else if (activeTabId === tabId && newTabs.length === 0) {
@@ -196,8 +203,12 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                 setTimeout(() => {
                     setActiveTabId(undefined);
                     router.push(homePath);
-                    // 네비게이션 완료 후 상태 리셋
-                    setTimeout(() => setIsRemovingTab(false), 100);
+                    // 네비게이션 완료 후 상태 리셋 (더 긴 딜레이로 확실하게 방지)
+                    setTimeout(() => {
+                        setIsRemovingTab(false);
+                        // 최근 제거된 탭 ID는 더 오래 유지하여 재생성 방지
+                        setTimeout(() => setRecentlyRemovedTabId(null), 500);
+                    }, 200);
                 }, 0);
             }
             else {
@@ -206,6 +217,8 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                     saveTabsToStorage(localStorageKey, newTabs, activeTabId);
                 }
                 setIsRemovingTab(false);
+                // 비활성 탭 제거 시에도 일정 시간 재생성 방지
+                setTimeout(() => setRecentlyRemovedTabId(null), 500);
             }
             return newTabs;
         });
@@ -320,6 +333,11 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             return;
         }
         const tabId = generateTabId(normalizedPathname);
+        // 최근에 제거된 탭과 같은 ID라면 재생성하지 않음
+        if (recentlyRemovedTabId === tabId) {
+            console.log(`Tab ${tabId} was recently removed, skipping auto-creation`);
+            return;
+        }
         const existingTab = tabs.find((tab) => tab.id === tabId);
         if (existingTab) {
             setActiveTabId(tabId);
@@ -337,6 +355,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         addTab,
         normalizePath,
         isRemovingTab,
+        recentlyRemovedTabId,
         defaultPageInfoResolver,
         homePath,
     ]);
