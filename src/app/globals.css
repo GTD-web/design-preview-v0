@@ -2,7 +2,7 @@
 
 /* TabBar 관련 스타일 */
 :root {
-  --tab-bar-height: 48px;
+  --tab-bar-height: 40px;
 }
 
 /* TabBar 스크롤바 숨김 스타일 */

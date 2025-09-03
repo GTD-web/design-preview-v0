@@ -974,8 +974,8 @@ export function Sidebar({
       <div
         className="fixed left-0 z-50"
         style={{
-          top: "var(--tab-bar-height, 48px)", // TabBar 높이만큼 아래에 위치
-          height: "calc(100vh - var(--tab-bar-height, 48px))", // TabBar를 제외한 높이
+          top: "var(--tab-bar-height, 40px)", // TabBar 높이만큼 아래에 위치
+          height: "calc(100vh - var(--tab-bar-height, 40px))", // TabBar를 제외한 높이
           transform: isHidden
             ? "translateX(-100%)"
             : isLargeScreen
