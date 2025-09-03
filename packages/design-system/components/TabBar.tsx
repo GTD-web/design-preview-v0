@@ -93,6 +93,8 @@ interface TabProps {
 
 function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
   const [isHovering, setIsHovering] = useState(false);
+  const [isDragStarted, setIsDragStarted] = useState(false);
+  const mouseDownTimeRef = React.useRef<number>(0);
 
   const {
     attributes,
@@ -111,10 +113,59 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
     [tab.id, onTabClose]
   );
 
-  const handleTabClick = useCallback(() => {
-    // 일반적인 탭 클릭은 항상 즉시 처리 (드래그 상태 무시)
-    onTabClick(tab);
-  }, [tab, onTabClick]);
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    // 왼쪽 마우스 버튼이 아닌 경우 무시
+    if (e.button !== 0) return;
+
+    mouseDownTimeRef.current = Date.now();
+  }, []);
+
+  const handleMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      // 왼쪽 마우스 버튼이 아닌 경우 무시
+      if (e.button !== 0) return;
+
+      const mouseUpTime = Date.now();
+      const clickDuration = mouseUpTime - mouseDownTimeRef.current;
+
+      // 빠른 클릭 (200ms 이하)이고 드래그 상태가 아닌 경우에만 클릭 처리
+      if (clickDuration < 200 && !isDragging && !isDragStarted) {
+        console.log("Quick click detected, processing...");
+        onTabClick(tab);
+      } else {
+        console.log(
+          "Click ignored - duration:",
+          clickDuration,
+          "isDragging:",
+          isDragging,
+          "isDragStarted:",
+          isDragStarted
+        );
+      }
+    },
+    [tab, onTabClick, isDragging, isDragStarted]
+  );
+
+  // 드래그 이벤트 구독
+  React.useEffect(() => {
+    const handleDragStart = (event: any) => {
+      if (event.detail?.activeId === tab.id) {
+        setIsDragStarted(true);
+      }
+    };
+
+    const handleDragEnd = () => {
+      setIsDragStarted(false);
+    };
+
+    window.addEventListener("tab-drag-start", handleDragStart);
+    window.addEventListener("tab-drag-end", handleDragEnd);
+
+    return () => {
+      window.removeEventListener("tab-drag-start", handleDragStart);
+      window.removeEventListener("tab-drag-end", handleDragEnd);
+    };
+  }, [tab.id]);
 
   // CSS 모듈 클래스 조합
   const tabButtonClass = [
@@ -149,7 +200,8 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
     <div ref={setNodeRef} style={style} {...attributes}>
       <button
         className={tabButtonClass}
-        onClick={handleTabClick}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         title={tab.title}
@@ -270,9 +322,9 @@ export function TabBar({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 12, // 12px 이상 움직여야 드래그 시작
-        tolerance: 5, // 더 엄격한 tolerance
-        delay: 100, // 100ms 딜레이로 의도적인 드래그만 감지
+        distance: 20, // 20px 이상 움직여야 드래그 시작 (더 엄격하게)
+        tolerance: 3, // 더 엄격한 tolerance
+        delay: 150, // 150ms 딜레이로 의도적인 드래그만 감지 (더 길게)
       },
     }),
     useSensor(KeyboardSensor, {
@@ -281,7 +333,9 @@ export function TabBar({
   );
 
   // 드래그 시작 핸들러 - 탭 영역에서만 Y축 이동 차단
-  const handleDragStart = useCallback(() => {
+  const handleDragStart = useCallback((event: any) => {
+    console.log("Drag started for tab:", event.active.id);
+
     // 현재 스크롤 위치 저장
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
@@ -293,6 +347,13 @@ export function TabBar({
 
     // 저장된 스크롤 위치
     (window as any).__savedScrollTop = scrollTop;
+
+    // 모든 탭에게 드래그 시작 알림 (브로드캐스트)
+    window.dispatchEvent(
+      new CustomEvent("tab-drag-start", {
+        detail: { activeId: event.active.id },
+      })
+    );
   }, []);
 
   // 드래그 종료 핸들러
@@ -307,6 +368,11 @@ export function TabBar({
 
       // body 스타일 복원
       document.body.style.userSelect = "";
+
+      // 모든 탭에게 드래그 종료 알림 (브로드캐스트)
+      window.dispatchEvent(
+        new CustomEvent("tab-drag-end", { detail: { activeId: active.id } })
+      );
 
       if (over && active.id !== over.id) {
         console.log(`Reordering: ${active.id} -> ${over.id}`);
@@ -333,6 +399,11 @@ export function TabBar({
 
     // body 스타일 복원
     document.body.style.userSelect = "";
+
+    // 모든 탭에게 드래그 취소 알림 (브로드캐스트)
+    window.dispatchEvent(
+      new CustomEvent("tab-drag-end", { detail: { activeId: null } })
+    );
   }, []);
 
   const handleTabClick = useCallback(
