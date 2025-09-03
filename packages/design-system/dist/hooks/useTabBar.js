@@ -230,7 +230,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             return;
         }
         setTabs((prevTabs) => {
-            console.log("Current tabs:", prevTabs.map(t => ({ id: t.id, title: t.title })));
+            console.log("Current tabs:", prevTabs.map((t) => ({ id: t.id, title: t.title })));
             const activeIndex = prevTabs.findIndex((tab) => tab.id === activeId);
             const overIndex = prevTabs.findIndex((tab) => tab.id === overId);
             console.log("Indices:", { activeIndex, overIndex });
@@ -239,7 +239,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                 return prevTabs;
             }
             const newTabs = arrayMove(prevTabs, activeIndex, overIndex);
-            console.log("New tabs after reorder:", newTabs.map(t => ({ id: t.id, title: t.title })));
+            console.log("New tabs after reorder:", newTabs.map((t) => ({ id: t.id, title: t.title })));
             // 로컬 스토리지에 저장
             if (enableLocalStorage) {
                 saveTabsToStorage(localStorageKey, newTabs, activeTabId);
@@ -314,13 +314,18 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         if (isRemovingTab)
             return;
         const normalizedPathname = normalizePath(pathname);
+        // 홈 경로인 경우 모든 탭 비활성화
+        if (normalizedPathname === homePath) {
+            setActiveTabId(undefined);
+            return;
+        }
         const tabId = generateTabId(normalizedPathname);
         const existingTab = tabs.find((tab) => tab.id === tabId);
         if (existingTab) {
             setActiveTabId(tabId);
         }
-        else {
-            // 새로운 페이지인 경우 자동으로 탭 추가
+        else if (defaultPageInfoResolver) {
+            // defaultPageInfoResolver가 있을 때만 자동으로 탭 추가
             const pageInfo = getPageInfo(normalizedPathname);
             addTab(pageInfo);
         }
@@ -332,6 +337,8 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         addTab,
         normalizePath,
         isRemovingTab,
+        defaultPageInfoResolver,
+        homePath,
     ]);
     return {
         tabs,

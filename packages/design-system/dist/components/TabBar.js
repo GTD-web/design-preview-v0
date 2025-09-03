@@ -109,7 +109,13 @@ function HomeButton({ isActive = false, onClick, homePath = "홈", }) {
     ]
         .filter(Boolean)
         .join(" ");
-    return (React.createElement(motion.button, { className: homeButtonClass, onClick: onClick, title: `${homePath}으로 이동`, whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 } },
+    return (React.createElement(motion.button, { className: homeButtonClass, onClick: onClick, title: `${homePath}으로 이동`, whileHover: { scale: isActive ? 1.05 : 1.05 }, whileTap: { scale: 0.95 }, style: {
+            position: "relative",
+            zIndex: 2,
+            userSelect: "none",
+            touchAction: "manipulation",
+            pointerEvents: "auto",
+        }, draggable: false },
         React.createElement("svg", { className: styles.homeButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
             React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" }))));
 }
@@ -199,8 +205,7 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         .filter(Boolean)
         .join(" ");
     return (React.createElement("div", { className: containerClass },
-        showHomeButton && (React.createElement("div", { className: styles.homeButtonContainer },
-            React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, homePath: homePath }))),
+        showHomeButton && (React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, homePath: homePath })),
         React.createElement("div", { className: styles.tabsContainer },
             React.createElement("div", { className: styles.tabsInnerContainer },
                 React.createElement(DndContext, { sensors: sensors, collisionDetection: closestCenter, onDragStart: handleDragStart, onDragEnd: handleDragEnd, onDragCancel: handleDragCancel, modifiers: [restrictToHorizontalAxisStrict, restrictToWindowEdges] },
