@@ -279,6 +279,14 @@ function HomeButton({
       title={`${homePath}으로 이동`}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      style={{
+        position: "relative",
+        zIndex: 2,
+        userSelect: "none",
+        touchAction: "manipulation",
+        pointerEvents: "auto",
+      }}
+      draggable={false}
     >
       <svg
         className={styles.homeButtonIcon}
@@ -442,9 +450,18 @@ export function TabBar({
 
   return (
     <div className={containerClass}>
-      {/* 홈 버튼 - 드래그 앤 드롭 영역 밖에 배치 */}
+      {/* 홈 버튼 - 완전히 별도 영역으로 분리, 드래그 앤 드롭과 무관 */}
       {showHomeButton && (
-        <div className={styles.homeButtonContainer}>
+        <div
+          className={styles.homeButtonContainer}
+          style={{
+            position: "relative",
+            zIndex: 1,
+            pointerEvents: "auto",
+            userSelect: "none",
+            touchAction: "manipulation",
+          }}
+        >
           <HomeButton
             isActive={homeButtonActive}
             onClick={onHomeClick}
