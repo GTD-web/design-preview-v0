@@ -116,7 +116,7 @@ export function Select({
       ref={dropdownRef}
     >
       {label && (
-        <HStack justify="between" className="mb-sm">
+        <HStack justify="between">
           <label className="text-sm font-medium text-foreground whitespace-nowrap">
             {label}
           </label>
