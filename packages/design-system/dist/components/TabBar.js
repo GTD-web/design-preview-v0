@@ -199,7 +199,8 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         .filter(Boolean)
         .join(" ");
     return (React.createElement("div", { className: containerClass },
-        showHomeButton && (React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, homePath: homePath })),
+        showHomeButton && (React.createElement("div", { className: styles.homeButtonContainer },
+            React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, homePath: homePath }))),
         React.createElement("div", { className: styles.tabsContainer },
             React.createElement("div", { className: styles.tabsInnerContainer },
                 React.createElement(DndContext, { sensors: sensors, collisionDetection: closestCenter, onDragStart: handleDragStart, onDragEnd: handleDragEnd, onDragCancel: handleDragCancel, modifiers: [restrictToHorizontalAxisStrict, restrictToWindowEdges] },
