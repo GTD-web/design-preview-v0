@@ -21,9 +21,9 @@ const sizeClasses = {
 };
 
 const variantClasses = {
-  default: "border border-border bg-surface focus:border-primary",
+  default: "border bg-surface focus:border-primary",
   filled: "border-0 bg-gray-100 focus:bg-white",
-  outlined: "border-2 border-border bg-transparent focus:border-primary",
+  outlined: "border-2 bg-transparent focus:border-primary",
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
