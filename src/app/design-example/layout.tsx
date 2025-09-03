@@ -3,7 +3,7 @@
 import localFont from "next/font/local";
 import React, { useState, createContext, useContext, useCallback } from "react";
 import "../globals.css";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ClientOnly from "@/components/ClientOnly";
 import Loading from "../loading";
 import { TabBar } from "@/packages/design-system/components/TabBar";
@@ -422,6 +422,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   const [sidebarHidden, setSidebarHidden] = useState(false); // 사이드바 완전 숨김 상태
   const [isHoverEnabled, setIsHoverEnabled] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   // TabBar용 경로 정규화 함수
   const pathNormalizer = useCallback((path: string): string => {
@@ -479,23 +480,41 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   // TabBar 상태 관리
   const allPagesMapping = createAllPagesMapping();
   const availablePages = createAvailablePages();
-  const { tabs, activeTabId, activateTab, removeTab, createNewTab, addTab, reorderTabs } =
-    useTabBar({
-      pageMapping: allPagesMapping,
-      homePath: "/design-example",
-      maxTabs: 8,
-      pathNormalizer,
-      defaultPageInfoResolver,
-      initialTabs: [
-        {
-          id: "tab-design-example",
-          title: "디자인토큰",
-          path: "/design-example",
-          icon: sidebarMenuGroups[0].items[0].icon,
-          closable: false,
-        },
-      ],
-    });
+  const {
+    tabs,
+    activeTabId,
+    activateTab,
+    removeTab,
+    createNewTab,
+    addTab,
+    reorderTabs,
+  } = useTabBar({
+    pageMapping: allPagesMapping,
+    homePath: "/design-example", // 홈 경로 설정 (자동 생성은 비활성화됨)
+    maxTabs: 8,
+    pathNormalizer,
+    defaultPageInfoResolver, // 홈 경로 제외하고 자동 탭 생성 활성화
+    initialTabs: [], // 초기 탭 없음
+  });
+
+  // 홈 버튼 활성 상태 관리 (초기값을 현재 경로에 따라 설정)
+  const [isHomeButtonActive, setIsHomeButtonActive] = useState(() => {
+    const normalizedPathname = pathname.replace(/\/$/, "") || "/";
+    return normalizedPathname === "/design-example";
+  });
+
+  // 현재 경로가 홈 경로인지 확인하고 홈 버튼 상태 업데이트
+  React.useEffect(() => {
+    // 경로 정규화 - 끝의 슬래시 제거
+    const normalizedPathname = pathname.replace(/\/$/, "") || "/";
+    const normalizedHomePath = "/design-example";
+
+    if (normalizedPathname === normalizedHomePath) {
+      setIsHomeButtonActive(true);
+    } else {
+      setIsHomeButtonActive(false);
+    }
+  }, [pathname]);
 
   // 관리자/사용자 화면 상태 관리
   const [isAdminMode, setIsAdminMode] = useState(false);
@@ -550,21 +569,10 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
 
   // 홈 버튼 클릭 핸들러
   const handleHomeClick = useCallback(() => {
-    // "/design-example" 탭을 활성화
-    const homeTabId = tabs.find((tab) => tab.path === "/design-example")?.id;
-    if (homeTabId) {
-      activateTab(homeTabId);
-    } else {
-      // 홈 탭이 없으면 새로 추가
-      const homePageInfo = allPagesMapping["/design-example"];
-      if (homePageInfo) {
-        addTab(homePageInfo);
-      }
-    }
-  }, [tabs, activateTab, addTab, allPagesMapping]);
+    router.push("/design-example");
+  }, [router]);
 
-  // 홈 버튼 활성 상태 확인
-  const isHomeActive = pathname === "/design-example";
+  // 홈 버튼 활성 상태는 별도 상태로 관리 (pathname과 무관)
 
   return (
     <ClientOnly fallback={<Loading />}>
@@ -581,17 +589,22 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
             <TabBar
               tabs={tabs}
               activeTabId={activeTabId}
-              onTabClick={(tab) => activateTab(tab.id)}
+              onTabClick={(tab) => {
+                activateTab(tab.id);
+              }}
               onTabClose={(tabId) => removeTab(tabId)}
               onTabReorder={reorderTabs}
               onNewTab={createNewTab}
-              onPageSelect={(pageInfo) => addTab(pageInfo)}
+              onPageSelect={(pageInfo) => {
+                addTab(pageInfo);
+              }}
               availablePages={availablePages}
               showNewTabButton={true}
               showHomeButton={true}
               onHomeClick={handleHomeClick}
-              homeButtonActive={isHomeActive}
+              homeButtonActive={isHomeButtonActive}
               homePath="디자인토큰"
+              maxTabs={8}
             />
           </div>
 

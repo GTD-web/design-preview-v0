@@ -124,13 +124,20 @@ body[data-dragging] .tabsInnerContainer {
 }
 
 .homeButton {
-  @apply flex-shrink-0 w-8 h-8 mx-1 text-gray-600 hover:text-gray-900 
-         hover:bg-gray-200 rounded-md transition-colors duration-200
-         flex items-center justify-center;
+  @apply flex-shrink-0 h-8 px-3 text-gray-600 hover:text-gray-900 
+         hover:bg-gray-200 transition-all duration-150 ease-out
+         flex items-center justify-center border-b-2 border-r-2 border-transparent;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  margin: 0;
 }
 
 .homeButtonActive {
-  @apply bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700;
+  /* 탭과 동일한 활성 상태 스타일 */
+  @apply bg-white border-transparent text-gray-900 relative z-10
+         hover:bg-gray-50 !important;
 }
 
 .homeButtonIcon {

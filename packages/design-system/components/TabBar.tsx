@@ -277,7 +277,7 @@ function HomeButton({
       className={homeButtonClass}
       onClick={onClick}
       title={`${homePath}으로 이동`}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: isActive ? 1.05 : 1.05 }}
       whileTap={{ scale: 0.95 }}
       style={{
         position: "relative",
@@ -450,24 +450,13 @@ export function TabBar({
 
   return (
     <div className={containerClass}>
-      {/* 홈 버튼 - 완전히 별도 영역으로 분리, 드래그 앤 드롭과 무관 */}
+      {/* 홈 버튼 - TabBar와 붙어있는 느낌 */}
       {showHomeButton && (
-        <div
-          className={styles.homeButtonContainer}
-          style={{
-            position: "relative",
-            zIndex: 1,
-            pointerEvents: "auto",
-            userSelect: "none",
-            touchAction: "manipulation",
-          }}
-        >
-          <HomeButton
-            isActive={homeButtonActive}
-            onClick={onHomeClick}
-            homePath={homePath}
-          />
-        </div>
+        <HomeButton
+          isActive={homeButtonActive}
+          onClick={onHomeClick}
+          homePath={homePath}
+        />
       )}
 
       {/* 탭 컨테이너 - 드래그 앤 드롭 영역 */}
