@@ -13,6 +13,8 @@ export interface PageInfo {
   title: string;
   icon?: React.ReactNode;
   closable?: boolean;
+  /** 중복 탭 허용 여부 (기본값: false) */
+  allowDuplicate?: boolean;
 }
 
 /**
@@ -178,23 +180,32 @@ export function useTabBar({
     [pathNormalizer]
   );
 
-  // 경로에서 탭 ID 생성
+  // 경로에서 탭 ID 생성 (중복 허용 시 고유 ID 생성)
   const generateTabId = useCallback(
-    (path: string): string => {
+    (path: string, allowDuplicate: boolean = false): string => {
       const normalized = normalizePath(path);
-      return `tab-${
+      const baseId = `tab-${
         normalized.replace(/\//g, "-").replace(/^-/, "") || "home"
       }`;
+
+      if (!allowDuplicate) {
+        return baseId;
+      }
+
+      // 중복 허용 시 고유 ID 생성
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substr(2, 5);
+      return `${baseId}-${timestamp}-${random}`;
     },
     [normalizePath]
   );
 
-  // 페이지 정보 가져오기
+  // 페이지 정보 가져오기 - React 컴포넌트 때문에 pageMapping을 의존성에서 제외
   const getPageInfo = useCallback(
     (path: string): PageInfo => {
       const normalizedPath = normalizePath(path);
 
-      // 1. 매핑에서 찾기
+      // 1. 매핑에서 찾기 (매번 최신 pageMapping 참조)
       if (pageMapping[normalizedPath]) {
         return { ...pageMapping[normalizedPath], path: normalizedPath };
       }
@@ -213,31 +224,46 @@ export function useTabBar({
 
       return defaultPageInfo;
     },
-    [pageMapping, homePath, normalizePath, defaultPageInfoResolver]
+    [homePath, normalizePath, defaultPageInfoResolver]
   );
 
   // 탭 추가
   const addTab = useCallback(
     (pageInfo: PageInfo) => {
-      const tabId = generateTabId(pageInfo.path);
+      const tabId = generateTabId(pageInfo.path, pageInfo.allowDuplicate);
 
       setTabs((prevTabs) => {
-        // 이미 존재하는 탭인지 확인
-        const existingTab = prevTabs.find((tab) => tab.id === tabId);
-        if (existingTab) {
-          return prevTabs;
+        // 중복 허용이 아닌 경우에만 기존 탭 확인
+        if (!pageInfo.allowDuplicate) {
+          const existingTab = prevTabs.find(
+            (tab) => tab.path === pageInfo.path
+          );
+          if (existingTab) {
+            return prevTabs;
+          }
         }
 
         // 최대 탭 개수 체크
         if (prevTabs.length >= maxTabs) {
           // 가장 오래된 탭을 제거 (첫 번째 탭 제외 - 보통 홈탭)
           const newTabs = prevTabs.slice(1, -1);
+          // 새 탭 제목 생성 (중복 탭인 경우 번호 추가)
+          let tabTitle = pageInfo.title;
+          if (pageInfo.allowDuplicate) {
+            const samePathTabs = prevTabs.filter(
+              (tab) => tab.path === pageInfo.path
+            );
+            if (samePathTabs.length > 0) {
+              tabTitle = `${pageInfo.title} (${samePathTabs.length + 1})`;
+            }
+          }
+
           const updatedTabs = [
             prevTabs[0], // 홈 탭 유지
             ...newTabs,
             {
               id: tabId,
-              title: pageInfo.title,
+              title: tabTitle,
               path: pageInfo.path,
               icon: pageInfo.icon,
               closable: pageInfo.closable,
@@ -252,12 +278,22 @@ export function useTabBar({
           return updatedTabs;
         }
 
-        // 새 탭 추가
+        // 새 탭 추가 (중복 탭인 경우 제목에 번호 추가)
+        let tabTitle = pageInfo.title;
+        if (pageInfo.allowDuplicate) {
+          const samePathTabs = prevTabs.filter(
+            (tab) => tab.path === pageInfo.path
+          );
+          if (samePathTabs.length > 0) {
+            tabTitle = `${pageInfo.title} (${samePathTabs.length + 1})`;
+          }
+        }
+
         const updatedTabs = [
           ...prevTabs,
           {
             id: tabId,
-            title: pageInfo.title,
+            title: tabTitle,
             path: pageInfo.path,
             icon: pageInfo.icon,
             closable: pageInfo.closable,
@@ -354,8 +390,11 @@ export function useTabBar({
   // 탭 활성화
   const activateTab = useCallback(
     (tabId: string) => {
+      console.log("activateTab called with tabId:", tabId);
       const tab = tabs.find((t) => t.id === tabId);
+      console.log("Found tab:", tab);
       if (tab) {
+        console.log("Activating tab and navigating to:", tab.path);
         setActiveTabId(tabId);
 
         // 로컬 스토리지에 저장
@@ -364,6 +403,8 @@ export function useTabBar({
         }
 
         router.push(tab.path);
+      } else {
+        console.log("Tab not found for tabId:", tabId);
       }
     },
     [tabs, router, enableLocalStorage, localStorageKey]
@@ -487,9 +528,9 @@ export function useTabBar({
     addTab(pageInfo);
   }, [pathname, getPageInfo, addTab, normalizePath]);
 
-  // 경로 변경 시 탭 상태 업데이트
+  // 경로 변경 시 탭 상태 업데이트 - 기존 탭 활성화만 처리, 자동 생성 없음
   useEffect(() => {
-    // 탭 제거 중이면 자동 탭 추가 방지
+    // 탭 제거 중이면 처리 방지
     if (isRemovingTab) return;
 
     const normalizedPathname = normalizePath(pathname);
@@ -500,35 +541,23 @@ export function useTabBar({
       return;
     }
 
-    const tabId = generateTabId(normalizedPathname);
+    // 현재 경로와 일치하는 기존 탭이 있는지 확인하고 활성화만 처리
+    setTabs((currentTabs) => {
+      // 경로가 일치하는 기존 탭 찾기 (중복 허용 페이지의 경우 첫 번째 탭)
+      const existingTab = currentTabs.find(
+        (tab) => tab.path === normalizedPathname
+      );
 
-    // 최근에 제거된 탭과 같은 ID라면 재생성하지 않음
-    if (recentlyRemovedTabId === tabId) {
-      console.log(`Tab ${tabId} was recently removed, skipping auto-creation`);
-      return;
-    }
+      if (existingTab) {
+        setActiveTabId(existingTab.id);
+      } else {
+        // 기존 탭이 없으면 활성 탭 ID를 undefined로 설정 (탭바에서 아무것도 활성화되지 않음)
+        setActiveTabId(undefined);
+      }
 
-    const existingTab = tabs.find((tab) => tab.id === tabId);
-
-    if (existingTab) {
-      setActiveTabId(tabId);
-    } else if (defaultPageInfoResolver) {
-      // defaultPageInfoResolver가 있을 때만 자동으로 탭 추가
-      const pageInfo = getPageInfo(normalizedPathname);
-      addTab(pageInfo);
-    }
-  }, [
-    pathname,
-    tabs,
-    generateTabId,
-    getPageInfo,
-    addTab,
-    normalizePath,
-    isRemovingTab,
-    recentlyRemovedTabId,
-    defaultPageInfoResolver,
-    homePath,
-  ]);
+      return currentTabs; // 탭 목록은 변경하지 않음
+    });
+  }, [pathname, isRemovingTab, homePath, normalizePath]);
 
   return {
     tabs,

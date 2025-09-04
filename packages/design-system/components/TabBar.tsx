@@ -128,13 +128,13 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
       const mouseUpTime = Date.now();
       const clickDuration = mouseUpTime - mouseDownTimeRef.current;
 
-      // 빠른 클릭 (200ms 이하)이고 드래그 상태가 아닌 경우에만 클릭 처리
-      if (clickDuration < 200 && !isDragging && !isDragStarted) {
-        console.log("Quick click detected, processing...");
+      // 드래그가 진행 중이 아니고, 클릭 시간이 합리적인 범위 내인 경우 클릭 처리
+      if (!isDragging && clickDuration < 500) {
+        console.log("MouseUp click detected, processing tab:", tab.title);
         onTabClick(tab);
       } else {
         console.log(
-          "Click ignored - duration:",
+          "MouseUp click ignored - duration:",
           clickDuration,
           "isDragging:",
           isDragging,
@@ -155,7 +155,10 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
     };
 
     const handleDragEnd = () => {
-      setIsDragStarted(false);
+      // 드래그 종료 시 상태를 즉시 리셋
+      setTimeout(() => {
+        setIsDragStarted(false);
+      }, 50); // 짧은 딜레이로 확실한 리셋
     };
 
     window.addEventListener("tab-drag-start", handleDragStart);
@@ -202,6 +205,20 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
         className={tabButtonClass}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onClick={() => {
+          // 백업 클릭 처리 - 드래그가 아닌 경우에만
+          if (!isDragging && !isDragStarted) {
+            console.log("Fallback click handler triggered for tab:", tab.title);
+            onTabClick(tab);
+          } else {
+            console.log(
+              "Fallback click ignored - isDragging:",
+              isDragging,
+              "isDragStarted:",
+              isDragStarted
+            );
+          }
+        }}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         title={tab.title}
@@ -416,6 +433,7 @@ export function TabBar({
 
   const handleTabClick = useCallback(
     (tab: TabItem) => {
+      console.log("TabBar handleTabClick called with tab:", tab);
       onTabClick?.(tab);
     },
     [onTabClick]

@@ -79,7 +79,21 @@ function PageItem({ page, onPageClick }: PageItemProps) {
 
       {/* 페이지 정보 */}
       <div className={styles.pageContent}>
-        <p className={titleClass}>{page.title}</p>
+        <p className={titleClass}>
+          {page.title}
+          {page.allowDuplicate && (
+            <span
+              style={{
+                marginLeft: "6px",
+                fontSize: "0.75em",
+                opacity: 0.7,
+                fontWeight: "normal",
+              }}
+            >
+              (중복 가능)
+            </span>
+          )}
+        </p>
         <p className={styles.pagePath}>{page.path}</p>
       </div>
 
@@ -114,9 +128,9 @@ export function PageSelector({
   onClose,
   children,
 }: PageSelectorProps) {
-  // 이미 열린 탭을 제외한 페이지들만 필터링
+  // 중복 허용 페이지는 항상 표시, 아닌 경우 이미 열린 탭 제외
   const selectablePages = availablePages.filter(
-    (page) => !openTabPaths.includes(page.path)
+    (page) => page.allowDuplicate || !openTabPaths.includes(page.path)
   );
 
   const handlePageClick = useCallback(
@@ -178,6 +192,8 @@ export function PageSelector({
                 </div>
                 <p className={styles.headerDescription}>
                   {selectablePages.length}개의 페이지를 추가할 수 있습니다
+                  {availablePages.some((page) => page.allowDuplicate) &&
+                    " (일부 페이지는 중복 열기 가능)"}
                 </p>
               </div>
 
@@ -215,6 +231,8 @@ export function PageSelector({
                     </p>
                     <p className={styles.emptyStateDescription}>
                       모든 페이지가 이미 탭으로 열려있습니다
+                      {availablePages.some((page) => page.allowDuplicate) &&
+                        " (중복 열기 가능한 페이지는 없습니다)"}
                     </p>
                   </div>
                 )}

@@ -7,6 +7,8 @@ export interface PageInfo {
     title: string;
     icon?: React.ReactNode;
     closable?: boolean;
+    /** 중복 탭 허용 여부 (기본값: false) */
+    allowDuplicate?: boolean;
 }
 /**
  * useTabBar Hook Props

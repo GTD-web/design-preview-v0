@@ -68,6 +68,8 @@ export interface SidebarBaseProps {
   hoverActiveIcon?: React.ReactNode;
   /** 호버 모드 비활성화 상태 아이콘 */
   hoverInActiveIcon?: React.ReactNode;
+  /** 메뉴 클릭 시 탭 추가 콜백 */
+  onMenuClick?: (path: string, title: string, icon?: React.ReactNode) => void;
 }
 
 /**
@@ -160,6 +162,8 @@ interface SidebarProps {
   hoverActiveIcon?: React.ReactNode;
   /** 호버 모드 비활성화 상태 아이콘 */
   hoverInActiveIcon?: React.ReactNode;
+  /** 메뉴 클릭 시 탭 추가 콜백 */
+  onMenuClick?: (path: string, title: string, icon?: React.ReactNode) => void;
 }
 
 /**
@@ -179,6 +183,7 @@ export function SidebarCollapsed({
   showModeToggle = true,
   showNotification = true,
   showSettings = true,
+  onMenuClick,
 }: SidebarCollapsedProps) {
   const router = useRouter();
   const { isLoaded } = useSidebarIcons();
@@ -253,7 +258,13 @@ export function SidebarCollapsed({
                     <div key={item.path} className="relative">
                       <button
                         type="button"
-                        onClick={() => router.push(item.path)}
+                        onClick={() => {
+                          if (onMenuClick) {
+                            onMenuClick(item.path, item.title, item.icon);
+                          } else {
+                            router.push(item.path);
+                          }
+                        }}
                         className={`
                           group flex items-center justify-center h-12 w-12 rounded-lg transition-all duration-200 ease-in-out mx-auto relative
                           ${
@@ -508,6 +519,7 @@ export function SidebarExpanded({
   onToggleHover,
   hoverActiveIcon,
   hoverInActiveIcon,
+  onMenuClick,
 }: SidebarExpandedProps) {
   const router = useRouter();
   const { currentIcon, isLoaded } = useSidebarIcons();
@@ -633,7 +645,13 @@ export function SidebarExpanded({
                       <motion.button
                         key={item.path}
                         type="button"
-                        onClick={() => router.push(item.path)}
+                        onClick={() => {
+                          if (onMenuClick) {
+                            onMenuClick(item.path, item.title, item.icon);
+                          } else {
+                            router.push(item.path);
+                          }
+                        }}
                         className={`
                           group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out overflow-hidden
                           ${
@@ -868,6 +886,7 @@ export function Sidebar({
   onToggleHover,
   hoverActiveIcon,
   hoverInActiveIcon,
+  onMenuClick,
 }: SidebarProps) {
   const { isLoaded } = useSidebarIcons();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -1026,6 +1045,7 @@ export function Sidebar({
                 onToggleExpand={onToggleCollapse}
                 isHoverEnabled={isHoverEnabled}
                 onToggleHover={handleToggleHover}
+                onMenuClick={onMenuClick}
               />
             </motion.div>
           ) : (
@@ -1066,6 +1086,7 @@ export function Sidebar({
                 onToggleHover={handleToggleHover}
                 hoverActiveIcon={hoverActiveIcon}
                 hoverInActiveIcon={hoverInActiveIcon}
+                onMenuClick={onMenuClick}
               />
             </motion.div>
           )}

@@ -10,7 +10,7 @@ import { useSidebarIcons } from "../hooks/useSidebarIcons";
 /**
  * 접힌 사이드바 컴포넌트
  */
-export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "", menuGroups, width = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, }) {
+export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "", menuGroups, width = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, onMenuClick, }) {
     const router = useRouter();
     const { isLoaded } = useSidebarIcons();
     const [showProfilePopup, setShowProfilePopup] = useState(false);
@@ -50,7 +50,14 @@ export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "
                         React.createElement("span", { className: "text-white font-bold text-base" }, logoTextShort))))),
                 React.createElement("nav", { className: "flex-1 overflow-y-auto overflow-x-hidden p-2 pt-4" },
                     React.createElement("div", { className: "flex flex-col gap-sm items-center justify-start" }, menuGroups.map((group, groupIndex) => (React.createElement("div", { key: group.title, className: `w-full ${groupIndex === 0 ? "mt-2" : ""}` }, group.items.map((item) => (React.createElement("div", { key: item.path, className: "relative" },
-                        React.createElement("button", { type: "button", onClick: () => router.push(item.path), className: `
+                        React.createElement("button", { type: "button", onClick: () => {
+                                if (onMenuClick) {
+                                    onMenuClick(item.path, item.title, item.icon);
+                                }
+                                else {
+                                    router.push(item.path);
+                                }
+                            }, className: `
                           group flex items-center justify-center h-12 w-12 rounded-lg transition-all duration-200 ease-in-out mx-auto relative
                           ${activePath === item.path
                                 ? "bg-neutral-800 /*dark:bg-neutral-700*/"
@@ -123,7 +130,7 @@ export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "
 /**
  * 펼쳐진 사이드바 컴포넌트
  */
-export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logoTextShort = "DS", activePath = "", menuGroups, width = "w-64", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, onToggleCollapse, collapseIcon, isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }) {
+export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logoTextShort = "DS", activePath = "", menuGroups, width = "w-64", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, onToggleCollapse, collapseIcon, isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, }) {
     const router = useRouter();
     const { currentIcon, isLoaded } = useSidebarIcons();
     // 애니메이션 variants 정의 (opacity 제거)
@@ -173,7 +180,14 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
                 React.createElement(motion.div, { initial: "hidden", animate: "visible", exit: "exit", variants: staggerVariants },
                     React.createElement(VSpace, { gap: "lg", align: "stretch" }, menuGroups.map((group) => (React.createElement(motion.div, { key: group.title, className: "space-y-2", variants: itemVariants },
                         React.createElement(motion.h3, { className: "text-xs font-semibold text-neutral-500 /*dark:text-neutral-400*/ uppercase tracking-wider transition-all duration-300", variants: itemVariants }, group.title),
-                        React.createElement(VStack, { gap: "sm", align: "stretch" }, group.items.map((item) => (React.createElement(motion.button, { key: item.path, type: "button", onClick: () => router.push(item.path), className: `
+                        React.createElement(VStack, { gap: "sm", align: "stretch" }, group.items.map((item) => (React.createElement(motion.button, { key: item.path, type: "button", onClick: () => {
+                                if (onMenuClick) {
+                                    onMenuClick(item.path, item.title, item.icon);
+                                }
+                                else {
+                                    router.push(item.path);
+                                }
+                            }, className: `
                           group flex items-center gap-3 w-full px-3 py-2 rounded-lg transition-all duration-200 ease-in-out overflow-hidden
                           ${activePath === item.path
                                 ? "bg-neutral-800 /*dark:bg-neutral-700*/"
@@ -234,7 +248,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
  * - 현재 페이지 하이라이트
  * - 스크롤 가능한 메뉴 영역
  */
-export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, }) {
+export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, }) {
     const { isLoaded } = useSidebarIcons();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [hoverTimeoutId, setHoverTimeoutId] = useState(null);
@@ -335,7 +349,7 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden 
                     height: "100%",
                     willChange: "transform, opacity",
                 } },
-                React.createElement(SidebarCollapsed, { logoUrl: logoUrl, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: collapsedWidth, onToggleExpand: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover }))) : (React.createElement(motion.div, { key: "expanded", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
+                React.createElement(SidebarCollapsed, { logoUrl: logoUrl, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: collapsedWidth, onToggleExpand: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, onMenuClick: onMenuClick }))) : (React.createElement(motion.div, { key: "expanded", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
                     duration: 0.2,
                     ease: "easeOut",
                 }, style: {
@@ -345,5 +359,5 @@ export function Sidebar({ isOpen = true, onClose, isCollapsed = false, isHidden 
                     height: "100%",
                     willChange: "transform, opacity",
                 } },
-                React.createElement(SidebarExpanded, { logoUrl: logoUrl, logoText: logoText, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: width, onToggleCollapse: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, hoverActiveIcon: hoverActiveIcon, hoverInActiveIcon: hoverInActiveIcon })))))));
+                React.createElement(SidebarExpanded, { logoUrl: logoUrl, logoText: logoText, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, isAdminMode: isAdminMode, onModeToggle: onModeToggle, showModeToggle: showModeToggle, showNotification: showNotification, showSettings: showSettings, width: width, onToggleCollapse: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, hoverActiveIcon: hoverActiveIcon, hoverInActiveIcon: hoverInActiveIcon, onMenuClick: onMenuClick })))))));
 }

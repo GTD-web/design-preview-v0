@@ -299,6 +299,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
       </svg>
     ),
     closable: true,
+    allowDuplicate: true, // 대시보드 페이지도 중복 탭 허용
   };
 
   mapping["/design-example/ecommerce"] = {
@@ -341,6 +342,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
       </svg>
     ),
     closable: true,
+    allowDuplicate: true, // 분석 페이지는 중복 탭 허용
   };
 
   mapping["/design-example/task-management"] = {
@@ -468,10 +470,16 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
         defaultTitle = "색상 가이드";
       }
 
+      // 중복 허용 페이지 확인
+      const allowDuplicate =
+        path === "/design-example/analytics" ||
+        path === "/design-example/dashboard";
+
       return {
         path,
         title: defaultTitle,
         closable: path !== homePath,
+        allowDuplicate,
       };
     },
     []
@@ -640,6 +648,16 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               showSettings={true}
               isHoverEnabled={isHoverEnabled}
               onToggleHover={handleHoverToggle}
+              onMenuClick={(path, title, icon) => {
+                // 사이드바 메뉴 클릭 시 새 탭 추가
+                const pageInfo = allPagesMapping[path] || {
+                  path,
+                  title,
+                  icon,
+                  closable: path !== "/design-example",
+                };
+                addTab(pageInfo);
+              }}
               // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
               // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
               // 텍스트 로고를 변경하려면 아래 주석을 해제하고 원하는 텍스트를 입력하세요.
