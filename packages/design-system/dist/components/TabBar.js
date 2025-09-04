@@ -91,7 +91,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
         willChange: isDragging ? "transform" : "auto",
     };
     return (React.createElement("div", { ref: setNodeRef, style: style, ...attributes },
-        React.createElement("button", { className: tabButtonClass, onMouseDown: handleMouseDown, onMouseUp: handleMouseUp, onClick: (e) => {
+        React.createElement("button", { className: tabButtonClass, onMouseDown: handleMouseDown, onMouseUp: handleMouseUp, onClick: () => {
                 // 백업 클릭 처리 - 드래그가 아닌 경우에만
                 if (!isDragging && !isDragStarted) {
                     console.log("Fallback click handler triggered for tab:", tab.title);
