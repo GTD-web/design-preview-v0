@@ -59,6 +59,8 @@ export interface UseTabBarReturn {
     closeOtherTabs: (tabId: string) => void;
     /** 현재 페이지를 탭으로 추가 */
     addCurrentPageAsTab: () => void;
+    /** 활성 탭의 경로 업데이트 */
+    updateActiveTabPath: (newPath: string) => void;
 }
 /**
  * 탭 바 상태 관리를 위한 Hook

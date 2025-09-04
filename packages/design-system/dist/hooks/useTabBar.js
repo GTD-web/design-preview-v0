@@ -273,20 +273,14 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
     }, [activeTabId, router, homePath, enableLocalStorage, localStorageKey]);
     // 탭 활성화
     const activateTab = useCallback((tabId) => {
-        console.log("activateTab called with tabId:", tabId);
         const tab = tabs.find((t) => t.id === tabId);
-        console.log("Found tab:", tab);
         if (tab) {
-            console.log("Activating tab and navigating to:", tab.path);
             setActiveTabId(tabId);
             // 로컬 스토리지에 저장
             if (enableLocalStorage) {
                 saveTabsToStorage(localStorageKey, tabs, tabId);
             }
             router.push(tab.path);
-        }
-        else {
-            console.log("Tab not found for tabId:", tabId);
         }
     }, [tabs, router, enableLocalStorage, localStorageKey]);
     // 모든 탭 비활성화
@@ -326,24 +320,36 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         localStorageKey,
         normalizePath,
     ]);
+    // 활성 탭의 경로 업데이트
+    const updateActiveTabPath = useCallback((newPath) => {
+        if (!activeTabId)
+            return;
+        setTabs((prevTabs) => {
+            const updatedTabs = prevTabs.map((tab) => {
+                if (tab.id === activeTabId) {
+                    return { ...tab, path: newPath };
+                }
+                return tab;
+            });
+            // 로컬 스토리지에 저장
+            if (enableLocalStorage) {
+                saveTabsToStorage(localStorageKey, updatedTabs, activeTabId);
+            }
+            return updatedTabs;
+        });
+    }, [activeTabId, enableLocalStorage, localStorageKey]);
     // 탭 순서 변경
     const reorderTabs = useCallback((activeId, overId) => {
-        console.log("reorderTabs called with:", { activeId, overId });
         if (activeId === overId) {
-            console.log("Same id, returning early");
             return;
         }
         setTabs((prevTabs) => {
-            console.log("Current tabs:", prevTabs.map((t) => ({ id: t.id, title: t.title })));
             const activeIndex = prevTabs.findIndex((tab) => tab.id === activeId);
             const overIndex = prevTabs.findIndex((tab) => tab.id === overId);
-            console.log("Indices:", { activeIndex, overIndex });
             if (activeIndex === -1 || overIndex === -1) {
-                console.warn("Invalid indices, returning previous tabs");
                 return prevTabs;
             }
             const newTabs = arrayMove(prevTabs, activeIndex, overIndex);
-            console.log("New tabs after reorder:", newTabs.map((t) => ({ id: t.id, title: t.title })));
             // 로컬 스토리지에 저장
             if (enableLocalStorage) {
                 saveTabsToStorage(localStorageKey, newTabs, activeTabId);
@@ -429,44 +435,27 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                 currentFullPath = normalizedPathname + (window.location.search || "");
             }
         }
-        console.log("=== INITIAL ACTIVATION DEBUG ===");
-        console.log("Current full path:", currentFullPath);
-        console.log("Pathname:", pathname);
-        console.log("Search params string:", searchParams ? searchParams.toString() : "null");
-        console.log("Window location search:", typeof window !== "undefined" ? window.location.search : "N/A");
-        console.log("Available tabs:", tabs.map((tab) => ({ id: tab.id, title: tab.title, path: tab.path })));
         // 전체 경로가 정확히 일치하는 탭 찾기
         const exactMatchTab = tabs.find((tab) => {
-            console.log(`Comparing tab path "${tab.path}" with current path "${currentFullPath}"`);
             return tab.path === currentFullPath;
         });
-        console.log("Exact match tab found:", exactMatchTab);
         if (exactMatchTab) {
-            console.log("✅ Initial activation - Setting exact match tab:", exactMatchTab.id, exactMatchTab.title);
             setActiveTabId(exactMatchTab.id);
         }
         else {
             // 정확히 일치하는 탭이 없으면 pathname만으로 일치하는 탭 찾기
             const normalizedPathname = normalizePath(pathname);
-            console.log("Normalized pathname:", normalizedPathname);
             const pathMatchTab = tabs.find((tab) => {
                 const tabBasePath = tab.path.split("?")[0];
-                console.log(`Comparing tab base path "${tabBasePath}" with normalized pathname "${normalizedPathname}"`);
                 return tabBasePath === normalizedPathname;
             });
-            console.log("Path match tab found:", pathMatchTab);
             if (pathMatchTab) {
-                console.log("⚠️ Initial activation - Setting path match tab (fallback):", pathMatchTab.id, pathMatchTab.title);
                 setActiveTabId(pathMatchTab.id);
             }
-            else {
-                console.log("❌ No matching tab found");
-            }
         }
-        console.log("=== END INITIAL ACTIVATION DEBUG ===");
         setIsInitialized(true);
     }, [tabs, pathname, searchParams, isInitialized, normalizePath]);
-    // 경로 변경 시 탭 상태 업데이트 - 기존 탭 활성화만 처리, 자동 생성 없음
+    // 경로 변경 시 탭 상태 업데이트 - 기존 탭 활성화 및 활성 탭 경로 업데이트
     useEffect(() => {
         // 탭 제거 중이거나 초기화되지 않았으면 처리 방지
         if (isRemovingTab || !isInitialized)
@@ -485,47 +474,50 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                 currentFullPath = normalizedPathname + (window.location.search || "");
             }
         }
-        console.log("=== ROUTE CHANGE DEBUG ===");
-        console.log("Current full path:", currentFullPath);
-        console.log("Pathname:", pathname);
-        console.log("Normalized pathname:", normalizedPathname);
-        console.log("Available tabs:", tabs.map((tab) => ({ id: tab.id, title: tab.title, path: tab.path })));
         // 홈 경로인 경우 모든 탭 비활성화
         if (normalizedPathname === homePath) {
-            console.log("Home path detected, deactivating all tabs");
             setActiveTabId(undefined);
             return;
+        }
+        // 현재 활성화된 탭이 있고, 그 탭의 base path가 현재 pathname과 일치하는 경우
+        // 쿼리 파라미터만 변경된 것으로 간주하고 탭의 경로를 업데이트
+        if (activeTabId) {
+            const activeTab = tabs.find((tab) => tab.id === activeTabId);
+            if (activeTab) {
+                const activeTabBasePath = activeTab.path.split("?")[0];
+                if (activeTabBasePath === normalizedPathname &&
+                    activeTab.path !== currentFullPath) {
+                    updateActiveTabPath(currentFullPath);
+                    return;
+                }
+            }
         }
         // 현재 경로와 일치하는 기존 탭이 있는지 확인하고 활성화만 처리
         // 전체 경로(쿼리 파라미터 포함)가 정확히 일치하는 탭 찾기
         const exactMatchTab = tabs.find((tab) => {
-            console.log(`Route change - Comparing tab path "${tab.path}" with current path "${currentFullPath}"`);
             return tab.path === currentFullPath;
         });
-        console.log("Route change - Exact match tab:", exactMatchTab);
         if (exactMatchTab) {
-            console.log("✅ Route change - Setting active tab to exact match:", exactMatchTab.id, exactMatchTab.title);
             setActiveTabId(exactMatchTab.id);
         }
         else {
             // 정확히 일치하는 탭이 없으면 pathname만으로 일치하는 탭 찾기
             const pathMatchTab = tabs.find((tab) => {
                 const tabBasePath = tab.path.split("?")[0];
-                console.log(`Route change - Comparing tab base path "${tabBasePath}" with normalized pathname "${normalizedPathname}"`);
                 return tabBasePath === normalizedPathname;
             });
-            console.log("Route change - Path match tab:", pathMatchTab);
             if (pathMatchTab) {
-                console.log("⚠️ Route change - Setting active tab to path match (fallback):", pathMatchTab.id, pathMatchTab.title);
                 setActiveTabId(pathMatchTab.id);
+                // 경로가 다르면 업데이트
+                if (pathMatchTab.path !== currentFullPath) {
+                    updateActiveTabPath(currentFullPath);
+                }
             }
             else {
                 // 일치하는 탭이 없으면 활성 탭 ID를 undefined로 설정
-                console.log("❌ Route change - No matching tab found, deactivating all tabs");
                 setActiveTabId(undefined);
             }
         }
-        console.log("=== END ROUTE CHANGE DEBUG ===");
     }, [
         pathname,
         searchParams,
@@ -534,6 +526,8 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         homePath,
         normalizePath,
         tabs,
+        activeTabId,
+        updateActiveTabPath,
     ]);
     return {
         tabs,
@@ -548,5 +542,6 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         closeAllTabs,
         closeOtherTabs,
         addCurrentPageAsTab,
+        updateActiveTabPath,
     };
 }
