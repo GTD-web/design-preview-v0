@@ -660,10 +660,6 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                   deactivateAllTabs();
                 } else {
                   // 다른 메뉴 클릭 시에는 기존 탭 활성화 또는 새 탭 추가
-                  // 쿼리 파라미터 추가 (탭이 쿼리파라미터를 기억하는지 확인용)
-                  const tempValue = Math.random().toString(36).substr(2, 8);
-                  const pathWithQuery = `${path}?temp=${tempValue}`;
-
                   const pageInfo = allPagesMapping[path] || {
                     path,
                     title,
@@ -671,13 +667,27 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                     closable: path !== "/design-example",
                   };
 
-                  // path에 쿼리 파라미터 추가
-                  const pageInfoWithQuery = {
-                    ...pageInfo,
-                    path: pathWithQuery,
-                  };
+                  // 중복 허용 페이지(대시보드, 분석)만 쿼리 파라미터 추가
+                  const isDuplicatePage =
+                    path === "/design-example/dashboard" ||
+                    path === "/design-example/analytics";
 
-                  activateOrAddTab(pageInfoWithQuery);
+                  if (isDuplicatePage) {
+                    // 쿼리 파라미터 추가 (중복 탭 구분용)
+                    const tempValue = Math.random().toString(36).substr(2, 8);
+                    const pathWithQuery = `${path}?temp=${tempValue}`;
+
+                    const pageInfoWithQuery = {
+                      ...pageInfo,
+                      path: pathWithQuery,
+                    };
+
+                    activateOrAddTab(pageInfoWithQuery);
+                  } else {
+                    // 일반 페이지는 쿼리 파라미터 없이
+                    activateOrAddTab(pageInfo);
+                  }
+
                   setIsHomeButtonActive(false);
                 }
               }}
