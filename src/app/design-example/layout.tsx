@@ -496,6 +496,8 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     createNewTab,
     addTab,
     reorderTabs,
+    deactivateAllTabs,
+    activateOrAddTab,
   } = useTabBar({
     pageMapping: allPagesMapping,
     homePath: "/design-example", // 홈 경로 설정 (자동 생성은 비활성화됨)
@@ -649,14 +651,35 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               isHoverEnabled={isHoverEnabled}
               onToggleHover={handleHoverToggle}
               onMenuClick={(path, title, icon) => {
-                // 사이드바 메뉴 클릭 시 새 탭 추가
-                const pageInfo = allPagesMapping[path] || {
-                  path,
-                  title,
-                  icon,
-                  closable: path !== "/design-example",
-                };
-                addTab(pageInfo);
+                // 디자인토큰(루트 페이지) 클릭 시에는 홈 버튼 활성화만 처리
+                if (path === "/design-example") {
+                  // 홈 페이지로 이동하고 홈 버튼 활성화
+                  router.push("/design-example");
+                  setIsHomeButtonActive(true);
+                  // 모든 탭 비활성화 (홈 버튼만 활성화 상태)
+                  deactivateAllTabs();
+                } else {
+                  // 다른 메뉴 클릭 시에는 기존 탭 활성화 또는 새 탭 추가
+                  // 쿼리 파라미터 추가 (탭이 쿼리파라미터를 기억하는지 확인용)
+                  const tempValue = Math.random().toString(36).substr(2, 8);
+                  const pathWithQuery = `${path}?temp=${tempValue}`;
+
+                  const pageInfo = allPagesMapping[path] || {
+                    path,
+                    title,
+                    icon,
+                    closable: path !== "/design-example",
+                  };
+
+                  // path에 쿼리 파라미터 추가
+                  const pageInfoWithQuery = {
+                    ...pageInfo,
+                    path: pathWithQuery,
+                  };
+
+                  activateOrAddTab(pageInfoWithQuery);
+                  setIsHomeButtonActive(false);
+                }
               }}
               // 로고를 사용하려면 아래 주석을 해제하고 로고 URL을 입력하세요.
               // logoUrl="https://via.placeholder.com/150/DDDDDD/808080?Text=LOGO"
