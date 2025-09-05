@@ -491,13 +491,13 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   const {
     tabs,
     activeTabId,
-    activateTab,
     removeTab,
     createNewTab,
     addTab,
     reorderTabs,
     deactivateAllTabs,
     activateOrAddTab,
+    handleTabClick,
   } = useTabBar({
     pageMapping: allPagesMapping,
     homePath: "/design-example", // 홈 경로 설정 (자동 생성은 비활성화됨)
@@ -599,10 +599,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
             <TabBar
               tabs={tabs}
               activeTabId={activeTabId}
-              onTabClick={(tab) => {
-                console.log("Tab clicked - activating tab:", tab.id);
-                activateTab(tab.id);
-              }}
+              onTabClick={handleTabClick}
               onTabClose={(tabId) => removeTab(tabId)}
               onTabReorder={reorderTabs}
               onNewTab={createNewTab}
