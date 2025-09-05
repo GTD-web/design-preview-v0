@@ -79,6 +79,10 @@ export interface TabBarProps {
   homeButtonActive?: boolean;
   /** 홈 경로 (툴팁용) */
   homePath?: string;
+  /** 홈 버튼 커스텀 아이콘 */
+  homeButtonIcon?: React.ReactNode;
+  /** 홈 버튼 텍스트/라벨 */
+  homeButtonLabel?: string;
 }
 
 /**
@@ -273,13 +277,17 @@ const Tab = SortableTab;
 interface HomeButtonProps {
   isActive?: boolean;
   onClick?: () => void;
-  homePath?: string;
+  /** 홈 버튼 아이콘 (기본값: 홈 아이콘) */
+  icon?: React.ReactNode;
+  /** 홈 버튼 텍스트 (툴팁에 표시) */
+  label?: string;
 }
 
 function HomeButton({
   isActive = false,
   onClick,
-  homePath = "홈",
+  icon,
+  label = "홈",
 }: HomeButtonProps) {
   // CSS 모듈 클래스 조합
   const homeButtonClass = [
@@ -293,7 +301,7 @@ function HomeButton({
     <motion.button
       className={homeButtonClass}
       onClick={onClick}
-      title={`${homePath}으로 이동`}
+      title={`${label}으로 이동`}
       whileHover={{ scale: isActive ? 1.05 : 1.05 }}
       whileTap={{ scale: 0.95 }}
       style={{
@@ -305,19 +313,25 @@ function HomeButton({
       }}
       draggable={false}
     >
-      <svg
-        className={styles.homeButtonIcon}
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-        />
-      </svg>
+      {icon ? (
+        <div className={styles.homeButtonIcon}>{icon}</div>
+      ) : (
+        <svg
+          className={styles.homeButtonIcon}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
+        </svg>
+      )}
+      {/* 홈 버튼 텍스트 라벨 */}
+      <span className={styles.homeButtonLabel}>{label}</span>
     </motion.button>
   );
 }
@@ -339,7 +353,8 @@ export function TabBar({
   showHomeButton = false,
   onHomeClick,
   homeButtonActive = false,
-  homePath = "홈",
+  homeButtonIcon,
+  homeButtonLabel = "홈",
 }: TabBarProps) {
   const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
 
@@ -473,7 +488,8 @@ export function TabBar({
         <HomeButton
           isActive={homeButtonActive}
           onClick={onHomeClick}
-          homePath={homePath}
+          icon={homeButtonIcon}
+          label={homeButtonLabel}
         />
       )}
 

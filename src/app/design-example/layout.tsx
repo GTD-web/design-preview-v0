@@ -613,7 +613,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               showHomeButton={true}
               onHomeClick={handleHomeClick}
               homeButtonActive={isHomeButtonActive}
-              homePath="디자인토큰"
+              homeButtonLabel="디자인토큰"
               maxTabs={8}
             />
           </div>
