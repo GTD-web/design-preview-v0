@@ -6,6 +6,7 @@ import TextLabel from "@/packages/design-system/components/TextLabel";
 import TextValue from "@/packages/design-system/components/TextValue";
 import TextHeading from "@/packages/design-system/components/TextHeading";
 import Badge from "../../../../packages/design-system/components/Badge";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // 차트 데이터
 const chartData = [
@@ -26,21 +27,64 @@ const topProducts = [
 ];
 
 const recentActivity = [
-  { type: "order", message: "새로운 주문 #12345", time: "2분 전", amount: "129,000원" },
+  {
+    type: "order",
+    message: "새로운 주문 #12345",
+    time: "2분 전",
+    amount: "129,000원",
+  },
   { type: "user", message: "새 사용자 가입", time: "5분 전" },
-  { type: "payment", message: "결제 완료 #12344", time: "12분 전", amount: "299,000원" },
-  { type: "refund", message: "환불 요청 #12343", time: "1시간 전", amount: "45,000원" },
-  { type: "order", message: "새로운 주문 #12342", time: "2시간 전", amount: "89,000원" },
+  {
+    type: "payment",
+    message: "결제 완료 #12344",
+    time: "12분 전",
+    amount: "299,000원",
+  },
+  {
+    type: "refund",
+    message: "환불 요청 #12343",
+    time: "1시간 전",
+    amount: "45,000원",
+  },
+  {
+    type: "order",
+    message: "새로운 주문 #12342",
+    time: "2시간 전",
+    amount: "89,000원",
+  },
 ];
 
 export default function AnalyticsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState("6개월");
-  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; data: any } | null>(null);
+  const [hoveredPoint, setHoveredPoint] = useState<{
+    x: number;
+    y: number;
+    data: any;
+  } | null>(null);
+  const [isCustomNameDialogOpen, setIsCustomNameDialogOpen] = useState(false);
+  const [customTabName, setCustomTabName] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const totalUsers = chartData.reduce((sum, data) => sum + data.users, 0);
   const totalRevenue = chartData.reduce((sum, data) => sum + data.revenue, 0);
   const totalOrders = chartData.reduce((sum, data) => sum + data.orders, 0);
   const avgOrderValue = totalRevenue / totalOrders;
+
+  const handleCustomTabName = () => {
+    if (customTabName.trim()) {
+      // 현재 URL의 쿼리 파라미터 가져오기
+      const currentParams = new URLSearchParams(searchParams.toString());
+      currentParams.set("tab-name", customTabName.trim());
+
+      // 새 URL로 이동
+      const newUrl = `/design-example/analytics?${currentParams.toString()}`;
+      router.push(newUrl);
+
+      setIsCustomNameDialogOpen(false);
+      setCustomTabName("");
+    }
+  };
 
   // 간단한 차트 렌더링 (SVG 기반)
   const maxRevenue = Math.max(...chartData.map((d) => d.revenue));
@@ -57,9 +101,18 @@ export default function AnalyticsPage() {
         {/* 헤더 */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <TextHeading size="2xl" weight="semibold">
-              Analytics 대시보드
-            </TextHeading>
+            <div className="flex items-center gap-3">
+              <TextHeading size="2xl" weight="semibold">
+                Analytics 대시보드
+              </TextHeading>
+              <button
+                onClick={() => setIsCustomNameDialogOpen(true)}
+                className="px-3 py-1 text-sm bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+                title="탭 이름 설정"
+              >
+                탭 이름 설정
+              </button>
+            </div>
             <TextLabel className="mt-xs">실시간 데이터 및 인사이트</TextLabel>
           </div>
           <select
@@ -80,11 +133,18 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">총 사용자</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  총 사용자
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {totalUsers.toLocaleString()}
                 </TextValue>
-                <TextLabel className="text-success text-sm block">+12.5% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">
+                  +12.5% 지난 달 대비
+                </TextLabel>
               </div>
               <div className="text-3xl">👥</div>
             </div>
@@ -93,11 +153,18 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">총 매출</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  총 매출
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {totalRevenue.toLocaleString()}원
                 </TextValue>
-                <TextLabel className="text-success text-sm block">+8.2% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">
+                  +8.2% 지난 달 대비
+                </TextLabel>
               </div>
               <div className="text-3xl">💰</div>
             </div>
@@ -106,11 +173,18 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">총 주문</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  총 주문
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {totalOrders.toLocaleString()}
                 </TextValue>
-                <TextLabel className="text-success text-sm block">+15.7% 지난 달 대비</TextLabel>
+                <TextLabel className="text-success text-sm block">
+                  +15.7% 지난 달 대비
+                </TextLabel>
               </div>
               <div className="text-3xl">📦</div>
             </div>
@@ -119,11 +193,18 @@ export default function AnalyticsPage() {
           <Card className="p-lg">
             <div className="flex items-center justify-between">
               <div>
-                <TextLabel className="text-gray-600 mb-2 block">평균 주문 금액</TextLabel>
-                <TextValue weight="semibold" className="text-primary text-2xl block">
+                <TextLabel className="text-gray-600 mb-2 block">
+                  평균 주문 금액
+                </TextLabel>
+                <TextValue
+                  weight="semibold"
+                  className="text-primary text-2xl block"
+                >
                   {avgOrderValue.toLocaleString()}원
                 </TextValue>
-                <TextLabel className="text-warning text-sm block">-2.1% 지난 달 대비</TextLabel>
+                <TextLabel className="text-warning text-sm block">
+                  -2.1% 지난 달 대비
+                </TextLabel>
               </div>
               <div className="text-3xl">📊</div>
             </div>
@@ -142,7 +223,12 @@ export default function AnalyticsPage() {
 
               {/* 간단한 SVG 차트 */}
               <div className="overflow-x-auto -mx-lg -mb-lg relative flex-1">
-                <svg width={chartWidth} height={chartHeight + 50} viewBox={`0 0 ${chartWidth} ${chartHeight + 50}`} className="w-full">
+                <svg
+                  width={chartWidth}
+                  height={chartHeight + 50}
+                  viewBox={`0 0 ${chartWidth} ${chartHeight + 50}`}
+                  className="w-full"
+                >
                   {/* 그리드 라인 */}
                   {[0, 1, 2, 3, 4].map((i) => (
                     <line
@@ -164,15 +250,25 @@ export default function AnalyticsPage() {
                     points={chartData
                       .map(
                         (data, i) =>
-                          `${paddingX + (i * graphWidth) / (chartData.length - 1)},${paddingY + graphHeight - (data.revenue / maxRevenue) * graphHeight}`
+                          `${
+                            paddingX + (i * graphWidth) / (chartData.length - 1)
+                          },${
+                            paddingY +
+                            graphHeight -
+                            (data.revenue / maxRevenue) * graphHeight
+                          }`
                       )
                       .join(" ")}
                   />
 
                   {/* 데이터 포인트 */}
                   {chartData.map((data, i) => {
-                    const x = paddingX + (i * graphWidth) / (chartData.length - 1);
-                    const y = paddingY + graphHeight - (data.revenue / maxRevenue) * graphHeight;
+                    const x =
+                      paddingX + (i * graphWidth) / (chartData.length - 1);
+                    const y =
+                      paddingY +
+                      graphHeight -
+                      (data.revenue / maxRevenue) * graphHeight;
 
                     return (
                       <g key={i}>
@@ -182,7 +278,8 @@ export default function AnalyticsPage() {
                           r="5"
                           fill="var(--color-primary)"
                           onMouseEnter={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
+                            const rect =
+                              e.currentTarget.getBoundingClientRect();
                             setHoveredPoint({
                               x: rect.left + rect.width / 2,
                               y: rect.top,
@@ -199,7 +296,8 @@ export default function AnalyticsPage() {
                           r="15"
                           fill="transparent"
                           onMouseEnter={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
+                            const rect =
+                              e.currentTarget.getBoundingClientRect();
                             setHoveredPoint({
                               x: rect.left + rect.width / 2,
                               y: rect.top,
@@ -238,7 +336,10 @@ export default function AnalyticsPage() {
               </TextHeading>
               <div className="space-y-1 overflow-y-auto flex-1">
                 {recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-surface/50 rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 p-3 bg-surface/50 rounded-lg"
+                  >
                     <div
                       className={`w-2 h-2 rounded-full mt-2 ${
                         activity.type === "order"
@@ -251,11 +352,19 @@ export default function AnalyticsPage() {
                       }`}
                     />
                     <div className="flex-1 min-w-0">
-                      <TextValue className="text-sm block mb-1">{activity.message}</TextValue>
-                      <TextLabel className="text-gray-500 text-xs block">{activity.time}</TextLabel>
+                      <TextValue className="text-sm block mb-1">
+                        {activity.message}
+                      </TextValue>
+                      <TextLabel className="text-gray-500 text-xs block">
+                        {activity.time}
+                      </TextLabel>
                     </div>
                     {activity.amount && (
-                      <TextValue size="sm" weight="semibold" className="text-primary">
+                      <TextValue
+                        size="sm"
+                        weight="semibold"
+                        className="text-primary"
+                      >
                         {activity.amount}
                       </TextValue>
                     )}
@@ -291,7 +400,10 @@ export default function AnalyticsPage() {
               </thead>
               <tbody>
                 {topProducts.map((product, index) => (
-                  <tr key={index} className="border-b border-border hover:bg-surface/30">
+                  <tr
+                    key={index}
+                    className="border-b border-border hover:bg-surface/30"
+                  >
                     <td className="py-3 px-4">
                       <TextValue weight="semibold">{product.name}</TextValue>
                     </td>
@@ -304,7 +416,11 @@ export default function AnalyticsPage() {
                       </TextValue>
                     </td>
                     <td className="text-right py-3 px-4">
-                      <TextValue className={product.growth >= 0 ? "text-success" : "text-danger"}>
+                      <TextValue
+                        className={
+                          product.growth >= 0 ? "text-success" : "text-danger"
+                        }
+                      >
                         {product.growth >= 0 ? "+" : ""}
                         {product.growth}%
                       </TextValue>
@@ -327,8 +443,12 @@ export default function AnalyticsPage() {
               zIndex: 99999,
             }}
           >
-            <div className="text-sm font-medium text-primary mb-1">{hoveredPoint.data.month}</div>
-            <div className="text-lg font-semibold text-primary mb-2">{hoveredPoint.data.revenue.toLocaleString()}원</div>
+            <div className="text-sm font-medium text-primary mb-1">
+              {hoveredPoint.data.month}
+            </div>
+            <div className="text-lg font-semibold text-primary mb-2">
+              {hoveredPoint.data.revenue.toLocaleString()}원
+            </div>
             <div className="text-xs text-gray-500 space-y-1">
               <div>사용자: {hoveredPoint.data.users.toLocaleString()}명</div>
               <div>주문: {hoveredPoint.data.orders}건</div>
@@ -336,6 +456,58 @@ export default function AnalyticsPage() {
           </div>
         )}
       </div>
+
+      {/* 탭 이름 설정 다이얼로그 */}
+      {isCustomNameDialogOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-96 max-w-[90vw]">
+            <h3 className="text-lg font-semibold mb-4">탭 이름 설정</h3>
+            <div className="mb-4">
+              <label
+                htmlFor="custom-tab-name-analytics"
+                className="block text-sm font-medium mb-2"
+              >
+                새로운 탭 이름을 입력하세요:
+              </label>
+              <input
+                id="custom-tab-name-analytics"
+                type="text"
+                value={customTabName}
+                onChange={(e) => setCustomTabName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                placeholder="예: 월간 분석 리포트"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleCustomTabName();
+                  } else if (e.key === "Escape") {
+                    setIsCustomNameDialogOpen(false);
+                    setCustomTabName("");
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setIsCustomNameDialogOpen(false);
+                  setCustomTabName("");
+                }}
+                className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleCustomTabName}
+                disabled={!customTabName.trim()}
+                className="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                적용
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

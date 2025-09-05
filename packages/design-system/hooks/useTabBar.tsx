@@ -238,6 +238,21 @@ export function useTabBar({
     [homePath, normalizePath, defaultPageInfoResolver]
   );
 
+  // 쿼리 파라미터에서 탭 이름 추출
+  const extractTabNameFromQuery = useCallback((path: string): string | null => {
+    try {
+      const url = new URL(path, "http://localhost");
+      const tabName = url.searchParams.get("tab-name");
+      console.log("extractTabNameFromQuery - path:", path);
+      console.log("extractTabNameFromQuery - raw tabName:", tabName);
+      // URL 디코딩된 상태로 반환 (searchParams.get이 자동으로 디코딩함)
+      return tabName;
+    } catch (error) {
+      console.error("extractTabNameFromQuery - error:", error);
+      return null;
+    }
+  }, []);
+
   // 탭 추가
   const addTab = useCallback(
     (pageInfo: PageInfo) => {
@@ -245,7 +260,20 @@ export function useTabBar({
       const [pathPart, queryPart] = pageInfo.path.split("?");
       const normalizedPath =
         normalizePath(pathPart) + (queryPart ? `?${queryPart}` : "");
-      const normalizedPageInfo = { ...pageInfo, path: normalizedPath };
+
+      // 쿼리 파라미터에서 탭 이름 확인
+      const customTabName = extractTabNameFromQuery(normalizedPath);
+      console.log("addTab - normalizedPath:", normalizedPath);
+      console.log("addTab - customTabName:", customTabName);
+      console.log("addTab - pageInfo.title:", pageInfo.title);
+      const finalTitle = customTabName || pageInfo.title;
+      console.log("addTab - finalTitle:", finalTitle);
+
+      const normalizedPageInfo = {
+        ...pageInfo,
+        path: normalizedPath,
+        title: finalTitle,
+      };
 
       const tabId = generateTabId(
         normalizedPageInfo.path,
@@ -304,18 +332,27 @@ export function useTabBar({
         }
 
         // 새 탭 추가 (pathname 기준으로 중복 탭인 경우 제목에 번호 추가)
-        let tabTitle = normalizedPageInfo.title;
-        if (normalizedPageInfo.allowDuplicate) {
+        let tabTitle = finalTitle;
+        console.log(
+          "addTab numbering - normalizedPageInfo.allowDuplicate:",
+          normalizedPageInfo.allowDuplicate
+        );
+        console.log("addTab numbering - customTabName:", customTabName);
+        console.log("addTab numbering - finalTitle:", finalTitle);
+        if (normalizedPageInfo.allowDuplicate && !customTabName) {
+          console.log("addTab numbering - Adding number to tab title");
+          // 커스텀 탭 이름이 없을 때만 번호 추가
           const basePath = normalizedPageInfo.path.split("?")[0];
           const samePathTabs = prevTabs.filter((tab) => {
             const tabBasePath = tab.path.split("?")[0];
             return tabBasePath === basePath;
           });
           if (samePathTabs.length > 0) {
-            tabTitle = `${normalizedPageInfo.title} (${
-              samePathTabs.length + 1
-            })`;
+            tabTitle = `${pageInfo.title} (${samePathTabs.length + 1})`;
+            console.log("addTab numbering - tabTitle set to:", tabTitle);
           }
+        } else {
+          console.log("addTab numbering - Using custom title:", tabTitle);
         }
 
         const updatedTabs = [
@@ -341,6 +378,7 @@ export function useTabBar({
       setActiveTabId(tabId);
       router.push(normalizedPageInfo.path);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       generateTabId,
       maxTabs,
@@ -518,6 +556,64 @@ export function useTabBar({
       });
     },
     [activeTabId, enableLocalStorage, localStorageKey]
+  );
+
+  // 활성 탭의 제목과 경로 업데이트
+  const updateActiveTabTitleAndPath = useCallback(
+    (newPath: string) => {
+      if (!activeTabId) return;
+
+      // 쿼리 파라미터에서 탭 이름 확인
+      const customTabName = extractTabNameFromQuery(newPath);
+      console.log("updateActiveTabTitleAndPath - newPath:", newPath);
+      console.log(
+        "updateActiveTabTitleAndPath - customTabName:",
+        customTabName
+      );
+
+      setTabs((prevTabs) => {
+        const updatedTabs = prevTabs.map((tab) => {
+          if (tab.id === activeTabId) {
+            // 커스텀 탭 이름이 있으면 사용, 없으면 기존 제목 유지 (번호 제거)
+            let newTitle = tab.title;
+            if (customTabName) {
+              newTitle = customTabName;
+              console.log(
+                "updateActiveTabTitleAndPath - Setting custom title:",
+                customTabName
+              );
+            } else {
+              // 커스텀 이름이 없으면 기존 제목에서 번호 제거
+              const basePath = newPath.split("?")[0];
+              const pageInfo = getPageInfo(basePath);
+              if (pageInfo) {
+                newTitle = pageInfo.title;
+                console.log(
+                  "updateActiveTabTitleAndPath - Resetting to base title:",
+                  newTitle
+                );
+              }
+            }
+            return { ...tab, path: newPath, title: newTitle };
+          }
+          return tab;
+        });
+
+        // 로컬 스토리지에 저장
+        if (enableLocalStorage) {
+          saveTabsToStorage(localStorageKey, updatedTabs, activeTabId);
+        }
+
+        return updatedTabs;
+      });
+    },
+    [
+      activeTabId,
+      enableLocalStorage,
+      localStorageKey,
+      extractTabNameFromQuery,
+      getPageInfo,
+    ]
   );
 
   // 탭 순서 변경
@@ -700,9 +796,9 @@ export function useTabBar({
           activeTabBasePath === normalizedPathname &&
           activeTab.path !== currentFullPath
         ) {
-          // 탭 클릭으로 인한 네비게이션이 아닐 때만 경로 업데이트
+          // 탭 클릭으로 인한 네비게이션이 아닐 때만 경로와 제목 업데이트
           if (!isTabClickNavigation) {
-            updateActiveTabPath(currentFullPath);
+            updateActiveTabTitleAndPath(currentFullPath);
           }
           return;
         }
@@ -734,7 +830,7 @@ export function useTabBar({
       if (pathMatchTab) {
         // 탭 클릭으로 인한 네비게이션이 아니고 경로가 다르면 업데이트
         if (pathMatchTab.path !== currentFullPath && !isTabClickNavigation) {
-          updateActiveTabPath(currentFullPath);
+          updateActiveTabTitleAndPath(currentFullPath);
         }
         // 이미 올바른 탭이 활성화되어 있으면 변경하지 않음
         if (activeTabId !== pathMatchTab.id) {
@@ -766,7 +862,7 @@ export function useTabBar({
     normalizePath,
     tabs,
     activeTabId,
-    updateActiveTabPath,
+    updateActiveTabTitleAndPath,
     isTabClickNavigation,
   ]);
 
