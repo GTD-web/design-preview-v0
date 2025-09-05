@@ -1,5 +1,9 @@
 import React from "react";
 /**
+ * 뱃지 사이즈 타입 정의
+ */
+export type CompactBadgeSize = "xs" | "sm" | "md" | "lg";
+/**
  * 사이드바 메뉴 아이템 타입 정의
  */
 export interface CompactSidebarMenuItem {
@@ -7,6 +11,7 @@ export interface CompactSidebarMenuItem {
     path: string;
     icon?: React.ReactNode;
     badge?: string;
+    badgeSize?: CompactBadgeSize;
 }
 /**
  * 사이드바 메뉴 그룹 타입 정의

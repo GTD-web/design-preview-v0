@@ -8,6 +8,18 @@ import { VStack, VSpace } from "./Stack";
 import { Button } from "./Button";
 import { useSidebarIcons } from "../hooks/useSidebarIcons";
 /**
+ * 뱃지 사이즈에 따른 스타일 클래스 반환
+ */
+const getCompactBadgeStyles = (size = "sm") => {
+    const sizeStyles = {
+        xs: "text-xs px-1 py-0.5 min-w-4 h-4",
+        sm: "text-xs px-1 py-0.5 min-w-5 h-5",
+        md: "text-sm px-2 py-1 min-w-6 h-6",
+        lg: "text-sm px-2 py-1 min-w-7 h-7",
+    };
+    return `${sizeStyles[size]} bg-neutral-900 /*dark:bg-neutral-800*/ text-white rounded font-medium border border-neutral-700 max-w-16 text-center overflow-hidden leading-none flex items-center justify-center`;
+};
+/**
  * 접힌 컴팩트 사이드바 컴포넌트
  */
 export function CompactSidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "", menuGroups, width = "w-20", className = "", user, onLogout, showNotification = true, showSettings = true, onMenuClick, }) {
@@ -66,7 +78,7 @@ export function CompactSidebarCollapsed({ logoUrl, logoTextShort = "DS", activeP
                                     ? "text-white"
                                     : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"}
                           ` }, item.icon)),
-                        item.badge && (React.createElement("div", { className: "absolute -top-1 -right-1 bg-neutral-900 /*dark:bg-neutral-800*/ text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none", style: { fontSize: "10px", lineHeight: "12px" }, title: item.badge },
+                        item.badge && (React.createElement("div", { className: `absolute -top-1 -right-1 ${getCompactBadgeStyles(item.badgeSize)}`, title: item.badge },
                             React.createElement("span", { className: "block truncate" }, item.badge.length > 3
                                 ? `${item.badge.slice(0, 2)}...`
                                 : item.badge))))))))))),
@@ -172,7 +184,7 @@ export function CompactSidebarExpanded({ activePath = "", menuGroups, width = "w
                                 React.createElement("span", { className: `font-medium transition-all duration-200 ease-in-out truncate ${activePath === item.path
                                         ? "text-white"
                                         : "text-neutral-600 /*dark:text-neutral-400*/"}` }, item.title),
-                                item.badge && (React.createElement("div", { className: "bg-neutral-900 /*dark:bg-neutral-800*/ text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0", title: item.badge },
+                                item.badge && (React.createElement("div", { className: `${getCompactBadgeStyles(item.badgeSize)} flex-shrink-0`, title: item.badge },
                                     React.createElement("span", { className: "block truncate" }, item.badge)))))))))))))),
             React.createElement("div", { className: "border-t overflow-x-hidden p-4" },
                 React.createElement(motion.div, { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },

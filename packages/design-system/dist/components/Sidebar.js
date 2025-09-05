@@ -8,6 +8,18 @@ import { VStack, VSpace } from "./Stack";
 import { Button } from "./Button";
 import { useSidebarIcons } from "../hooks/useSidebarIcons";
 /**
+ * 뱃지 사이즈에 따른 스타일 클래스 반환
+ */
+const getBadgeStyles = (size = "sm") => {
+    const sizeStyles = {
+        xs: "text-xs px-1 py-0.5 min-w-4 h-4",
+        sm: "text-xs px-1 py-0.5 min-w-5 h-5",
+        md: "text-sm px-2 py-1 min-w-6 h-6",
+        lg: "text-sm px-2 py-1 min-w-7 h-7",
+    };
+    return `${sizeStyles[size]} bg-neutral-900 /*dark:bg-neutral-800*/ text-white rounded font-medium border border-neutral-700 max-w-16 text-center overflow-hidden leading-none flex items-center justify-center`;
+};
+/**
  * 접힌 사이드바 컴포넌트
  */
 export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "", menuGroups, width = "w-20", className = "", user, onLogout, isAdminMode = false, onModeToggle, showModeToggle = true, showNotification = true, showSettings = true, onMenuClick, }) {
@@ -69,7 +81,7 @@ export function SidebarCollapsed({ logoUrl, logoTextShort = "DS", activePath = "
                                     ? "text-white"
                                     : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"}
                           ` }, item.icon)),
-                        item.badge && (React.createElement("div", { className: "absolute -top-1 -right-1 bg-neutral-900 /*dark:bg-neutral-800*/ text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none", style: { fontSize: "10px", lineHeight: "12px" }, title: item.badge },
+                        item.badge && (React.createElement("div", { className: `absolute -top-1 -right-1 ${getBadgeStyles(item.badgeSize)}`, title: item.badge },
                             React.createElement("span", { className: "block truncate" }, item.badge.length > 3
                                 ? `${item.badge.slice(0, 2)}...`
                                 : item.badge))))))))))),
@@ -203,7 +215,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
                                 React.createElement("span", { className: `font-medium transition-all duration-200 ease-in-out truncate ${activePath === item.path
                                         ? "text-white"
                                         : "text-neutral-600 /*dark:text-neutral-400*/"}` }, item.title),
-                                item.badge && (React.createElement("div", { className: "bg-neutral-900 /*dark:bg-neutral-800*/ text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0", title: item.badge },
+                                item.badge && (React.createElement("div", { className: `${getBadgeStyles(item.badgeSize)} flex-shrink-0`, title: item.badge },
                                     React.createElement("span", { className: "block truncate" }, item.badge)))))))))))))),
             React.createElement(AnimatePresence, null, showModeToggle && (React.createElement(motion.div, { className: "p-4 border-t overflow-x-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
                 React.createElement(Button, { variant: "ghost", size: "sm", className: "w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group overflow-hidden", onClick: handleModeToggle },
