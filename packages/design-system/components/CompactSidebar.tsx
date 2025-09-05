@@ -76,9 +76,12 @@ export interface CompactSidebarBaseProps {
  * 접힌 사이드바 Props 인터페이스
  */
 export interface CompactSidebarCollapsedProps
-  extends Omit<CompactSidebarBaseProps, "logoText"> {
+  extends Omit<
+    CompactSidebarBaseProps,
+    "logoText" | "isAdminMode" | "onModeToggle" | "showModeToggle"
+  > {
   /** 사이드바 펼치기 토글 함수 */
-  onToggleExpand: () => void;
+  onToggleExpand?: () => void;
   /** 사이드바 펼치기 아이콘 */
   expandIcon?: React.ReactNode;
   /** 접힌 사이드바 너비 */
@@ -90,9 +93,13 @@ export interface CompactSidebarCollapsedProps
 /**
  * 펼쳐진 사이드바 Props 인터페이스
  */
-export interface CompactSidebarExpandedProps extends CompactSidebarBaseProps {
+export interface CompactSidebarExpandedProps
+  extends Omit<
+    CompactSidebarBaseProps,
+    "isAdminMode" | "onModeToggle" | "showModeToggle"
+  > {
   /** 사이드바 접기 토글 함수 */
-  onToggleCollapse: () => void;
+  onToggleCollapse?: () => void;
   /** 사이드바 접기 아이콘 */
   collapseIcon?: React.ReactNode;
   /** 펼쳐진 사이드바 너비 */
@@ -178,9 +185,6 @@ export function CompactSidebarCollapsed({
   className = "",
   user,
   onLogout,
-  isAdminMode = false,
-  onModeToggle,
-  showModeToggle = true,
   showNotification = true,
   showSettings = true,
   onMenuClick,
@@ -188,10 +192,6 @@ export function CompactSidebarCollapsed({
   const router = useRouter();
   const { isLoaded } = useSidebarIcons();
   const [showProfilePopup, setShowProfilePopup] = useState(false);
-
-  const handleModeToggle = () => {
-    onModeToggle?.();
-  };
 
   const handleProfileClick = () => {
     setShowProfilePopup(!showProfilePopup);
@@ -424,39 +424,6 @@ export function CompactSidebarCollapsed({
                         </Button>
                       )}
 
-                      {showModeToggle && (
-                        <Button
-                          variant="ghost"
-                          size="lg"
-                          className="w-full text-left text-foreground hover:bg-surface/80"
-                          onClick={() => {
-                            handleModeToggle();
-                            setShowProfilePopup(false);
-                          }}
-                        >
-                          <div className="flex items-center w-full">
-                            <svg
-                              className="w-5 h-5 mr-3 flex-shrink-0"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
-                              />
-                            </svg>
-                            <span className="text-left">
-                              {isAdminMode
-                                ? "사용자 화면으로 이동"
-                                : "관리자 화면으로 이동"}
-                            </span>
-                          </div>
-                        </Button>
-                      )}
-
                       <Button
                         variant="ghost"
                         size="lg"
@@ -505,9 +472,6 @@ export function CompactSidebarExpanded({
   className = "",
   user,
   onLogout,
-  isAdminMode = false,
-  onModeToggle,
-  showModeToggle = true,
   showNotification = true,
   showSettings = true,
   onMenuClick,
@@ -532,10 +496,6 @@ export function CompactSidebarExpanded({
     hidden: {},
     visible: {},
     exit: {},
-  };
-
-  const handleModeToggle = () => {
-    onModeToggle?.();
   };
 
   if (!isLoaded) {
@@ -567,7 +527,7 @@ export function CompactSidebarExpanded({
                   variants={itemVariants}
                 >
                   <motion.h3
-                    className="text-xs font-semibold text-neutral-500 /*dark:text-neutral-400*/ uppercase tracking-wider transition-all duration-300"
+                    className="text-xs font-semibold text-neutral-500 /*dark:text-neutral-400*/ uppercase tracking-tight transition-all duration-300"
                     variants={itemVariants}
                   >
                     {group.title}
@@ -635,49 +595,6 @@ export function CompactSidebarExpanded({
             </VSpace>
           </motion.div>
         </nav>
-
-        {/* 관리자/사용자 전환 영역 */}
-        <AnimatePresence>
-          {showModeToggle && (
-            <motion.div
-              className="p-4 border-t overflow-x-hidden"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={expandedContentVariants}
-            >
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start text-foreground hover:text-primary hover:bg-surface/80 transition-all duration-200 group overflow-hidden"
-                onClick={handleModeToggle}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-sm font-medium">
-                    {isAdminMode
-                      ? "사용자 화면으로 이동"
-                      : "관리자 화면으로 이동"}
-                  </span>
-                  <svg
-                    width="16"
-                    height="16"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="text-secondary group-hover:text-primary transition-colors duration-200"
-                  >
-                    <path
-                      d="M9 5l7 7-7 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* 푸터 */}
         <div className="border-t overflow-x-hidden p-4">
@@ -808,9 +725,6 @@ export function CompactSidebar({
   className = "",
   user,
   onLogout,
-  isAdminMode = false,
-  onModeToggle,
-  showModeToggle = true,
   showNotification = true,
   showSettings = true,
   logoUrl,
@@ -970,9 +884,6 @@ export function CompactSidebar({
                 className={className}
                 user={user}
                 onLogout={onLogout}
-                isAdminMode={isAdminMode}
-                onModeToggle={onModeToggle}
-                showModeToggle={showModeToggle}
                 showNotification={showNotification}
                 showSettings={showSettings}
                 width={collapsedWidth}
@@ -1009,9 +920,6 @@ export function CompactSidebar({
                 className={className}
                 user={user}
                 onLogout={onLogout}
-                isAdminMode={isAdminMode}
-                onModeToggle={onModeToggle}
-                showModeToggle={showModeToggle}
                 showNotification={showNotification}
                 showSettings={showSettings}
                 width={width}
