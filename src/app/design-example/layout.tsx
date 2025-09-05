@@ -9,7 +9,7 @@ import Loading from "../loading";
 import { TabBar } from "@/packages/design-system/components/TabBar";
 import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
-import { Sidebar } from "@/packages/design-system/components/Sidebar";
+import { CompactSidebar } from "@/packages/design-system/components/CompactSidebar";
 import {
   Button,
   DesignSettingsProvider,
@@ -621,7 +621,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
           {/* 사이드바와 메인 콘텐츠 영역 */}
           <div className="lg:flex flex-1 overflow-hidden">
             {/* 사이드바 */}
-            <Sidebar
+            <CompactSidebar
               isOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}
               isCollapsed={sidebarCollapsed}
