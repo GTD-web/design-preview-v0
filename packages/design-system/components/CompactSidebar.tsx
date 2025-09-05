@@ -10,6 +10,25 @@ import { Button } from "./Button";
 import { useSidebarIcons } from "../hooks/useSidebarIcons";
 
 /**
+ * 뱃지 사이즈 타입 정의
+ */
+export type CompactBadgeSize = "xs" | "sm" | "md" | "lg";
+
+/**
+ * 뱃지 사이즈에 따른 스타일 클래스 반환
+ */
+const getCompactBadgeStyles = (size: CompactBadgeSize = "sm") => {
+  const sizeStyles = {
+    xs: "text-xs px-1 py-0.5 min-w-4 h-4",
+    sm: "text-xs px-1 py-0.5 min-w-5 h-5", 
+    md: "text-sm px-2 py-1 min-w-6 h-6",
+    lg: "text-sm px-2 py-1 min-w-7 h-7"
+  };
+  
+  return `${sizeStyles[size]} bg-neutral-900 /*dark:bg-neutral-800*/ text-white rounded font-medium border border-neutral-700 max-w-16 text-center overflow-hidden leading-none flex items-center justify-center`;
+};
+
+/**
  * 사이드바 메뉴 아이템 타입 정의
  */
 export interface CompactSidebarMenuItem {
@@ -17,6 +36,7 @@ export interface CompactSidebarMenuItem {
   path: string;
   icon?: React.ReactNode;
   badge?: string;
+  badgeSize?: CompactBadgeSize;
 }
 
 /**
@@ -290,8 +310,7 @@ export function CompactSidebarCollapsed({
                       </button>
                       {item.badge && (
                         <div
-                          className="absolute -top-1 -right-1 bg-neutral-900 /*dark:bg-neutral-800*/ text-white px-1 py-0.5 rounded font-medium border border-neutral-700 max-w-8 text-center overflow-hidden leading-none"
-                          style={{ fontSize: "10px", lineHeight: "12px" }}
+                          className={`absolute -top-1 -right-1 ${getCompactBadgeStyles(item.badgeSize)}`}
                           title={item.badge}
                         >
                           <span className="block truncate">
@@ -578,7 +597,7 @@ export function CompactSidebarExpanded({
                           </span>
                           {item.badge && (
                             <div
-                              className="bg-neutral-900 /*dark:bg-neutral-800*/ text-white text-xs px-2 py-1 rounded-md font-medium border border-neutral-700 max-w-16 overflow-hidden flex-shrink-0"
+                              className={`${getCompactBadgeStyles(item.badgeSize)} flex-shrink-0`}
                               title={item.badge}
                             >
                               <span className="block truncate">
