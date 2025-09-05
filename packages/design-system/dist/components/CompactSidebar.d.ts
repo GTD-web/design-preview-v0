@@ -62,9 +62,9 @@ export interface CompactSidebarBaseProps {
 /**
  * 접힌 사이드바 Props 인터페이스
  */
-export interface CompactSidebarCollapsedProps extends Omit<CompactSidebarBaseProps, "logoText"> {
+export interface CompactSidebarCollapsedProps extends Omit<CompactSidebarBaseProps, "logoText" | "isAdminMode" | "onModeToggle" | "showModeToggle"> {
     /** 사이드바 펼치기 토글 함수 */
-    onToggleExpand: () => void;
+    onToggleExpand?: () => void;
     /** 사이드바 펼치기 아이콘 */
     expandIcon?: React.ReactNode;
     /** 접힌 사이드바 너비 */
@@ -75,9 +75,9 @@ export interface CompactSidebarCollapsedProps extends Omit<CompactSidebarBasePro
 /**
  * 펼쳐진 사이드바 Props 인터페이스
  */
-export interface CompactSidebarExpandedProps extends CompactSidebarBaseProps {
+export interface CompactSidebarExpandedProps extends Omit<CompactSidebarBaseProps, "isAdminMode" | "onModeToggle" | "showModeToggle"> {
     /** 사이드바 접기 토글 함수 */
-    onToggleCollapse: () => void;
+    onToggleCollapse?: () => void;
     /** 사이드바 접기 아이콘 */
     collapseIcon?: React.ReactNode;
     /** 펼쳐진 사이드바 너비 */
@@ -152,11 +152,11 @@ interface CompactSidebarProps {
 /**
  * 접힌 컴팩트 사이드바 컴포넌트
  */
-export declare function CompactSidebarCollapsed({ logoUrl, logoTextShort, activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, onMenuClick, }: CompactSidebarCollapsedProps): React.JSX.Element;
+export declare function CompactSidebarCollapsed({ logoUrl, logoTextShort, activePath, menuGroups, width, className, user, onLogout, showNotification, showSettings, onMenuClick, }: CompactSidebarCollapsedProps): React.JSX.Element;
 /**
  * 펼쳐진 컴팩트 사이드바 컴포넌트 (헤더 없음)
  */
-export declare function CompactSidebarExpanded({ activePath, menuGroups, width, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, onMenuClick, }: CompactSidebarExpandedProps): React.JSX.Element;
+export declare function CompactSidebarExpanded({ activePath, menuGroups, width, className, user, onLogout, showNotification, showSettings, onMenuClick, }: CompactSidebarExpandedProps): React.JSX.Element;
 /**
  * 컴팩트 사이드바 컴포넌트 (통합) - 헤더 없는 버전
  *
@@ -168,5 +168,5 @@ export declare function CompactSidebarExpanded({ activePath, menuGroups, width, 
  * - 30px 메뉴 아이템 크기
  * - 헤더 영역 없음
  */
-export declare function CompactSidebar({ isOpen, onClose, isCollapsed, isHidden, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, isAdminMode, onModeToggle, showModeToggle, showNotification, showSettings, logoUrl, logoText, logoTextShort, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, }: CompactSidebarProps): React.JSX.Element;
+export declare function CompactSidebar({ isOpen, onClose, isCollapsed, isHidden, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, showNotification, showSettings, logoUrl, logoText, logoTextShort, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, }: CompactSidebarProps): React.JSX.Element;
 export {};

@@ -44,11 +44,15 @@ export interface TabBarProps {
     homeButtonActive?: boolean;
     /** 홈 경로 (툴팁용) */
     homePath?: string;
+    /** 홈 버튼 커스텀 아이콘 */
+    homeButtonIcon?: React.ReactNode;
+    /** 홈 버튼 텍스트/라벨 */
+    homeButtonLabel?: string;
 }
 /**
  * TabBar 컴포넌트 - 브라우저 탭과 유사한 동작을 제공하는 탭 바
  */
-export declare function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages, maxTabs, className, showNewTabButton, showHomeButton, onHomeClick, homeButtonActive, homePath, }: TabBarProps): React.JSX.Element;
+export declare function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages, maxTabs, className, showNewTabButton, showHomeButton, onHomeClick, homeButtonActive, homeButtonIcon, homeButtonLabel, }: TabBarProps): React.JSX.Element;
 /**
  * TabBar 스타일 상수 - 필요시 외부에서 참조 가능
  */

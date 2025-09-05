@@ -143,3 +143,7 @@ body[data-dragging] .tabsInnerContainer {
 .homeButtonIcon {
   @apply w-4 h-4;
 }
+
+.homeButtonLabel {
+  @apply text-xs font-bold ml-1;
+}

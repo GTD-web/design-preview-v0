@@ -113,7 +113,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
 }
 // 이전 Tab 컴포넌트를 SortableTab으로 대체
 const Tab = SortableTab;
-function HomeButton({ isActive = false, onClick, homePath = "홈", }) {
+function HomeButton({ isActive = false, onClick, icon, label = "홈", }) {
     // CSS 모듈 클래스 조합
     const homeButtonClass = [
         styles.homeButton,
@@ -121,20 +121,21 @@ function HomeButton({ isActive = false, onClick, homePath = "홈", }) {
     ]
         .filter(Boolean)
         .join(" ");
-    return (React.createElement(motion.button, { className: homeButtonClass, onClick: onClick, title: `${homePath}으로 이동`, whileHover: { scale: isActive ? 1.05 : 1.05 }, whileTap: { scale: 0.95 }, style: {
+    return (React.createElement(motion.button, { className: homeButtonClass, onClick: onClick, title: `${label}으로 이동`, whileHover: { scale: isActive ? 1.05 : 1.05 }, whileTap: { scale: 0.95 }, style: {
             position: "relative",
             zIndex: 2,
             userSelect: "none",
             touchAction: "manipulation",
             pointerEvents: "auto",
         }, draggable: false },
-        React.createElement("svg", { className: styles.homeButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
-            React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" }))));
+        icon ? (React.createElement("div", { className: styles.homeButtonIcon }, icon)) : (React.createElement("svg", { className: styles.homeButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+            React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" }))),
+        React.createElement("span", { className: styles.homeButtonLabel }, label)));
 }
 /**
  * TabBar 컴포넌트 - 브라우저 탭과 유사한 동작을 제공하는 탭 바
  */
-export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages = [], maxTabs = 10, className = "", showNewTabButton = true, showHomeButton = false, onHomeClick, homeButtonActive = false, homePath = "홈", }) {
+export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages = [], maxTabs = 10, className = "", showNewTabButton = true, showHomeButton = false, onHomeClick, homeButtonActive = false, homeButtonIcon, homeButtonLabel = "홈", }) {
     const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
     // 드래그 앤 드롭 센서 설정 - 수평 방향 드래그만 엄격하게 감지
     const sensors = useSensors(useSensor(PointerSensor, {
@@ -218,7 +219,7 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         .filter(Boolean)
         .join(" ");
     return (React.createElement("div", { className: containerClass },
-        showHomeButton && (React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, homePath: homePath })),
+        showHomeButton && (React.createElement(HomeButton, { isActive: homeButtonActive, onClick: onHomeClick, icon: homeButtonIcon, label: homeButtonLabel })),
         React.createElement("div", { className: styles.tabsContainer },
             React.createElement("div", { className: styles.tabsInnerContainer },
                 React.createElement(DndContext, { sensors: sensors, collisionDetection: closestCenter, onDragStart: handleDragStart, onDragEnd: handleDragEnd, onDragCancel: handleDragCancel, modifiers: [restrictToHorizontalAxisStrict, restrictToWindowEdges] },
