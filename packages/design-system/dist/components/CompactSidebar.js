@@ -187,7 +187,7 @@ export function CompactSidebarExpanded({ activePath = "", menuGroups, width = "w
                                 item.badge && (React.createElement("div", { className: `${getCompactBadgeStyles(item.badgeSize)} flex-shrink-0`, title: item.badge },
                                     React.createElement("span", { className: "block truncate" }, item.badge)))))))))))))),
             React.createElement("div", { className: "border-t overflow-x-hidden p-4" },
-                React.createElement(motion.div, { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
+                React.createElement(motion.div, { className: "rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
                     React.createElement("div", { className: "flex items-center justify-between" },
                         React.createElement("div", { className: "flex-1 min-w-0 transition-all duration-300" },
                             React.createElement("p", { className: "text-sm font-medium text-[var(--foreground)] truncate" }, user?.name || "사용자")),

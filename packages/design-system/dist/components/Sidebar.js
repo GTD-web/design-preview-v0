@@ -226,7 +226,7 @@ export function SidebarExpanded({ logoUrl, logoText = "디자인시스템", logo
                         React.createElement("svg", { width: "16", height: "16", fill: "none", viewBox: "0 0 24 24", className: "text-secondary group-hover:text-primary transition-colors duration-200" },
                             React.createElement("path", { d: "M9 5l7 7-7 7", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }))))))),
             React.createElement("div", { className: "border-t overflow-x-hidden p-4" },
-                React.createElement(motion.div, { className: "p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
+                React.createElement(motion.div, { className: "rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden", initial: "hidden", animate: "visible", exit: "exit", variants: expandedContentVariants },
                     React.createElement("div", { className: "flex items-center justify-between" },
                         React.createElement("div", { className: "flex-1 min-w-0 transition-all duration-300" },
                             React.createElement("p", { className: "text-sm font-medium text-[var(--foreground)] truncate" }, user?.name || "사용자")),
