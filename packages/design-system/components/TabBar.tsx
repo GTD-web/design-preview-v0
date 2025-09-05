@@ -302,8 +302,6 @@ function HomeButton({
       className={homeButtonClass}
       onClick={onClick}
       title={`${label}으로 이동`}
-      whileHover={{ scale: isActive ? 1.05 : 1.05 }}
-      whileTap={{ scale: 0.95 }}
       style={{
         position: "relative",
         zIndex: 2,
