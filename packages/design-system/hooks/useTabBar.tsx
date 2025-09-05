@@ -245,8 +245,36 @@ export function useTabBar({
       const tabName = url.searchParams.get("tab-name");
       console.log("extractTabNameFromQuery - path:", path);
       console.log("extractTabNameFromQuery - raw tabName:", tabName);
-      // URL 디코딩된 상태로 반환 (searchParams.get이 자동으로 디코딩함)
-      return tabName;
+
+      if (!tabName) return null;
+
+      // 이중 인코딩된 경우를 처리하기 위해 반복적으로 디코딩
+      let decodedName = tabName;
+      let previousName = "";
+
+      // 최대 3번까지 디코딩 시도 (무한 루프 방지)
+      for (let i = 0; i < 3 && decodedName !== previousName; i++) {
+        previousName = decodedName;
+        try {
+          // %로 시작하는 인코딩된 문자가 있는지 확인
+          if (decodedName.includes("%")) {
+            const decoded = decodeURIComponent(decodedName);
+            console.log(
+              `extractTabNameFromQuery - decode step ${i + 1}:`,
+              decoded
+            );
+            decodedName = decoded;
+          } else {
+            break;
+          }
+        } catch (decodeError) {
+          console.warn("extractTabNameFromQuery - decode error:", decodeError);
+          break;
+        }
+      }
+
+      console.log("extractTabNameFromQuery - final decoded:", decodedName);
+      return decodedName;
     } catch (error) {
       console.error("extractTabNameFromQuery - error:", error);
       return null;
