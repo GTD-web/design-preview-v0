@@ -773,7 +773,7 @@ export function SidebarExpanded({
         {/* 푸터 */}
         <div className="border-t overflow-x-hidden p-4">
           <motion.div
-            className="p-3 rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
+            className="rounded-lg bg-surface/50 hover:bg-surface/70 transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
             initial="hidden"
             animate="visible"
             exit="exit"

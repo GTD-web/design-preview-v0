@@ -600,6 +600,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               tabs={tabs}
               activeTabId={activeTabId}
               onTabClick={(tab) => {
+                console.log("Tab clicked - activating tab:", tab.id);
                 activateTab(tab.id);
               }}
               onTabClose={(tabId) => removeTab(tabId)}

@@ -133,7 +133,8 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
       const clickDuration = mouseUpTime - mouseDownTimeRef.current;
 
       // 드래그가 진행 중이 아니고, 클릭 시간이 합리적인 범위 내인 경우 클릭 처리
-      if (!isDragging && clickDuration < 500) {
+      // 클릭 시간 제한을 더 관대하게 조정
+      if (!isDragging && !isDragStarted && clickDuration < 1000) {
         console.log("MouseUp click detected, processing tab:", tab.title);
         onTabClick(tab);
       } else {
@@ -159,10 +160,10 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
     };
 
     const handleDragEnd = () => {
-      // 드래그 종료 시 상태를 즉시 리셋
+      // 드래그 종료 시 상태를 더 빠르게 리셋
       setTimeout(() => {
         setIsDragStarted(false);
-      }, 50); // 짧은 딜레이로 확실한 리셋
+      }, 10); // 더 짧은 딜레이로 빠른 리셋
     };
 
     window.addEventListener("tab-drag-start", handleDragStart);
@@ -211,7 +212,8 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
         onMouseUp={handleMouseUp}
         onClick={() => {
           // 백업 클릭 처리 - 드래그가 아닌 경우에만
-          if (!isDragging && !isDragStarted) {
+          // 단순한 조건으로 변경하여 클릭이 더 안정적으로 작동하도록 함
+          if (!isDragging) {
             console.log("Fallback click handler triggered for tab:", tab.title);
             onTabClick(tab);
           } else {
@@ -356,13 +358,13 @@ export function TabBar({
 }: TabBarProps) {
   const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
 
-  // 드래그 앤 드롭 센서 설정 - 수평 방향 드래그만 엄격하게 감지
+  // 드래그 앤 드롭 센서 설정 - 클릭과 드래그 균형 맞추기
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 20, // 20px 이상 움직여야 드래그 시작 (더 엄격하게)
-        tolerance: 3, // 더 엄격한 tolerance
-        delay: 150, // 150ms 딜레이로 의도적인 드래그만 감지 (더 길게)
+        distance: 8, // 8px 이상 움직여야 드래그 시작 (클릭과 드래그 균형)
+        tolerance: 5, // 적당한 tolerance
+        // delay 제거 - 클릭 지연 방지
       },
     }),
     useSensor(KeyboardSensor, {
