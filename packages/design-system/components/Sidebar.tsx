@@ -20,11 +20,11 @@ export type BadgeSize = "xs" | "sm" | "md" | "lg";
 const getBadgeStyles = (size: BadgeSize = "sm") => {
   const sizeStyles = {
     xs: "text-xs px-1 py-0.5 min-w-4 h-4",
-    sm: "text-xs px-1 py-0.5 min-w-5 h-5", 
+    sm: "text-xs px-1 py-0.5 min-w-5 h-5",
     md: "text-sm px-2 py-1 min-w-6 h-6",
-    lg: "text-sm px-2 py-1 min-w-7 h-7"
+    lg: "text-sm px-2 py-1 min-w-7 h-7",
   };
-  
+
   return `${sizeStyles[size]} bg-neutral-900 /*dark:bg-neutral-800*/ text-white rounded font-medium border border-neutral-700 max-w-16 text-center overflow-hidden leading-none flex items-center justify-center`;
 };
 
@@ -310,7 +310,9 @@ export function SidebarCollapsed({
                       </button>
                       {item.badge && (
                         <div
-                          className={`absolute -top-1 -right-1 ${getBadgeStyles(item.badgeSize)}`}
+                          className={`absolute -top-1 -right-1 ${getBadgeStyles(
+                            item.badgeSize
+                          )}`}
                           title={item.badge}
                         >
                           <span className="block truncate">
@@ -705,7 +707,9 @@ export function SidebarExpanded({
                           </span>
                           {item.badge && (
                             <div
-                              className={`${getBadgeStyles(item.badgeSize)} flex-shrink-0`}
+                              className={`${getBadgeStyles(
+                                item.badgeSize
+                              )} flex-shrink-0`}
                               title={item.badge}
                             >
                               <span className="block truncate">
