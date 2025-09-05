@@ -61,6 +61,8 @@ export interface UseTabBarReturn {
     addCurrentPageAsTab: () => void;
     /** 활성 탭의 경로 업데이트 */
     updateActiveTabPath: (newPath: string) => void;
+    /** TabBar 컴포넌트용 탭 클릭 핸들러 */
+    handleTabClick: (tab: TabItem) => void;
 }
 /**
  * 탭 바 상태 관리를 위한 Hook

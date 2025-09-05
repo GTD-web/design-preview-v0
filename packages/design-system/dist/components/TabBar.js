@@ -18,47 +18,44 @@ const restrictToHorizontalAxisStrict = ({ transform }) => {
 };
 function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
     const [isHovering, setIsHovering] = useState(false);
-    const [isDragStarted, setIsDragStarted] = useState(false);
-    const mouseDownTimeRef = React.useRef(0);
+    const [isDragInProgress, setIsDragInProgress] = useState(false);
     const { attributes, listeners, setNodeRef, transform, transition, isDragging, } = useSortable({ id: tab.id });
     const handleCloseClick = useCallback((e) => {
         e.stopPropagation();
         onTabClose(tab.id);
     }, [tab.id, onTabClose]);
-    const handleMouseDown = useCallback((e) => {
-        // 왼쪽 마우스 버튼이 아닌 경우 무시
-        if (e.button !== 0)
-            return;
-        mouseDownTimeRef.current = Date.now();
-    }, []);
-    const handleMouseUp = useCallback((e) => {
-        // 왼쪽 마우스 버튼이 아닌 경우 무시
-        if (e.button !== 0)
-            return;
-        const mouseUpTime = Date.now();
-        const clickDuration = mouseUpTime - mouseDownTimeRef.current;
-        // 드래그가 진행 중이 아니고, 클릭 시간이 합리적인 범위 내인 경우 클릭 처리
-        // 클릭 시간 제한을 더 관대하게 조정
-        if (!isDragging && !isDragStarted && clickDuration < 1000) {
-            console.log("MouseUp click detected, processing tab:", tab.title);
+    // 간단한 클릭 핸들러 - 드래그 센서가 300ms delay로 충분히 구분됨
+    const handleClick = useCallback((e) => {
+        // 기본 동작 방지
+        e.preventDefault();
+        // console.log("SortableTab: Click on tab:", tab.title, tab.id);
+        // console.log(
+        //   "SortableTab: isDragging:",
+        //   isDragging,
+        //   "isDragInProgress:",
+        //   isDragInProgress
+        // );
+        // 드래그 중이 아닐 때만 처리
+        if (!isDragging && !isDragInProgress) {
+            // console.log("SortableTab: Processing click");
             onTabClick(tab);
         }
         else {
-            console.log("MouseUp click ignored - duration:", clickDuration, "isDragging:", isDragging, "isDragStarted:", isDragStarted);
+            // console.log("SortableTab: Click ignored due to drag");
         }
-    }, [tab, onTabClick, isDragging, isDragStarted]);
-    // 드래그 이벤트 구독
+    }, [tab, onTabClick, isDragging, isDragInProgress]);
+    // 드래그 이벤트 구독 - 클릭 우선을 위해 더 빠른 상태 리셋
     React.useEffect(() => {
         const handleDragStart = (event) => {
             if (event.detail?.activeId === tab.id) {
-                setIsDragStarted(true);
+                setIsDragInProgress(true);
+                console.log("Drag started for tab:", tab.title);
             }
         };
         const handleDragEnd = () => {
-            // 드래그 종료 시 상태를 더 빠르게 리셋
-            setTimeout(() => {
-                setIsDragStarted(false);
-            }, 10); // 더 짧은 딜레이로 빠른 리셋
+            // 드래그 종료 시 즉시 상태 리셋 - 클릭 반응성 향상
+            setIsDragInProgress(false);
+            console.log("Drag ended for tab:", tab.title);
         };
         window.addEventListener("tab-drag-start", handleDragStart);
         window.addEventListener("tab-drag-end", handleDragEnd);
@@ -66,6 +63,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
             window.removeEventListener("tab-drag-start", handleDragStart);
             window.removeEventListener("tab-drag-end", handleDragEnd);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tab.id]);
     // CSS 모듈 클래스 조합
     const tabButtonClass = [
@@ -92,17 +90,13 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
         willChange: isDragging ? "transform" : "auto",
     };
     return (React.createElement("div", { ref: setNodeRef, style: style, ...attributes },
-        React.createElement("button", { className: tabButtonClass, onMouseDown: handleMouseDown, onMouseUp: handleMouseUp, onClick: () => {
-                // 백업 클릭 처리 - 드래그가 아닌 경우에만
-                // 단순한 조건으로 변경하여 클릭이 더 안정적으로 작동하도록 함
-                if (!isDragging) {
-                    console.log("Fallback click handler triggered for tab:", tab.title);
-                    onTabClick(tab);
-                }
-                else {
-                    console.log("Fallback click ignored - isDragging:", isDragging, "isDragStarted:", isDragStarted);
-                }
-            }, onMouseEnter: () => setIsHovering(true), onMouseLeave: () => setIsHovering(false), title: tab.title, ...listeners },
+        React.createElement("button", { className: tabButtonClass, onClick: handleClick, onMouseEnter: () => setIsHovering(true), onMouseLeave: () => setIsHovering(false), title: tab.title, style: {
+                pointerEvents: "auto",
+                cursor: "pointer",
+                // 클릭 반응성을 위한 추가 스타일
+                touchAction: "manipulation",
+                userSelect: "none",
+            }, ...listeners },
             tab.icon && React.createElement("div", { className: styles.tabIcon }, tab.icon),
             React.createElement("span", { className: styles.tabTitle }, tab.title),
             tab.closable !== false && (React.createElement("button", { className: closeButtonClass, onClick: handleCloseClick, onMouseEnter: () => setIsHovering(true), onMouseLeave: () => setIsHovering(false), title: "\uD0ED \uB2EB\uAE30", style: {
@@ -139,12 +133,12 @@ function HomeButton({ isActive = false, onClick, icon, label = "홈", }) {
  */
 export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages = [], maxTabs = 10, className = "", showNewTabButton = true, showHomeButton = false, onHomeClick, homeButtonActive = false, homeButtonIcon, homeButtonLabel = "홈", }) {
     const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
-    // 드래그 앤 드롭 센서 설정 - 클릭과 드래그 균형 맞추기
+    // 드래그 앤 드롭 센서 설정 - 클릭 우선, 드래그는 의도적으로 길게 눌렀을 때만
     const sensors = useSensors(useSensor(PointerSensor, {
         activationConstraint: {
-            distance: 8, // 8px 이상 움직여야 드래그 시작 (클릭과 드래그 균형)
-            tolerance: 5, // 적당한 tolerance
-            // delay 제거 - 클릭 지연 방지
+            distance: 8, // 적절한 거리 - 너무 크면 드래그가 어려워짐
+            tolerance: 5, // 적절한 tolerance
+            delay: 300, // 300ms 동안 눌러야 드래그 시작 - 클릭과 확실히 구분
         },
     }), useSensor(KeyboardSensor, {
         coordinateGetter: sortableKeyboardCoordinates,
@@ -200,8 +194,16 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         window.dispatchEvent(new CustomEvent("tab-drag-end", { detail: { activeId: null } }));
     }, []);
     const handleTabClick = useCallback((tab) => {
-        console.log("TabBar handleTabClick called with tab:", tab);
-        onTabClick?.(tab);
+        // console.log("TabBar: handleTabClick called with tab:", tab.title, tab.id);
+        // console.log("TabBar: onTabClick function exists:", !!onTabClick);
+        if (onTabClick) {
+            // console.log("TabBar: Calling onTabClick...");
+            onTabClick(tab);
+            // console.log("TabBar: onTabClick completed");
+        }
+        else {
+            console.warn("TabBar: onTabClick is not provided to TabBar");
+        }
     }, [onTabClick]);
     const handleTabClose = useCallback((tabId) => {
         onTabClose?.(tabId);
