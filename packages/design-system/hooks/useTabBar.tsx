@@ -260,6 +260,36 @@ export function useTabBar({
     [normalizePath]
   );
 
+  // 탭 구별을 위한 더 엄격한 경로 비교 함수
+  const getPathForTabComparison = useCallback(
+    (path: string): string => {
+      try {
+        const url = new URL(path, "http://localhost");
+        // tab-name만 제거하고 나머지 모든 쿼리 파라미터는 유지
+        url.searchParams.delete("tab-name");
+        const normalizedPathname = normalizePath(url.pathname);
+        const searchString = url.searchParams.toString();
+
+        // 쿼리 파라미터를 정렬하여 일관성 있는 비교 가능
+        if (searchString) {
+          const params = new URLSearchParams(searchString);
+          const sortedParams = new URLSearchParams();
+          Array.from(params.entries())
+            .sort(([a], [b]) => a.localeCompare(b))
+            .forEach(([key, value]) => sortedParams.set(key, value));
+          return normalizedPathname + `?${sortedParams.toString()}`;
+        }
+
+        return normalizedPathname;
+      } catch {
+        // URL 파싱 실패 시 기본 정규화만 적용
+        const [pathPart] = path.split("?");
+        return normalizePath(pathPart);
+      }
+    },
+    [normalizePath]
+  );
+
   // 쿼리 파라미터에서 탭 이름 추출
   const extractTabNameFromQuery = useCallback((path: string): string | null => {
     try {
@@ -315,8 +345,8 @@ export function useTabBar({
       const finalTitle = customTabName || pageInfo.title;
       // console.log("addTab - finalTitle:", finalTitle);
 
-      // tab-name을 제외한 경로로 탭 구분 (탭의 고유성 판단)
-      const pathForComparison = getNormalizedPathWithoutTabName(normalizedPath);
+      // 정확한 쿼리 파라미터 비교를 위한 경로 생성 (탭의 고유성 판단)
+      const pathForComparison = getPathForTabComparison(normalizedPath);
       // console.log("addTab - pathForComparison:", pathForComparison);
 
       const normalizedPageInfo = {
@@ -325,18 +355,16 @@ export function useTabBar({
         title: finalTitle,
       };
 
-      // 탭 ID는 tab-name을 제외한 경로로 생성
+      // 탭 ID는 정확한 비교 경로로 생성
       const tabId = generateTabId(
         pathForComparison,
         normalizedPageInfo.allowDuplicate
       );
 
       setTabs((prevTabs) => {
-        // tab-name을 제외한 경로로 기존 탭 찾기
+        // 정확한 쿼리 파라미터 비교로 기존 탭 찾기
         const existingTab = prevTabs.find((tab) => {
-          const tabPathForComparison = getNormalizedPathWithoutTabName(
-            tab.path
-          );
+          const tabPathForComparison = getPathForTabComparison(tab.path);
           return tabPathForComparison === pathForComparison;
         });
 
@@ -412,11 +440,9 @@ export function useTabBar({
         if (normalizedPageInfo.allowDuplicate && !customTabName) {
           // console.log("addTab numbering - Adding number to tab title");
           // 커스텀 탭 이름이 없을 때만 번호 추가
-          // tab-name을 제외한 같은 기본 경로를 가진 탭들 찾기
+          // 정확한 비교로 같은 기본 경로를 가진 탭들 찾기
           const samePathTabs = prevTabs.filter((tab) => {
-            const tabPathForComparison = getNormalizedPathWithoutTabName(
-              tab.path
-            );
+            const tabPathForComparison = getPathForTabComparison(tab.path);
             return tabPathForComparison === pathForComparison;
           });
           if (samePathTabs.length > 0) {
@@ -458,7 +484,7 @@ export function useTabBar({
       localStorageKey,
       router,
       normalizePath,
-      getNormalizedPathWithoutTabName,
+      getPathForTabComparison,
       extractTabNameFromQuery,
     ]
   );
@@ -928,17 +954,16 @@ export function useTabBar({
       }
     }
 
-    // tab-name을 제외한 현재 경로 생성
-    const currentPathForComparison =
-      getNormalizedPathWithoutTabName(currentFullPath);
+    // 정확한 쿼리 파라미터 비교를 위한 현재 경로 생성
+    const currentPathForComparison = getPathForTabComparison(currentFullPath);
     // console.log(
     //   "Path change: currentPathForComparison:",
     //   currentPathForComparison
     // );
 
-    // tab-name을 제외한 경로로 일치하는 탭 찾기
+    // 정확한 쿼리 파라미터 비교로 일치하는 탭 찾기
     const matchingTab = tabs.find((tab) => {
-      const tabPathForComparison = getNormalizedPathWithoutTabName(tab.path);
+      const tabPathForComparison = getPathForTabComparison(tab.path);
       return tabPathForComparison === currentPathForComparison;
     });
 
@@ -977,7 +1002,7 @@ export function useTabBar({
     activeTabId,
     updateActiveTabTitleAndPath,
     isTabClickNavigation,
-    getNormalizedPathWithoutTabName,
+    getPathForTabComparison,
   ]);
 
   return {
