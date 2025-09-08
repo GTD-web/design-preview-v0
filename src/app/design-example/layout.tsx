@@ -1,7 +1,13 @@
 "use client";
 
 import localFont from "next/font/local";
-import React, { useState, createContext, useContext, useCallback } from "react";
+import React, {
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import "../globals.css";
 import { usePathname, useRouter } from "next/navigation";
 import ClientOnly from "@/components/ClientOnly";
@@ -485,9 +491,9 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     []
   );
 
-  // TabBar 상태 관리
-  const allPagesMapping = createAllPagesMapping();
-  const availablePages = createAvailablePages();
+  // TabBar 상태 관리 - 페이지 매핑을 메모이제이션
+  const allPagesMapping = useMemo(() => createAllPagesMapping(), []);
+  const availablePages = useMemo(() => createAvailablePages(), []);
   const {
     tabs,
     activeTabId,
