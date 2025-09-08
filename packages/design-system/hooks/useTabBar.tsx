@@ -192,13 +192,35 @@ export function useTabBar({
 
         // 최대 탭 개수 체크
         if (prevTabs.length >= maxTabs) {
-          // 가장 오래된 탭을 제거 (첫 번째 탭 제외 - 보통 홈탭)
-          const newTabs = prevTabs.slice(1, -1);
+          console.log(
+            "addTab: Maximum tabs reached, removing oldest closable tab"
+          );
+
+          // 닫을 수 있는 가장 오래된 탭을 찾기 (홈 탭이 아닌 것 중에서)
+          let oldestClosableIndex = -1;
+          for (let i = 1; i < prevTabs.length; i++) {
+            // 첫 번째 탭(홈탭) 제외
+            if (prevTabs[i].closable !== false) {
+              oldestClosableIndex = i;
+              break;
+            }
+          }
+
+          if (oldestClosableIndex === -1) {
+            console.warn("addTab: No closable tabs found, cannot add new tab");
+            return prevTabs; // 닫을 수 있는 탭이 없으면 추가하지 않음
+          }
+
+          // 선택된 탭을 제거
+          const newTabs = prevTabs.filter(
+            (_, index) => index !== oldestClosableIndex
+          );
+
           // 새 탭 제목 생성 (pathname 기준으로 중복 탭인 경우 번호 추가)
           let tabTitle = normalizedPageInfo.title;
           if (normalizedPageInfo.allowDuplicate) {
             const basePath = normalizedPageInfo.path.split("?")[0];
-            const samePathTabs = prevTabs.filter((tab) => {
+            const samePathTabs = newTabs.filter((tab) => {
               const tabBasePath = tab.path.split("?")[0];
               return tabBasePath === basePath;
             });
@@ -209,9 +231,10 @@ export function useTabBar({
             }
           }
 
+          // 새 탭을 적절한 위치에 삽입 (제거된 위치 또는 끝)
+          const insertIndex = Math.min(oldestClosableIndex, newTabs.length);
           const updatedTabs = [
-            prevTabs[0], // 홈 탭 유지
-            ...newTabs,
+            ...newTabs.slice(0, insertIndex),
             {
               id: tabId,
               title: tabTitle,
@@ -219,7 +242,10 @@ export function useTabBar({
               icon: normalizedPageInfo.icon,
               closable: normalizedPageInfo.closable,
             },
+            ...newTabs.slice(insertIndex),
           ];
+
+          console.log("addTab: Tab order maintained after reaching max tabs");
 
           // 로컬 스토리지에 저장
           if (enableLocalStorage) {
@@ -228,6 +254,8 @@ export function useTabBar({
 
           return updatedTabs;
         }
+
+        console.log("addTab: Adding new tab within limit");
 
         // 새 탭 추가 (pathname 기준으로 중복 탭인 경우 제목에 번호 추가)
         let tabTitle = finalTitle;
@@ -393,6 +421,10 @@ export function useTabBar({
       console.log("activateTab: Current pathname:", pathname);
       console.log("activateTab: Router object:", !!router);
 
+      // 탭 클릭으로 인한 네비게이션임을 먼저 표시 (더 오래 유지)
+      console.log("activateTab: Setting isTabClickNavigation to true");
+      setIsTabClickNavigation(true);
+
       // 먼저 탭을 활성화
       console.log("activateTab: Setting activeTabId to:", tabId);
       setActiveTabId(tabId);
@@ -403,10 +435,6 @@ export function useTabBar({
         saveTabsToStorage(localStorageKey, tabs, tabId);
       }
 
-      // 탭 클릭으로 인한 네비게이션임을 표시
-      console.log("activateTab: Setting isTabClickNavigation to true");
-      setIsTabClickNavigation(true);
-
       // 항상 해당 경로로 이동 (현재 경로와 같더라도)
       console.log("activateTab: Navigating to", tab.path);
       try {
@@ -416,11 +444,11 @@ export function useTabBar({
         console.error("activateTab: Navigation failed:", error);
       }
 
-      // 네비게이션 완료 후 상태 리셋 - 더 빠르게
+      // 네비게이션 완료 후 상태 리셋 - 더 길게 유지하여 useEffect 실행 방지
       setTimeout(() => {
         console.log("activateTab: Resetting isTabClickNavigation to false");
         setIsTabClickNavigation(false);
-      }, 50);
+      }, 300); // 50ms에서 300ms로 증가
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [tabs, router, enableLocalStorage, localStorageKey, pathname]
@@ -445,29 +473,64 @@ export function useTabBar({
         normalizePath(pathPart) + (queryPart ? `?${queryPart}` : "");
       const normalizedPageInfo = { ...pageInfo, path: normalizedPath };
 
-      // 중복 허용 페이지의 경우, 기본 경로(쿼리 파라미터 없는)로 기존 탭 찾기
+      console.log("activateOrAddTab: Starting with pageInfo:", pageInfo);
+      console.log("activateOrAddTab: Normalized path:", normalizedPath);
+      console.log(
+        "activateOrAddTab: Current tabs:",
+        tabs.map((t) => ({ id: t.id, title: t.title, path: t.path }))
+      );
+
+      // 기존 탭 찾기 로직 개선 - 더 정확한 매칭
       let existingTab;
       if (normalizedPageInfo.allowDuplicate) {
-        // 중복 허용 페이지는 기본 경로로 기존 탭 찾기 (쿼리 파라미터 무시)
-        const basePath = pathPart;
-        existingTab = tabs.find((tab) => {
-          const tabBasePath = tab.path.split("?")[0];
-          return tabBasePath === basePath;
-        });
+        // 중복 허용 페이지는 완전히 동일한 경로를 찾고, 없으면 기본 경로로 찾기
+        existingTab = tabs.find((tab) => tab.path === normalizedPath);
+
+        if (!existingTab) {
+          // 완전히 동일한 경로가 없으면 기본 경로로 찾기
+          const basePath = pathPart;
+          existingTab = tabs.find((tab) => {
+            const tabBasePath = tab.path.split("?")[0];
+            return tabBasePath === basePath;
+          });
+        }
       } else {
         // 일반 페이지는 기존 로직 사용
         existingTab = findTab(tabs, normalizedPageInfo, normalizedPath);
       }
 
+      console.log(
+        "activateOrAddTab: Found existing tab:",
+        existingTab
+          ? {
+              id: existingTab.id,
+              title: existingTab.title,
+              path: existingTab.path,
+            }
+          : null
+      );
+
       if (existingTab) {
-        // 기존 탭이 있으면 활성화
+        console.log("activateOrAddTab: Activating existing tab");
+
+        // 기존 탭이 있으면 활성화 (순서 변경 없이)
         setActiveTabId(existingTab.id);
 
         // 기존 탭의 경로를 새로운 경로로 업데이트 (쿼리파라미터 변경 반영)
+        // 탭 순서를 변경하지 않습니다!
         setTabs((prevTabs) => {
           const updatedTabs = prevTabs.map((tab) => {
             if (tab.id === existingTab.id) {
-              return { ...tab, path: normalizedPath };
+              // 쿼리 파라미터에서 탭 이름 확인
+              const customTabName = extractTabNameFromQuery(normalizedPath);
+              const newTitle =
+                customTabName || tab.title.replace(/ \(\d+\)$/, ""); // 기존 번호 제거
+
+              return {
+                ...tab,
+                path: normalizedPath,
+                title: newTitle,
+              };
             }
             return tab;
           });
@@ -484,6 +547,7 @@ export function useTabBar({
         return;
       }
 
+      console.log("activateOrAddTab: No existing tab found, adding new tab");
       // 기존 탭이 없는 경우에만 새 탭 추가
       addTab(normalizedPageInfo);
     },
@@ -496,6 +560,7 @@ export function useTabBar({
       localStorageKey,
       normalizePath,
       findTab,
+      extractTabNameFromQuery,
     ]
   );
 
@@ -760,8 +825,19 @@ export function useTabBar({
 
   // 경로 변경 시 탭 상태 업데이트 - 기존 탭 활성화 및 활성 탭 경로 업데이트
   useEffect(() => {
-    // 탭 제거 중이거나 초기화되지 않았거나 탭 닫기로 인한 네비게이션이면 처리 방지
-    if (isRemovingTab || !isInitialized || isTabCloseNavigation) {
+    // 탭 제거 중이거나 초기화되지 않았거나 탭 닫기로 인한 네비게이션이거나 탭 클릭 네비게이션이면 처리 방지
+    if (
+      isRemovingTab ||
+      !isInitialized ||
+      isTabCloseNavigation ||
+      isTabClickNavigation
+    ) {
+      console.log("useEffect: Skipping due to flags:", {
+        isRemovingTab,
+        isInitialized,
+        isTabCloseNavigation,
+        isTabClickNavigation,
+      });
       return;
     }
 
@@ -891,10 +967,10 @@ export function useTabBar({
       }
     }
 
-    // 탭 클릭 네비게이션 상태 리셋
-    if (isTabClickNavigation) {
-      setIsTabClickNavigation(false);
-    }
+    // 탭 클릭 네비게이션 상태 리셋 - 더 이상 여기서 리셋하지 않음 (초기 방지 조건으로 이동)
+    // if (isTabClickNavigation) {
+    //   setIsTabClickNavigation(false);
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     pathname,
@@ -926,7 +1002,12 @@ export function useTabBar({
       return;
     }
 
-    if (!isInitialized || isTabCloseNavigation) {
+    if (!isInitialized || isTabCloseNavigation || isTabClickNavigation) {
+      console.log("useEffect (second): Skipping due to flags:", {
+        isInitialized,
+        isTabCloseNavigation,
+        isTabClickNavigation,
+      });
       return;
     }
 
