@@ -20,7 +20,7 @@ import {
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import type { Modifier } from "@dnd-kit/core";
 import { PageSelector } from "./PageSelector";
-import type { PageInfo } from "../hooks/useTabBar";
+import type { PageInfo } from "../hooks";
 import styles from "./TabBar.module.css";
 
 // Y축 움직임을 완전히 차단하는 강력한 modifier

@@ -48,7 +48,8 @@ export {
   type UseTabBarOptions,
   type UseTabBarReturn,
   type PageInfo,
-} from "./hooks/useTabBar";
+  type TabItem,
+} from "./hooks";
 
 // Tokens
 export {

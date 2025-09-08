@@ -21,7 +21,7 @@ import {
   DesignSettingsProvider,
   useDesignSettings,
 } from "@/packages/design-system";
-import { PageInfo, useTabBar } from "@/packages/design-system/hooks/useTabBar";
+import { PageInfo, useTabBar } from "@/packages/design-system/hooks";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -503,6 +503,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     reorderTabs,
     deactivateAllTabs,
     activateOrAddTab,
+    forceAddNewTab,
     handleTabClick,
   } = useTabBar({
     pageMapping: allPagesMapping,
@@ -513,8 +514,8 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     initialTabs: [], // 초기 탭 없음
     autoCreateTabOnNavigation: true, // URL 직접 입력 등 네비게이션 시 자동으로 탭 생성
     ignoreQueryParamsForPaths: [
-      "/design-example/analytics",
-      "/design-example/dashboard",
+      // "/design-example/analytics",
+      // "/design-example/dashboard",
     ], // 쿼리파라미터를 무시할 경로들 (쿼리파라미터가 달라도 같은 탭으로 인식)
   });
 
@@ -676,24 +677,30 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                     closable: path !== "/design-example",
                   };
 
-                  // 중복 허용 페이지(대시보드, 분석)만 쿼리 파라미터 추가
+                  // 중복 허용 페이지 확인
                   const isDuplicatePage =
                     path === "/design-example/dashboard" ||
                     path === "/design-example/analytics";
 
                   if (isDuplicatePage) {
-                    // 쿼리 파라미터 추가 (중복 탭 구분용)
-                    const tempValue = Math.random().toString(36).substr(2, 8);
-                    const pathWithQuery = `${path}?temp=${tempValue}`;
+                    // 중복 허용 페이지의 경우 특별 처리
+                    const existingTab = tabs.find((tab) => {
+                      const tabBasePath = tab.path.split("?")[0];
+                      return tabBasePath === path;
+                    });
 
-                    const pageInfoWithQuery = {
-                      ...pageInfo,
-                      path: pathWithQuery,
-                    };
+                    const isCurrentlyActive =
+                      existingTab && activeTabId === existingTab.id;
 
-                    activateOrAddTab(pageInfoWithQuery);
+                    if (existingTab && isCurrentlyActive) {
+                      // 이미 해당 페이지가 활성화되어 있으면 새로운 중복 탭 생성
+                      forceAddNewTab(pageInfo);
+                    } else {
+                      // 그렇지 않으면 기존 탭 활성화 또는 새 탭 생성
+                      activateOrAddTab(pageInfo);
+                    }
                   } else {
-                    // 일반 페이지는 쿼리 파라미터 없이
+                    // 일반 페이지는 기존 처리
                     activateOrAddTab(pageInfo);
                   }
 

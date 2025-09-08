@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { PageInfo } from "../hooks/useTabBar";
+import type { PageInfo } from "../hooks";
 import styles from "./PageSelector.module.css";
 
 /**
