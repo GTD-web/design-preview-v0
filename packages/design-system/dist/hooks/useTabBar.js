@@ -128,7 +128,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
     }, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [homePath, normalizePath, defaultPageInfoResolver]);
-    // 탭 구별을 위한 더 엄격한 경로 비교 함수
+    // 탭 구별을 위한 더 엄격한 경로 비교 함수 - 의존성을 안정적으로 관리
     const getPathForTabComparison = useCallback((path) => {
         try {
             const url = new URL(path, "http://localhost");
@@ -159,7 +159,8 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             const [pathPart] = path.split("?");
             return normalizePath(pathPart);
         }
-    }, [normalizePath, ignoreQueryParamsForPaths]);
+    }, [normalizePath] // ignoreQueryParamsForPaths 제거 - 함수 내에서 직접 참조
+    );
     // 쿼리 파라미터에서 탭 이름 추출
     const extractTabNameFromQuery = useCallback((path) => {
         try {
@@ -320,9 +321,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         // 새 탭을 활성화하고 해당 페이지로 이동
         setActiveTabId(tabId);
         router.push(normalizedPageInfo.path);
-    }, 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
+    }, [
         generateTabId,
         maxTabs,
         enableLocalStorage,
@@ -510,28 +509,19 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             return updatedTabs;
         });
     }, [activeTabId, enableLocalStorage, localStorageKey]);
-    // 활성 탭의 제목과 경로 업데이트
+    // 활성 탭의 제목과 경로 업데이트 - 의존성 최적화
     const updateActiveTabTitleAndPath = useCallback((newPath) => {
         if (!activeTabId)
             return;
-        // 쿼리 파라미터에서 탭 이름 확인
-        const customTabName = extractTabNameFromQuery(newPath);
-        // console.log("updateActiveTabTitleAndPath - newPath:", newPath);
-        // (
-        //   "updateActiveTabTitleAndPath - customTabName:",
-        //   customTabName
-        // );
         setTabs((prevTabs) => {
             const updatedTabs = prevTabs.map((tab) => {
                 if (tab.id === activeTabId) {
+                    // 쿼리 파라미터에서 탭 이름 확인 (함수 내에서 직접 호출)
+                    const customTabName = extractTabNameFromQuery(newPath);
                     // 커스텀 탭 이름이 있으면 사용, 없으면 기존 제목 유지 (번호 제거)
                     let newTitle = tab.title;
                     if (customTabName) {
                         newTitle = customTabName;
-                        // console.log(
-                        //   "updateActiveTabTitleAndPath - Setting custom title:",
-                        //   customTabName
-                        // );
                     }
                     else {
                         // 커스텀 이름이 없으면 기존 제목에서 번호 제거
@@ -539,10 +529,6 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                         const pageInfo = getPageInfo(basePath);
                         if (pageInfo) {
                             newTitle = pageInfo.title;
-                            // console.log(
-                            //   "updateActiveTabTitleAndPath - Resetting to base title:",
-                            //   newTitle
-                            // );
                         }
                     }
                     return { ...tab, path: newPath, title: newTitle };
@@ -555,13 +541,8 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             }
             return updatedTabs;
         });
-    }, [
-        activeTabId,
-        enableLocalStorage,
-        localStorageKey,
-        extractTabNameFromQuery,
-        getPageInfo,
-    ]);
+    }, [activeTabId, enableLocalStorage, localStorageKey] // 의존성 최소화
+    );
     // 탭 순서 변경
     const reorderTabs = useCallback((activeId, overId) => {
         if (activeId === overId) {
@@ -773,7 +754,39 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                     ...pageInfo,
                     path: currentFullPath,
                 };
-                addTab(pageInfoWithQuery);
+                // addTab을 직접 호출하지 않고, addTab 함수의 로직을 인라인으로 처리
+                const [pathPart, queryPart] = pageInfoWithQuery.path.split("?");
+                const normalizedPath = normalizePath(pathPart) + (queryPart ? `?${queryPart}` : "");
+                const pathForComparison = getPathForTabComparison(normalizedPath);
+                const tabId = generateTabId(pathForComparison, pageInfoWithQuery.allowDuplicate);
+                setTabs((prevTabs) => {
+                    // 기존 탭이 있는지 확인
+                    const existingTab = prevTabs.find((tab) => {
+                        const tabPathForComparison = getPathForTabComparison(tab.path);
+                        return tabPathForComparison === pathForComparison;
+                    });
+                    if (existingTab) {
+                        setActiveTabId(existingTab.id);
+                        router.push(normalizedPath);
+                        return prevTabs;
+                    }
+                    // 새 탭 추가
+                    const newTab = {
+                        id: tabId,
+                        title: pageInfoWithQuery.title,
+                        path: normalizedPath,
+                        icon: pageInfoWithQuery.icon,
+                        closable: pageInfoWithQuery.closable,
+                    };
+                    const updatedTabs = [...prevTabs, newTab];
+                    // 로컬 스토리지에 저장
+                    if (enableLocalStorage) {
+                        saveTabsToStorage(localStorageKey, updatedTabs, tabId);
+                    }
+                    return updatedTabs;
+                });
+                setActiveTabId(tabId);
+                router.push(normalizedPath);
             }
             else {
                 // 자동 탭 생성이 비활성화되거나 홈 경로인 경우 활성 탭 ID를 undefined로 설정
@@ -800,8 +813,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         isTabClickNavigation,
         getPathForTabComparison,
         autoCreateTabOnNavigation,
-        getPageInfo,
-        addTab,
+        // getPageInfo와 addTab을 제거하고 함수 내에서 직접 호출
     ]);
     // 추가적인 URL 직접 접근 감지 - 더 간단한 접근 방법
     useEffect(() => {
@@ -834,7 +846,39 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             ...pageInfo,
             path: currentFullPath,
         };
-        addTab(pageInfoWithQuery);
+        // addTab을 직접 호출하지 않고, addTab 함수의 로직을 인라인으로 처리
+        const [pathPart, queryPart] = pageInfoWithQuery.path.split("?");
+        const normalizedPath = normalizePath(pathPart) + (queryPart ? `?${queryPart}` : "");
+        const pathForComparison = getPathForTabComparison(normalizedPath);
+        const tabId = generateTabId(pathForComparison, pageInfoWithQuery.allowDuplicate);
+        setTabs((prevTabs) => {
+            // 기존 탭이 있는지 확인
+            const existingTab = prevTabs.find((tab) => {
+                const tabPathForComparison = getPathForTabComparison(tab.path);
+                return tabPathForComparison === pathForComparison;
+            });
+            if (existingTab) {
+                setActiveTabId(existingTab.id);
+                router.push(normalizedPath);
+                return prevTabs;
+            }
+            // 새 탭 추가
+            const newTab = {
+                id: tabId,
+                title: pageInfoWithQuery.title,
+                path: normalizedPath,
+                icon: pageInfoWithQuery.icon,
+                closable: pageInfoWithQuery.closable,
+            };
+            const updatedTabs = [...prevTabs, newTab];
+            // 로컬 스토리지에 저장
+            if (enableLocalStorage) {
+                saveTabsToStorage(localStorageKey, updatedTabs, tabId);
+            }
+            return updatedTabs;
+        });
+        setActiveTabId(tabId);
+        router.push(normalizedPath);
     }, [
         pathname,
         autoCreateTabOnNavigation,
@@ -844,8 +888,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         tabs,
         normalizePath,
         getPathForTabComparison,
-        getPageInfo,
-        addTab,
+        // getPageInfo와 addTab을 제거하고 함수 내에서 직접 호출
     ]);
     return {
         tabs,
