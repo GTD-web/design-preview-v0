@@ -39,6 +39,8 @@ export interface UseTabBarOptions {
   localStorageKey?: string;
   /** 쿼리파라미터를 무시할 pathname 목록 (해당 경로들은 쿼리파라미터가 달라도 같은 탭으로 인식) */
   ignoreQueryParamsForPaths?: string[];
+  /** URL 직접 입력 등 네비게이션 시 자동으로 탭을 생성할지 여부 (기본값: false) */
+  autoCreateTabOnNavigation?: boolean;
 }
 
 /**
@@ -133,6 +135,7 @@ export function useTabBar({
   enableLocalStorage = true,
   localStorageKey = "tabbar-tabs",
   ignoreQueryParamsForPaths = [],
+  autoCreateTabOnNavigation = false,
 }: UseTabBarOptions = {}): UseTabBarReturn {
   const router = useRouter();
   const pathname = usePathname();
@@ -269,16 +272,18 @@ export function useTabBar({
       try {
         const url = new URL(path, "http://localhost");
         const normalizedPathname = normalizePath(url.pathname);
-        
+
         // 해당 pathname이 쿼리파라미터를 무시할 경로에 포함되어 있으면 쿼리 파라미터 제거
-        const shouldIgnoreQueryParams = ignoreQueryParamsForPaths.some(ignorePath => {
-          return normalizedPathname === normalizePath(ignorePath);
-        });
-        
+        const shouldIgnoreQueryParams = ignoreQueryParamsForPaths.some(
+          (ignorePath) => {
+            return normalizedPathname === normalizePath(ignorePath);
+          }
+        );
+
         if (shouldIgnoreQueryParams) {
           return normalizedPathname;
         }
-        
+
         // tab-name만 제거하고 나머지 모든 쿼리 파라미터는 유지
         url.searchParams.delete("tab-name");
         const searchString = url.searchParams.toString();
@@ -648,7 +653,7 @@ export function useTabBar({
 
       // 비교를 위한 경로 생성
       const pathForComparison = getPathForTabComparison(normalizedPath);
-      
+
       // 동일한 비교 경로를 가진 탭 찾기 (쿼리파라미터 무시 설정 적용)
       const existingTab = tabs.find((tab) => {
         const tabPathForComparison = getPathForTabComparison(tab.path);
@@ -658,7 +663,7 @@ export function useTabBar({
       if (existingTab) {
         // 일치하는 탭이 있으면 활성화하고 새로운 경로로 업데이트
         setActiveTabId(existingTab.id);
-        
+
         // 기존 탭의 경로를 새로운 경로로 업데이트 (쿼리파라미터 변경 반영)
         setTabs((prevTabs) => {
           const updatedTabs = prevTabs.map((tab) => {
@@ -675,7 +680,7 @@ export function useTabBar({
 
           return updatedTabs;
         });
-        
+
         router.push(normalizedPageInfo.path);
         return;
       }
@@ -1011,10 +1016,22 @@ export function useTabBar({
         setActiveTabId(matchingTab.id);
       }
     } else {
-      // 일치하는 탭이 없으면 활성 탭 ID를 undefined로 설정
-      if (activeTabId !== undefined) {
-        // console.log("Path change: No matching tab found, deactivating");
-        setActiveTabId(undefined);
+      // 일치하는 탭이 없는 경우
+      if (autoCreateTabOnNavigation && normalizedPathname !== homePath) {
+        // 자동 탭 생성이 활성화되어 있고 홈 경로가 아닌 경우 새 탭 생성
+        // console.log("Path change: Auto-creating new tab for:", currentFullPath);
+        const pageInfo = getPageInfo(normalizedPathname);
+        const pageInfoWithQuery = {
+          ...pageInfo,
+          path: currentFullPath,
+        };
+        addTab(pageInfoWithQuery);
+      } else {
+        // 자동 탭 생성이 비활성화되거나 홈 경로인 경우 활성 탭 ID를 undefined로 설정
+        if (activeTabId !== undefined) {
+          // console.log("Path change: No matching tab found, deactivating");
+          setActiveTabId(undefined);
+        }
       }
     }
 
@@ -1034,6 +1051,9 @@ export function useTabBar({
     updateActiveTabTitleAndPath,
     isTabClickNavigation,
     getPathForTabComparison,
+    autoCreateTabOnNavigation,
+    getPageInfo,
+    addTab,
   ]);
 
   return {

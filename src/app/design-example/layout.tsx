@@ -505,6 +505,11 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     pathNormalizer,
     defaultPageInfoResolver, // 홈 경로 제외하고 자동 탭 생성 활성화
     initialTabs: [], // 초기 탭 없음
+    autoCreateTabOnNavigation: true, // URL 직접 입력 등 네비게이션 시 자동으로 탭 생성
+    ignoreQueryParamsForPaths: [
+      "/design-example/analytics",
+      "/design-example/dashboard",
+    ], // 쿼리파라미터를 무시할 경로들 (쿼리파라미터가 달라도 같은 탭으로 인식)
   });
 
   // 홈 버튼 활성 상태 관리 (초기값을 현재 경로에 따라 설정)
