@@ -111,9 +111,17 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
   const handleCloseClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
+      e.preventDefault();
+
+      // 드래그 중이면 닫기 동작 무시
+      if (isDragging || isDragInProgress) {
+        return;
+      }
+
+      // 즉시 닫기 실행
       onTabClose(tab.id);
     },
-    [tab.id, onTabClose]
+    [tab.id, onTabClose, isDragging, isDragInProgress]
   );
 
   // 간단한 클릭 핸들러 - 드래그 센서가 300ms delay로 충분히 구분됨
@@ -228,9 +236,14 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
             onMouseLeave={() => setIsHovering(false)}
             title="탭 닫기"
             style={{
-              opacity: isHovering || isActive ? 1 : 0,
-              transform: `scale(${isHovering || isActive ? 1 : 0.8})`,
+              opacity: isHovering || isActive ? 1 : 0.7,
+              transform: `scale(${isHovering ? 1.1 : 1})`,
               transition: "opacity 0.15s, transform 0.15s",
+              // 클릭 영역 확대를 위한 패딩 추가
+              padding: "2px",
+              // 다른 요소와의 상호작용 방지
+              zIndex: 10,
+              position: "relative",
             }}
           >
             <svg
@@ -446,7 +459,10 @@ export function TabBar({
 
   const handleTabClose = useCallback(
     (tabId: string) => {
-      onTabClose?.(tabId);
+      // 즉시 닫기 처리 - 다른 상태나 이벤트와의 충돌 방지
+      if (onTabClose) {
+        onTabClose(tabId);
+      }
     },
     [onTabClose]
   );
