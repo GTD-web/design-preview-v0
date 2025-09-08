@@ -83,6 +83,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
     const [isInitialized, setIsInitialized] = useState(false);
     const [isRemovingTab, setIsRemovingTab] = useState(false);
     const [isTabClickNavigation, setIsTabClickNavigation] = useState(false);
+    const [isTabCloseNavigation, setIsTabCloseNavigation] = useState(false);
     // 경로 정규화 (외부에서 제공되면 사용, 아니면 기본 정규화)
     const normalizePath = useCallback((path) => {
         if (pathNormalizer) {
@@ -347,43 +348,46 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                 // 닫힌 탭의 위치에 따라 다음 활성 탭 결정
                 const nextActiveIndex = Math.max(0, Math.min(tabIndex - 1, newTabs.length - 1));
                 const newActiveTab = newTabs[nextActiveIndex];
+                // 즉시 상태 업데이트 - 더 빠른 반응을 위해
+                setActiveTabId(newActiveTab.id);
+                // 탭 닫기로 인한 네비게이션임을 표시
+                setIsTabCloseNavigation(true);
                 // 로컬 스토리지에 저장
                 if (enableLocalStorage) {
                     saveTabsToStorage(localStorageKey, newTabs, newActiveTab.id);
                 }
-                // 비동기로 상태 업데이트하여 렌더링 후 실행
+                // 네비게이션은 즉시 실행
+                router.push(newActiveTab.path);
+                // 상태 리셋은 더 짧은 딜레이로
                 setTimeout(() => {
-                    setActiveTabId(newActiveTab.id);
-                    router.push(newActiveTab.path);
-                    // 네비게이션 완료 후 상태 리셋 (더 긴 딜레이로 확실하게 방지)
-                    setTimeout(() => {
-                        setIsRemovingTab(false);
-                        // 최근 제거된 탭 ID는 더 오래 유지하여 재생성 방지
-                    }, 200);
-                }, 0);
+                    setIsRemovingTab(false);
+                    setIsTabCloseNavigation(false);
+                }, 150);
             }
             else if (activeTabId === tabId && newTabs.length === 0) {
                 // 모든 탭이 닫힌 경우
+                // 즉시 상태 업데이트
+                setActiveTabId(undefined);
+                // 탭 닫기로 인한 네비게이션임을 표시
+                setIsTabCloseNavigation(true);
                 if (enableLocalStorage) {
                     saveTabsToStorage(localStorageKey, newTabs, undefined);
                 }
+                // 네비게이션은 즉시 실행
+                router.push(homePath);
+                // 상태 리셋은 더 짧은 딜레이로
                 setTimeout(() => {
-                    setActiveTabId(undefined);
-                    router.push(homePath);
-                    // 네비게이션 완료 후 상태 리셋 (더 긴 딜레이로 확실하게 방지)
-                    setTimeout(() => {
-                        setIsRemovingTab(false);
-                        // 최근 제거된 탭 ID는 더 오래 유지하여 재생성 방지
-                    }, 200);
-                }, 0);
+                    setIsRemovingTab(false);
+                    setIsTabCloseNavigation(false);
+                }, 150);
             }
             else {
                 // 비활성 탭을 닫은 경우
                 if (enableLocalStorage) {
                     saveTabsToStorage(localStorageKey, newTabs, activeTabId);
                 }
+                // 즉시 상태 리셋 - 비활성 탭은 네비게이션이 필요하지 않으므로
                 setIsRemovingTab(false);
-                // 비활성 탭 제거 시에도 일정 시간 재생성 방지
             }
             return newTabs;
         });
@@ -697,8 +701,8 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
     }, [tabs, pathname, searchParams, isInitialized, normalizePath]);
     // 경로 변경 시 탭 상태 업데이트 - 기존 탭 활성화 및 활성 탭 경로 업데이트
     useEffect(() => {
-        // 탭 제거 중이거나 초기화되지 않았으면 처리 방지
-        if (isRemovingTab || !isInitialized) {
+        // 탭 제거 중이거나 초기화되지 않았거나 탭 닫기로 인한 네비게이션이면 처리 방지
+        if (isRemovingTab || !isInitialized || isTabCloseNavigation) {
             return;
         }
         // 현재 전체 경로 (쿼리 파라미터 포함) - 클라이언트 사이드에서만 처리
@@ -787,6 +791,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         searchParams,
         isRemovingTab,
         isInitialized,
+        isTabCloseNavigation,
         homePath,
         normalizePath,
         tabs,
@@ -803,7 +808,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         if (!autoCreateTabOnNavigation) {
             return;
         }
-        if (!isInitialized) {
+        if (!isInitialized || isTabCloseNavigation) {
             return;
         }
         const normalizedPathname = normalizePath(pathname);
@@ -834,6 +839,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         pathname,
         autoCreateTabOnNavigation,
         isInitialized,
+        isTabCloseNavigation,
         homePath,
         tabs,
         normalizePath,

@@ -22,8 +22,14 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging, } = useSortable({ id: tab.id });
     const handleCloseClick = useCallback((e) => {
         e.stopPropagation();
+        e.preventDefault();
+        // 드래그 중이면 닫기 동작 무시
+        if (isDragging || isDragInProgress) {
+            return;
+        }
+        // 즉시 닫기 실행
         onTabClose(tab.id);
-    }, [tab.id, onTabClose]);
+    }, [tab.id, onTabClose, isDragging, isDragInProgress]);
     // 간단한 클릭 핸들러 - 드래그 센서가 300ms delay로 충분히 구분됨
     const handleClick = useCallback((e) => {
         // 기본 동작 방지
@@ -100,9 +106,14 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
             tab.icon && React.createElement("div", { className: styles.tabIcon }, tab.icon),
             React.createElement("span", { className: styles.tabTitle }, tab.title),
             tab.closable !== false && (React.createElement("button", { className: closeButtonClass, onClick: handleCloseClick, onMouseEnter: () => setIsHovering(true), onMouseLeave: () => setIsHovering(false), title: "\uD0ED \uB2EB\uAE30", style: {
-                    opacity: isHovering || isActive ? 1 : 0,
-                    transform: `scale(${isHovering || isActive ? 1 : 0.8})`,
+                    opacity: isHovering || isActive ? 1 : 0.7,
+                    transform: `scale(${isHovering ? 1.1 : 1})`,
                     transition: "opacity 0.15s, transform 0.15s",
+                    // 클릭 영역 확대를 위한 패딩 추가
+                    padding: "2px",
+                    // 다른 요소와의 상호작용 방지
+                    zIndex: 10,
+                    position: "relative",
                 } },
                 React.createElement("svg", { className: styles.closeButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                     React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" })))))));
@@ -206,7 +217,10 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         }
     }, [onTabClick]);
     const handleTabClose = useCallback((tabId) => {
-        onTabClose?.(tabId);
+        // 즉시 닫기 처리 - 다른 상태나 이벤트와의 충돌 방지
+        if (onTabClose) {
+            onTabClose(tabId);
+        }
     }, [onTabClose]);
     const handlePageSelect = useCallback((pageInfo) => {
         onPageSelect?.(pageInfo);
