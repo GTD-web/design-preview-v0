@@ -44,7 +44,7 @@ const saveTabsToStorage = (key, tabs, activeTabId) => {
 /**
  * 탭 바 상태 관리를 위한 Hook
  */
-export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, homePath = "/design-example", pathNormalizer, defaultPageInfoResolver, enableLocalStorage = true, localStorageKey = "tabbar-tabs", } = {}) {
+export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, homePath = "/design-example", pathNormalizer, defaultPageInfoResolver, enableLocalStorage = true, localStorageKey = "tabbar-tabs", ignoreQueryParamsForPaths = [], } = {}) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -148,9 +148,16 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
     const getPathForTabComparison = useCallback((path) => {
         try {
             const url = new URL(path, "http://localhost");
+            const normalizedPathname = normalizePath(url.pathname);
+            // 해당 pathname이 쿼리파라미터를 무시할 경로에 포함되어 있으면 쿼리 파라미터 제거
+            const shouldIgnoreQueryParams = ignoreQueryParamsForPaths.some(ignorePath => {
+                return normalizedPathname === normalizePath(ignorePath);
+            });
+            if (shouldIgnoreQueryParams) {
+                return normalizedPathname;
+            }
             // tab-name만 제거하고 나머지 모든 쿼리 파라미터는 유지
             url.searchParams.delete("tab-name");
-            const normalizedPathname = normalizePath(url.pathname);
             const searchString = url.searchParams.toString();
             // 쿼리 파라미터를 정렬하여 일관성 있는 비교 가능
             if (searchString) {
@@ -168,7 +175,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             const [pathPart] = path.split("?");
             return normalizePath(pathPart);
         }
-    }, [normalizePath]);
+    }, [normalizePath, ignoreQueryParamsForPaths]);
     // 쿼리 파라미터에서 탭 이름 추출
     const extractTabNameFromQuery = useCallback((path) => {
         try {
@@ -459,16 +466,31 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         const [pathPart, queryPart] = pageInfo.path.split("?");
         const normalizedPath = normalizePath(pathPart) + (queryPart ? `?${queryPart}` : "");
         const normalizedPageInfo = { ...pageInfo, path: normalizedPath };
-        // 전체 경로(쿼리 파라미터 포함)로 정확히 일치하는 탭 찾기
-        const existingTab = tabs.find((tab) => tab.path === normalizedPageInfo.path);
+        // 비교를 위한 경로 생성
+        const pathForComparison = getPathForTabComparison(normalizedPath);
+        // 동일한 비교 경로를 가진 탭 찾기 (쿼리파라미터 무시 설정 적용)
+        const existingTab = tabs.find((tab) => {
+            const tabPathForComparison = getPathForTabComparison(tab.path);
+            return tabPathForComparison === pathForComparison;
+        });
         if (existingTab) {
-            // 정확히 일치하는 탭이 있으면 활성화
+            // 일치하는 탭이 있으면 활성화하고 새로운 경로로 업데이트
             setActiveTabId(existingTab.id);
+            // 기존 탭의 경로를 새로운 경로로 업데이트 (쿼리파라미터 변경 반영)
+            setTabs((prevTabs) => {
+                const updatedTabs = prevTabs.map((tab) => {
+                    if (tab.id === existingTab.id) {
+                        return { ...tab, path: normalizedPath };
+                    }
+                    return tab;
+                });
+                // 로컬 스토리지에 저장
+                if (enableLocalStorage) {
+                    saveTabsToStorage(localStorageKey, updatedTabs, existingTab.id);
+                }
+                return updatedTabs;
+            });
             router.push(normalizedPageInfo.path);
-            // 로컬 스토리지에 저장
-            if (enableLocalStorage) {
-                saveTabsToStorage(localStorageKey, tabs, existingTab.id);
-            }
             return;
         }
         // 일치하는 탭이 없으면 새 탭 추가
@@ -481,6 +503,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         enableLocalStorage,
         localStorageKey,
         normalizePath,
+        getPathForTabComparison,
     ]);
     // 활성 탭의 경로 업데이트
     const updateActiveTabPath = useCallback((newPath) => {
