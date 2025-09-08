@@ -27,6 +27,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@floating-ui/react": "^0.27.15",
+    "@sinm/react-chrome-tabs": "^2.6.1",
     "@types/date-fns": "^2.5.3",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.12",

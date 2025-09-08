@@ -86,3 +86,54 @@ export interface UseTabBarReturn {
   /** TabBar 컴포넌트용 탭 클릭 핸들러 */
   handleTabClick: (tab: TabItem) => void;
 }
+
+/**
+ * 크롬 탭 아이템 타입 (ChromeTabBar 컴포넌트용)
+ */
+export interface ChromeTabItem {
+  id: string;
+  title: string;
+  path: string;
+  favicon?: string;
+  active: boolean;
+}
+
+/**
+ * useChromeTabBar Hook 옵션
+ */
+export interface UseChromeTabBarOptions extends UseTabBarOptions {
+  /** 중복 탭 허용 - 쿼리파라미터가 다르면 다른 탭으로 취급 (기본값: true) */
+  allowDuplicatesByQuery?: boolean;
+  /** 다크 모드 여부 (기본값: false) */
+  darkMode?: boolean;
+  /** 파비콘 리졸버 함수 */
+  faviconResolver?: (path: string) => string | undefined;
+}
+
+/**
+ * useChromeTabBar Hook 반환값
+ */
+export interface UseChromeTabBarReturn {
+  /** 현재 탭 목록 */
+  tabs: ChromeTabItem[];
+  /** 활성 탭 ID */
+  activeTabId: string | undefined;
+  /** 탭 추가 */
+  addTab: (pageInfo: PageInfo) => void;
+  /** 탭 제거 */
+  removeTab: (tabId: string) => void;
+  /** 탭 활성화 */
+  activateTab: (tabId: string) => void;
+  /** 탭 순서 변경 (인덱스 기반) */
+  reorderTabs: (fromIndex: number, toIndex: number) => void;
+  /** 새 탭 생성 */
+  createNewTab: () => void;
+  /** 모든 탭 닫기 */
+  closeAllTabs: () => void;
+  /** 다른 탭 모두 닫기 */
+  closeOtherTabs: (keepTabId: string) => void;
+  /** ChromeTabBar 컴포넌트용 탭 클릭 핸들러 */
+  handleTabClick: (tab: ChromeTabItem) => void;
+  /** 활성 탭 경로 업데이트 */
+  updateActiveTabPath: (newPath: string) => void;
+}

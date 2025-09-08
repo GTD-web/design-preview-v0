@@ -12,7 +12,7 @@ import "../globals.css";
 import { usePathname, useRouter } from "next/navigation";
 import ClientOnly from "@/components/ClientOnly";
 import Loading from "../loading";
-import { TabBar } from "@/packages/design-system/components/TabBar";
+import { ChromeTabBar } from "@/packages/design-system/components/ChromeTabBar";
 import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
 import { CompactSidebar } from "@/packages/design-system/components/CompactSidebar";
@@ -21,7 +21,7 @@ import {
   DesignSettingsProvider,
   useDesignSettings,
 } from "@/packages/design-system";
-import { PageInfo, useTabBar } from "@/packages/design-system/hooks";
+import { PageInfo, useChromeTabBar } from "@/packages/design-system/hooks";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -396,12 +396,6 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   return mapping;
 };
 
-// 사용 가능한 모든 페이지 목록 생성
-const createAvailablePages = (): PageInfo[] => {
-  const allPages = createAllPagesMapping();
-  return Object.values(allPages).sort((a, b) => a.title.localeCompare(b.title));
-};
-
 // 내부 컴포넌트 - 디자인 설정 컨텍스트 사용
 function DesignExampleContent({ children }: { children: React.ReactNode }) {
   // 디자인 설정 상태 관리를 커스텀 훅으로 처리
@@ -491,33 +485,46 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
     []
   );
 
-  // TabBar 상태 관리 - 페이지 매핑을 메모이제이션
+  // 파비콘 리졸버 (이모지 대신 false 반환으로 404 에러 방지)
+  const faviconResolver = useCallback(() => {
+    // 이모지 사용 시 URL 인코딩으로 인한 404 에러 발생
+    // 임시로 favicon 비활성화
+    return undefined;
+
+    /* 나중에 실제 아이콘 파일이나 다른 방식으로 구현 시 사용
+    const basePath = path.split("?")[0];
+    const iconMap: Record<string, string> = {
+      "/design-example": "/icons/design.svg",
+      "/design-example/dashboard": "/icons/dashboard.svg",
+      "/design-example/ecommerce": "/icons/ecommerce.svg",
+      "/design-example/analytics": "/icons/analytics.svg",
+      "/design-example/task-management": "/icons/task.svg",
+      "/design-example/user-profile": "/icons/user.svg",
+      "/": "/icons/home.svg",
+      "/component-library": "/icons/library.svg",
+      "/colors": "/icons/colors.svg",
+    };
+    return iconMap[basePath];
+    */
+  }, []);
+
+  // ChromeTabBar 상태 관리 - 페이지 매핑을 메모이제이션
   const allPagesMapping = useMemo(() => createAllPagesMapping(), []);
-  const availablePages = useMemo(() => createAvailablePages(), []);
-  const {
-    tabs,
-    activeTabId,
-    removeTab,
-    createNewTab,
-    addTab,
-    reorderTabs,
-    deactivateAllTabs,
-    activateOrAddTab,
-    forceAddNewTab,
-    handleTabClick,
-  } = useTabBar({
-    pageMapping: allPagesMapping,
-    homePath: "/design-example", // 홈 경로 설정 (자동 생성은 비활성화됨)
-    maxTabs: 8,
-    pathNormalizer,
-    defaultPageInfoResolver, // 홈 경로 제외하고 자동 탭 생성 활성화
-    initialTabs: [], // 초기 탭 없음
-    autoCreateTabOnNavigation: true, // URL 직접 입력 등 네비게이션 시 자동으로 탭 생성
-    ignoreQueryParamsForPaths: [
-      // "/design-example/analytics",
-      // "/design-example/dashboard",
-    ], // 쿼리파라미터를 무시할 경로들 (쿼리파라미터가 달라도 같은 탭으로 인식)
-  });
+  const { tabs, removeTab, createNewTab, addTab, reorderTabs, handleTabClick } =
+    useChromeTabBar({
+      pageMapping: allPagesMapping,
+      homePath: "/design-example", // 홈 경로 설정
+      maxTabs: 50, // 최대 50개 탭 허용 (실질적으로 무제한)
+      pathNormalizer,
+      defaultPageInfoResolver,
+      initialTabs: [], // 초기 탭 없음
+      autoCreateTabOnNavigation: true, // URL 직접 입력 등 네비게이션 시 자동으로 탭 생성
+      allowDuplicatesByQuery: true, // 쿼리파라미터가 다르면 다른 탭으로 취급
+      faviconResolver, // 파비콘 리졸버
+      ignoreQueryParamsForPaths: [
+        // 쿼리파라미터를 무시할 경로들
+      ],
+    });
 
   // 홈 버튼 활성 상태 관리 (초기값을 현재 경로에 따라 설정)
   const [isHomeButtonActive, setIsHomeButtonActive] = useState(() => {
@@ -537,6 +544,19 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
       setIsHomeButtonActive(false);
     }
   }, [pathname]);
+
+  // 활성 탭이 있을 때는 홈 버튼 비활성화
+  React.useEffect(() => {
+    const hasActiveTab = tabs.some((tab) => tab.active);
+    if (hasActiveTab) {
+      const normalizedPathname = pathname.replace(/\/$/, "") || "/";
+      const normalizedHomePath = "/design-example";
+
+      if (normalizedPathname !== normalizedHomePath) {
+        setIsHomeButtonActive(false);
+      }
+    }
+  }, [tabs, pathname]);
 
   // 관리자/사용자 화면 상태 관리
   const [isAdminMode, setIsAdminMode] = useState(false);
@@ -591,8 +611,30 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
 
   // 홈 버튼 클릭 핸들러
   const handleHomeClick = useCallback(() => {
+    setIsHomeButtonActive(true);
     router.push("/design-example");
   }, [router]);
+
+  // 기존 탭 활성화 또는 새 탭 추가 (ChromeTabBar용)
+  const activateOrAddTab = useCallback(
+    (pageInfo: PageInfo) => {
+      // 기존 탭 찾기
+      const existingTab = tabs.find((tab) => {
+        const tabBasePath = tab.path.split("?")[0];
+        const pageBasePath = pageInfo.path.split("?")[0];
+        return tabBasePath === pageBasePath;
+      });
+
+      if (existingTab) {
+        // 기존 탭 활성화
+        handleTabClick(existingTab);
+      } else {
+        // 새 탭 추가
+        addTab(pageInfo);
+      }
+    },
+    [tabs, handleTabClick, addTab]
+  );
 
   // 홈 버튼 활성 상태는 별도 상태로 관리 (pathname과 무관)
 
@@ -606,26 +648,45 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
         }}
       >
         <div className="flex flex-col h-screen">
-          {/* TabBar - 상단 고정, 사이드바보다 위에 배치 */}
+          {/* ChromeTabBar - 상단 고정, 사이드바보다 위에 배치 */}
           <div className="flex-shrink-0 bg-background z-[60] relative">
-            <TabBar
-              tabs={tabs}
-              activeTabId={activeTabId}
-              onTabClick={handleTabClick}
-              onTabClose={(tabId) => removeTab(tabId)}
-              onTabReorder={reorderTabs}
-              onNewTab={createNewTab}
-              onPageSelect={(pageInfo) => {
-                addTab(pageInfo);
-              }}
-              availablePages={availablePages}
-              showNewTabButton={true}
-              showHomeButton={true}
-              onHomeClick={handleHomeClick}
-              homeButtonActive={isHomeButtonActive}
-              homeButtonLabel="디자인토큰"
-              maxTabs={8}
-            />
+            <div className="flex items-center">
+              {/* 홈 버튼 */}
+              <button
+                onClick={handleHomeClick}
+                className={`px-3 text-sm font-medium transition-colors ${
+                  isHomeButtonActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+                style={{
+                  height: "46px",
+                  display: "flex",
+                  alignItems: "center",
+                  minHeight: "46px",
+                }}
+                title="디자인토큰으로 이동"
+              >
+                <div className="flex items-center space-x-2">
+                  <span>🎨</span>
+                  <span>디자인토큰</span>
+                </div>
+              </button>
+
+              {/* 크롬 탭바 */}
+              <div className="flex-1">
+                <ChromeTabBar
+                  tabs={tabs}
+                  onTabClick={handleTabClick}
+                  onTabClose={(tabId) => removeTab(tabId)}
+                  onTabReorder={reorderTabs}
+                  onNewTab={createNewTab}
+                  showNewTabButton={true}
+                  maxTabs={50}
+                  darkMode={false}
+                />
+              </div>
+            </div>
           </div>
 
           {/* 사이드바와 메인 콘텐츠 영역 */}
@@ -666,8 +727,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                   // 홈 페이지로 이동하고 홈 버튼 활성화
                   router.push("/design-example");
                   setIsHomeButtonActive(true);
-                  // 모든 탭 비활성화 (홈 버튼만 활성화 상태)
-                  deactivateAllTabs();
+                  // ChromeTabBar에서는 모든 탭 비활성화 기능이 없으므로 직접 홈으로 이동만 처리
                 } else {
                   // 다른 메뉴 클릭 시에는 기존 탭 활성화 또는 새 탭 추가
                   const pageInfo = allPagesMapping[path] || {
@@ -675,6 +735,9 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                     title,
                     icon,
                     closable: path !== "/design-example",
+                    allowDuplicate:
+                      path === "/design-example/dashboard" ||
+                      path === "/design-example/analytics", // 중복 허용 페이지 설정
                   };
 
                   // 중복 허용 페이지 확인
@@ -689,12 +752,16 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                       return tabBasePath === path;
                     });
 
-                    const isCurrentlyActive =
-                      existingTab && activeTabId === existingTab.id;
+                    const isCurrentlyActive = existingTab?.active;
 
                     if (existingTab && isCurrentlyActive) {
                       // 이미 해당 페이지가 활성화되어 있으면 새로운 중복 탭 생성
-                      forceAddNewTab(pageInfo);
+                      // addTab에 allowDuplicate: true 속성을 전달
+                      const duplicatePageInfo = {
+                        ...pageInfo,
+                        allowDuplicate: true,
+                      };
+                      addTab(duplicatePageInfo);
                     } else {
                       // 그렇지 않으면 기존 탭 활성화 또는 새 탭 생성
                       activateOrAddTab(pageInfo);
