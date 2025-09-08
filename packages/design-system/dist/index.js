@@ -19,6 +19,6 @@ export { PageSelector, } from "./components/PageSelector";
 // Hooks
 export { useDesignSettings, DesignSettingsProvider, } from "./hooks/useDesignSettings";
 export { useSidebarIcons } from "./hooks/useSidebarIcons";
-export { useTabBar, } from "./hooks/useTabBar";
+export { useTabBar, } from "./hooks";
 // Tokens
 export { getShadcnTokenPath, getAvailableTokenVersions, getTokenConfig, SHADCN_TOKEN_CONFIGS, } from "./styles/tokens";

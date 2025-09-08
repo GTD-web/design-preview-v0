@@ -1,5 +1,5 @@
 import React from "react";
-import type { PageInfo } from "../hooks/useTabBar";
+import type { PageInfo } from "../hooks";
 /**
  * 탭 아이템 타입 정의
  */

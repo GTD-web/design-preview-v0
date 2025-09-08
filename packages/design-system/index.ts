@@ -31,7 +31,7 @@ export {
 export { DesignSettings } from "./components/DesignSettings";
 export { DayPicker } from "./components/DayPicker";
 export { DayRangePicker, type DateRange } from "./components/DayRangePicker";
-export { TabBar, type TabItem, type TabBarProps } from "./components/TabBar";
+export { TabBar, type TabBarProps } from "./components/TabBar";
 export {
   PageSelector,
   type PageSelectorProps,

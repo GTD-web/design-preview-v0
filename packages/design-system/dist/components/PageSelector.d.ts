@@ -1,5 +1,5 @@
 import React from "react";
-import type { PageInfo } from "../hooks/useTabBar";
+import type { PageInfo } from "../hooks";
 /**
  * PageSelector Props
  */
