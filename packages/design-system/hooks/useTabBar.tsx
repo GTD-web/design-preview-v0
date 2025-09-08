@@ -286,6 +286,7 @@ export function useTabBar({
         return normalizePath(pathPart);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [normalizePath] // ignoreQueryParamsForPaths 제거 - 함수 내에서 직접 참조
   );
 
@@ -749,6 +750,7 @@ export function useTabBar({
         return updatedTabs;
       });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeTabId, enableLocalStorage, localStorageKey] // 의존성 최소화
   );
 
@@ -1058,6 +1060,7 @@ export function useTabBar({
     if (isTabClickNavigation) {
       setIsTabClickNavigation(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     pathname,
     searchParams,
@@ -1160,6 +1163,7 @@ export function useTabBar({
 
     setActiveTabId(tabId);
     router.push(normalizedPath);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     pathname,
     autoCreateTabOnNavigation,
