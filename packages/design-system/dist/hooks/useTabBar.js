@@ -132,7 +132,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
                     }
                 }
                 const updatedTabs = [
-                    prevTabs[0], // 홈 탭 유지
+                    prevTabs[0],
                     ...newTabs,
                     {
                         id: tabId,

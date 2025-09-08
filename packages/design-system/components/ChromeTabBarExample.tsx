@@ -63,7 +63,6 @@ export function ChromeTabBarExample() {
     addTab,
     removeTab,
     createNewTab,
-    forceAddDuplicateTab,
     handleTabClick,
     reorderTabs,
   } = useChromeTabBar({
@@ -131,10 +130,11 @@ export function ChromeTabBarExample() {
   };
 
   const forceDuplicateUsersTab = () => {
-    forceAddDuplicateTab({
+    addTab({
       path: "/users",
       title: "사용자 관리",
       closable: true,
+      allowDuplicate: true,
     });
   };
 

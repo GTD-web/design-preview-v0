@@ -301,8 +301,8 @@ export function CompactSidebar({ isOpen = true, onClose, isCollapsed = false, is
     return (React.createElement(React.Fragment, null,
         isOpen && !isHidden && (React.createElement("div", { className: "fixed inset-0 bg-black/50 z-40 lg:hidden", onClick: onClose })),
         React.createElement("div", { className: "fixed left-0 z-50", style: {
-                top: "var(--tab-bar-height, 40px)", // TabBar 높이만큼 아래에 위치
-                height: "calc(100vh - var(--tab-bar-height, 40px))", // TabBar를 제외한 높이
+                top: "var(--tab-bar-height, 40px)",
+                height: "calc(100vh - var(--tab-bar-height, 40px))",
                 transform: isHidden
                     ? "translateX(-100%)"
                     : isLargeScreen

@@ -30,7 +30,7 @@ export const saveTabsToStorage = (key, tabs, activeTabId) => {
         return;
     try {
         const data = {
-            tabs: tabs.map((tab) => ({ ...tab, icon: undefined })), // icon은 serialize 불가능하므로 제외
+            tabs: tabs.map((tab) => ({ ...tab, icon: undefined })),
             activeTabId,
             timestamp: Date.now(),
         };

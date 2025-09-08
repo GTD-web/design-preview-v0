@@ -29,12 +29,14 @@
     "@floating-ui/react": "^0.27.15",
     "@sinm/react-chrome-tabs": "^2.6.1",
     "@types/date-fns": "^2.5.3",
-    "date-fns": "^4.1.0",
+    "date-fns": "^3.6.0",
     "framer-motion": "^12.23.12",
     "react-day-picker": "^9.8.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.44",
-    "@types/react-dom": "^18.2.18"
+    "@types/react-dom": "^18.2.18",
+    "@types/node": "^20.0.0",
+    "next": "^14.0.0"
   }
 }

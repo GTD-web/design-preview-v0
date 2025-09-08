@@ -71,7 +71,7 @@ export function isSamePageDifferentInstance(
   const tabId1 = extractTabIdFromPath(path1);
   const tabId2 = extractTabIdFromPath(path2);
 
-  return cleanPath1 === cleanPath2 && tabId1 !== tabId2 && (tabId1 || tabId2);
+  return cleanPath1 === cleanPath2 && tabId1 !== tabId2 && !!(tabId1 || tabId2);
 }
 
 /**

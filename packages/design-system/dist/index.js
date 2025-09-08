@@ -15,10 +15,14 @@ export { DesignSettings } from "./components/DesignSettings";
 export { DayPicker } from "./components/DayPicker";
 export { DayRangePicker } from "./components/DayRangePicker";
 export { TabBar } from "./components/TabBar";
+export { ChromeTabBar, } from "./components/ChromeTabBar";
 export { PageSelector, } from "./components/PageSelector";
+export { TabInstanceExample } from "./components/TabInstanceExample";
 // Hooks
 export { useDesignSettings, DesignSettingsProvider, } from "./hooks/useDesignSettings";
 export { useSidebarIcons } from "./hooks/useSidebarIcons";
-export { useTabBar, } from "./hooks";
+export { useTabBar, useChromeTabBar, 
+// Tab Instance 유틸리티
+extractTabIdFromPath, generateTabInstanceKey, getCleanPath, hasTabId, isSamePageDifferentInstance, useTabInstanceKey, useTabInstance, useTabInstanceLocalStorage, useCurrentTabInfo, } from "./hooks";
 // Tokens
 export { getShadcnTokenPath, getAvailableTokenVersions, getTokenConfig, SHADCN_TOKEN_CONFIGS, } from "./styles/tokens";

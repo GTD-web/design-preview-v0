@@ -44,7 +44,7 @@ export function useTabInstance<T = any>(
   // 현재 인스턴스의 상태 가져오기 또는 초기화
   const getCurrentState = useCallback((): T => {
     const storedStates = tabInstanceStates.get(fullStateKey);
-    return storedStates !== undefined ? storedStates : initialState;
+    return storedStates !== undefined ? (storedStates as T) : initialState;
   }, [fullStateKey, initialState]);
 
   const [state, setState] = useState<T>(getCurrentState);

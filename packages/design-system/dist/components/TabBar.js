@@ -10,9 +10,9 @@ import styles from "./TabBar.module.css";
 const restrictToHorizontalAxisStrict = ({ transform }) => {
     // Y축 이동을 완전히 차단하고, X축만 허용
     return {
-        x: transform.x || 0, // X축 변화만 허용
-        y: 0, // Y축 변화를 강제로 0으로 설정
-        scaleX: 1, // 스케일 변화도 방지
+        x: transform.x || 0,
+        y: 0,
+        scaleX: 1,
         scaleY: 1,
     };
 };
@@ -87,11 +87,11 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
     const style = {
         transform: transform
             ? `translate3d(${transform.x || 0}px, 0px, 0px) scale(${isDragging ? 1.05 : 1}) rotate(${isDragging ? "1deg" : "0deg"})`
-            : undefined, // Y축을 강제로 0으로 고정, X축만 이동
+            : undefined,
         transition: isDragging ? "none" : transition,
         opacity: isDragging ? 0.8 : 1,
         zIndex: isDragging ? 1000 : "auto",
-        touchAction: "pan-x", // 수평 방향 터치만 허용
+        touchAction: "pan-x",
         userSelect: "none",
         willChange: isDragging ? "transform" : "auto",
     };
@@ -147,8 +147,8 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
     // 드래그 앤 드롭 센서 설정 - 클릭 우선, 드래그는 의도적으로 길게 눌렀을 때만
     const sensors = useSensors(useSensor(PointerSensor, {
         activationConstraint: {
-            distance: 8, // 적절한 거리 - 너무 크면 드래그가 어려워짐
-            tolerance: 5, // 적절한 tolerance
+            distance: 8,
+            tolerance: 5,
             delay: 300, // 300ms 동안 눌러야 드래그 시작 - 클릭과 확실히 구분
         },
     }), useSensor(KeyboardSensor, {

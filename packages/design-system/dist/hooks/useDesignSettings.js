@@ -92,7 +92,7 @@ export function DesignSettingsProvider({ children }) {
             }
         }
         return {
-            xs: 4, // px
+            xs: 4,
             sm: 8,
             md: 16,
             lg: 32,
