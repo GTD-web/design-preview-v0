@@ -44,7 +44,7 @@ const saveTabsToStorage = (key, tabs, activeTabId) => {
 /**
  * 탭 바 상태 관리를 위한 Hook
  */
-export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, homePath = "/design-example", pathNormalizer, defaultPageInfoResolver, enableLocalStorage = true, localStorageKey = "tabbar-tabs", ignoreQueryParamsForPaths = [], } = {}) {
+export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, homePath = "/design-example", pathNormalizer, defaultPageInfoResolver, enableLocalStorage = true, localStorageKey = "tabbar-tabs", ignoreQueryParamsForPaths = [], autoCreateTabOnNavigation = false, } = {}) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -150,7 +150,7 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             const url = new URL(path, "http://localhost");
             const normalizedPathname = normalizePath(url.pathname);
             // 해당 pathname이 쿼리파라미터를 무시할 경로에 포함되어 있으면 쿼리 파라미터 제거
-            const shouldIgnoreQueryParams = ignoreQueryParamsForPaths.some(ignorePath => {
+            const shouldIgnoreQueryParams = ignoreQueryParamsForPaths.some((ignorePath) => {
                 return normalizedPathname === normalizePath(ignorePath);
             });
             if (shouldIgnoreQueryParams) {
@@ -773,10 +773,23 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
             }
         }
         else {
-            // 일치하는 탭이 없으면 활성 탭 ID를 undefined로 설정
-            if (activeTabId !== undefined) {
-                // console.log("Path change: No matching tab found, deactivating");
-                setActiveTabId(undefined);
+            // 일치하는 탭이 없는 경우
+            if (autoCreateTabOnNavigation && normalizedPathname !== homePath) {
+                // 자동 탭 생성이 활성화되어 있고 홈 경로가 아닌 경우 새 탭 생성
+                // console.log("Path change: Auto-creating new tab for:", currentFullPath);
+                const pageInfo = getPageInfo(normalizedPathname);
+                const pageInfoWithQuery = {
+                    ...pageInfo,
+                    path: currentFullPath,
+                };
+                addTab(pageInfoWithQuery);
+            }
+            else {
+                // 자동 탭 생성이 비활성화되거나 홈 경로인 경우 활성 탭 ID를 undefined로 설정
+                if (activeTabId !== undefined) {
+                    // console.log("Path change: No matching tab found, deactivating");
+                    setActiveTabId(undefined);
+                }
             }
         }
         // 탭 클릭 네비게이션 상태 리셋
@@ -795,6 +808,9 @@ export function useTabBar({ initialTabs = [], maxTabs = 10, pageMapping = {}, ho
         updateActiveTabTitleAndPath,
         isTabClickNavigation,
         getPathForTabComparison,
+        autoCreateTabOnNavigation,
+        getPageInfo,
+        addTab,
     ]);
     return {
         tabs,

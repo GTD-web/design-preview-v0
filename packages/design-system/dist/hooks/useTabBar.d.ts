@@ -32,6 +32,8 @@ export interface UseTabBarOptions {
     localStorageKey?: string;
     /** 쿼리파라미터를 무시할 pathname 목록 (해당 경로들은 쿼리파라미터가 달라도 같은 탭으로 인식) */
     ignoreQueryParamsForPaths?: string[];
+    /** URL 직접 입력 등 네비게이션 시 자동으로 탭을 생성할지 여부 (기본값: false) */
+    autoCreateTabOnNavigation?: boolean;
 }
 /**
  * useTabBar Hook 반환값
@@ -69,4 +71,4 @@ export interface UseTabBarReturn {
 /**
  * 탭 바 상태 관리를 위한 Hook
  */
-export declare function useTabBar({ initialTabs, maxTabs, pageMapping, homePath, pathNormalizer, defaultPageInfoResolver, enableLocalStorage, localStorageKey, ignoreQueryParamsForPaths, }?: UseTabBarOptions): UseTabBarReturn;
+export declare function useTabBar({ initialTabs, maxTabs, pageMapping, homePath, pathNormalizer, defaultPageInfoResolver, enableLocalStorage, localStorageKey, ignoreQueryParamsForPaths, autoCreateTabOnNavigation, }?: UseTabBarOptions): UseTabBarReturn;
