@@ -7,6 +7,7 @@ import TextValue from "@/packages/design-system/components/TextValue";
 import TextHeading from "@/packages/design-system/components/TextHeading";
 import Badge from "../../../../packages/design-system/components/Badge";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useCurrentTabInfo } from "@/packages/design-system/hooks/useTabInstance";
 
 // 차트 데이터
 const chartData = [
@@ -55,6 +56,9 @@ const recentActivity = [
 ];
 
 export default function AnalyticsPage() {
+  // 현재 탭 정보 가져오기 (테스트용)
+  const { tabId, instanceKey, isUniqueTab } = useCurrentTabInfo();
+
   const [selectedPeriod, setSelectedPeriod] = useState("6개월");
   const [hoveredPoint, setHoveredPoint] = useState<{
     x: number;
@@ -113,7 +117,15 @@ export default function AnalyticsPage() {
                 탭 이름 설정
               </button>
             </div>
-            <TextLabel className="mt-xs">실시간 데이터 및 인사이트</TextLabel>
+            <div className="mt-xs space-y-1">
+              <TextLabel>실시간 데이터 및 인사이트</TextLabel>
+              {/* 테스트용 tab-id 표시 */}
+              {isUniqueTab && (
+                <TextLabel className="text-info text-xs font-mono bg-info/10 px-2 py-1 rounded">
+                  Tab ID: {tabId} | Instance: {instanceKey}
+                </TextLabel>
+              )}
+            </div>
           </div>
           <select
             className="border border-border rounded-lg px-4 py-2 text-sm bg-surface focus:outline-none focus:ring-2 focus:ring-primary/20"

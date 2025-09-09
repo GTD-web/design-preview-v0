@@ -2,6 +2,7 @@
  * Tab Instance Hook
  *
  * 동일한 페이지의 여러 탭 인스턴스가 독립적인 상태를 유지할 수 있게 해주는 Hook
+ * tab-id 쿼리 파라미터를 통해 각 탭 인스턴스를 고유하게 식별합니다.
  */
 
 "use client";
@@ -31,11 +32,12 @@ export function useTabInstance<T = any>(
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // 현재 경로에서 tab-id 추출
+  // 현재 경로에서 tab-id 추출 - 쿼리 파라미터에서 직접 추출
   const currentPath = `${pathname}${
     searchParams ? `?${searchParams.toString()}` : ""
   }`;
-  const tabId = extractTabIdFromPath(currentPath);
+  const tabId =
+    searchParams?.get("tab-id") || extractTabIdFromPath(currentPath);
 
   // 탭 인스턴스 키 생성
   const instanceKey = generateTabInstanceKey(pathname, tabId);
@@ -100,7 +102,8 @@ export function useTabInstanceLocalStorage<T = any>(
   const currentPath = `${pathname}${
     searchParams ? `?${searchParams.toString()}` : ""
   }`;
-  const tabId = extractTabIdFromPath(currentPath);
+  const tabId =
+    searchParams?.get("tab-id") || extractTabIdFromPath(currentPath);
   const instanceKey = generateTabInstanceKey(pathname, tabId);
   const storageKey = `${key}_${instanceKey}`;
 
@@ -169,7 +172,8 @@ export function useCurrentTabInfo() {
   const currentPath = `${pathname}${
     searchParams ? `?${searchParams.toString()}` : ""
   }`;
-  const tabId = extractTabIdFromPath(currentPath);
+  const tabId =
+    searchParams?.get("tab-id") || extractTabIdFromPath(currentPath);
   const instanceKey = generateTabInstanceKey(pathname, tabId);
   const isUniqueTab = tabId !== null;
 

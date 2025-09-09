@@ -6,8 +6,12 @@ import TextLabel from "@/packages/design-system/components/TextLabel";
 import TextValue from "@/packages/design-system/components/TextValue";
 import { useState } from "react";
 import Badge from "../../../../packages/design-system/components/Badge";
+import { useCurrentTabInfo } from "@/packages/design-system/hooks/useTabInstance";
 
 export default function DashboardPage() {
+  // 현재 탭 정보 가져오기 (테스트용)
+  const { tabId, instanceKey, isUniqueTab } = useCurrentTabInfo();
+
   // 예시 조직도 데이터
   const orgData = [
     {
@@ -148,11 +152,19 @@ export default function DashboardPage() {
               >
                 2024년 1월 1일 조직도
               </TextHeading>
-              <TextLabel className="text-secondary flex items-center gap-2">
-                <span className="w-2 h-2 bg-success rounded-full"></span>
-                최근 업데이트: 2024. 1. 1 · 김경훈 · 3분기 조직 확장으로
-                조직도로 변경함
-              </TextLabel>
+              <div className="space-y-1">
+                <TextLabel className="text-secondary flex items-center gap-2">
+                  <span className="w-2 h-2 bg-success rounded-full"></span>
+                  최근 업데이트: 2024. 1. 1 · 김경훈 · 3분기 조직 확장으로
+                  조직도로 변경함
+                </TextLabel>
+                {/* 테스트용 tab-id 표시 */}
+                {isUniqueTab && (
+                  <TextLabel className="text-info text-xs font-mono bg-info/10 px-2 py-1 rounded">
+                    Tab ID: {tabId} | Instance: {instanceKey}
+                  </TextLabel>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="bg-surface rounded-lg px-4 py-2 border border-border">

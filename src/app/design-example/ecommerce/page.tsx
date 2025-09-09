@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import Badge from "../../../../packages/design-system/components/Badge";
 import Image from "next/image";
+import { useCurrentTabInfo } from "@/packages/design-system/hooks/useTabInstance";
 
 // 상품 데이터
 const products = [
@@ -108,6 +109,9 @@ const categories = ["전체", "전자제품", "웨어러블", "액세서리", "�
 const statuses = ["전체", "판매중", "품절"];
 
 export default function EcommercePage() {
+  // 현재 탭 정보 가져오기 (테스트용)
+  const { tabId, instanceKey, isUniqueTab } = useCurrentTabInfo();
+
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedStatus, setSelectedStatus] = useState("전체");
   const [searchQuery, setSearchQuery] = useState("");
@@ -174,9 +178,15 @@ export default function EcommercePage() {
             <TextHeading size="2xl" weight="semibold">
               상품 관리
             </TextHeading>
-            <TextLabel className="mt-xs">
-              총 {sortedProducts.length}개의 상품
-            </TextLabel>
+            <div className="mt-xs space-y-1">
+              <TextLabel>총 {sortedProducts.length}개의 상품</TextLabel>
+              {/* 테스트용 tab-id 표시 */}
+              {isUniqueTab && (
+                <TextLabel className="text-info text-xs font-mono bg-info/10 px-2 py-1 rounded">
+                  Tab ID: {tabId} | Instance: {instanceKey}
+                </TextLabel>
+              )}
+            </div>
           </div>
           <Button className="w-fit" gradient gradientType="primary">
             + 새 상품 추가

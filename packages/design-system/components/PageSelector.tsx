@@ -135,7 +135,28 @@ export function PageSelector({
 
   const handlePageClick = useCallback(
     (pageInfo: PageInfo) => {
-      onPageSelect(pageInfo);
+      // 중복 허용 페이지인 경우 자동으로 tab-id 생성
+      if (pageInfo.allowDuplicate) {
+        const timestamp = Date.now();
+        const randomId = Math.random().toString(36).substr(2, 5);
+        const tabIdParam = `tab-id=${timestamp}-${randomId}`;
+
+        let finalPath = pageInfo.path;
+        if (finalPath.includes("?")) {
+          finalPath += `&${tabIdParam}`;
+        } else {
+          finalPath += `?${tabIdParam}`;
+        }
+
+        const pageInfoWithTabId = {
+          ...pageInfo,
+          path: finalPath,
+        };
+
+        onPageSelect(pageInfoWithTabId);
+      } else {
+        onPageSelect(pageInfo);
+      }
       onClose();
     },
     [onPageSelect, onClose]
