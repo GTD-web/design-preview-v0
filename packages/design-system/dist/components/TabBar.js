@@ -30,10 +30,11 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
         // 즉시 닫기 실행
         onTabClose(tab.id);
     }, [tab.id, onTabClose, isDragging, isDragInProgress]);
-    // 간단한 클릭 핸들러 - 드래그 센서가 300ms delay로 충분히 구분됨
+    // 간단한 클릭 핸들러 - 드래그 센서가 500ms delay로 충분히 구분됨
     const handleClick = useCallback((e) => {
         // 기본 동작 방지
         e.preventDefault();
+        e.stopPropagation();
         // console.log("SortableTab: Click on tab:", tab.title, tab.id);
         // console.log(
         //   "SortableTab: isDragging:",
@@ -41,10 +42,13 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
         //   "isDragInProgress:",
         //   isDragInProgress
         // );
-        // 드래그 중이 아닐 때만 처리
+        // 드래그 중이 아닐 때만 처리 (더 엄격하게 체크)
         if (!isDragging && !isDragInProgress) {
             // console.log("SortableTab: Processing click");
-            onTabClick(tab);
+            // 짧은 딜레이를 추가하여 드래그 이벤트와 충돌 방지
+            setTimeout(() => {
+                onTabClick(tab);
+            }, 10);
         }
         else {
             // console.log("SortableTab: Click ignored due to drag");
@@ -58,16 +62,24 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
                 console.log("Drag started for tab:", tab.title);
             }
         };
-        const handleDragEnd = () => {
+        const handleDragEnd = (event) => {
             // 드래그 종료 시 즉시 상태 리셋 - 클릭 반응성 향상
+            // 모든 탭의 드래그 상태를 리셋하도록 변경
             setIsDragInProgress(false);
             console.log("Drag ended for tab:", tab.title);
         };
+        const handleDragCancel = () => {
+            // 드래그 취소 시도 상태 리셋
+            setIsDragInProgress(false);
+            console.log("Drag cancelled for tab:", tab.title);
+        };
         window.addEventListener("tab-drag-start", handleDragStart);
         window.addEventListener("tab-drag-end", handleDragEnd);
+        window.addEventListener("tab-drag-cancel", handleDragCancel);
         return () => {
             window.removeEventListener("tab-drag-start", handleDragStart);
             window.removeEventListener("tab-drag-end", handleDragEnd);
+            window.removeEventListener("tab-drag-cancel", handleDragCancel);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tab.id]);
@@ -147,9 +159,9 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
     // 드래그 앤 드롭 센서 설정 - 클릭 우선, 드래그는 의도적으로 길게 눌렀을 때만
     const sensors = useSensors(useSensor(PointerSensor, {
         activationConstraint: {
-            distance: 8,
-            tolerance: 5,
-            delay: 300, // 300ms 동안 눌러야 드래그 시작 - 클릭과 확실히 구분
+            distance: 15,
+            tolerance: 3,
+            delay: 500, // 500ms로 늘려서 클릭과 확실히 구분
         },
     }), useSensor(KeyboardSensor, {
         coordinateGetter: sortableKeyboardCoordinates,
@@ -180,15 +192,30 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         document.body.style.userSelect = "";
         // 모든 탭에게 드래그 종료 알림 (브로드캐스트)
         window.dispatchEvent(new CustomEvent("tab-drag-end", { detail: { activeId: active.id } }));
+        // 드래그가 실제로 발생했고, 다른 위치로 이동한 경우만 reorder 실행
         if (over && active.id !== over.id) {
             console.log(`Reordering: ${active.id} -> ${over.id}`);
             console.log("onTabReorder function:", onTabReorder);
-            if (onTabReorder) {
-                onTabReorder(String(active.id), String(over.id));
-                console.log("onTabReorder called successfully");
+            // 드래그 거리 확인 - 충분히 이동했을 때만 reorder
+            const activeElement = document.querySelector(`[data-sortable-id="${active.id}"]`);
+            const overElement = document.querySelector(`[data-sortable-id="${over.id}"]`);
+            if (activeElement && overElement) {
+                const activeRect = activeElement.getBoundingClientRect();
+                const overRect = overElement.getBoundingClientRect();
+                const distance = Math.abs(activeRect.left - overRect.left);
+                // 충분한 거리(탭 너비의 절반 이상)를 이동한 경우만 reorder
+                if (distance > 50 && onTabReorder) {
+                    onTabReorder(String(active.id), String(over.id));
+                    console.log("onTabReorder called successfully");
+                }
+                else {
+                    console.log("Drag distance too short, ignoring reorder");
+                }
             }
-            else {
-                console.warn("onTabReorder is not provided!");
+            else if (onTabReorder) {
+                // 요소를 찾을 수 없는 경우 기존 로직 사용 (fallback)
+                onTabReorder(String(active.id), String(over.id));
+                console.log("onTabReorder called successfully (fallback)");
             }
         }
         else {
@@ -202,7 +229,9 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         // body 스타일 복원
         document.body.style.userSelect = "";
         // 모든 탭에게 드래그 취소 알림 (브로드캐스트)
+        window.dispatchEvent(new CustomEvent("tab-drag-cancel", { detail: { activeId: null } }));
         window.dispatchEvent(new CustomEvent("tab-drag-end", { detail: { activeId: null } }));
+        console.log("Drag cancelled - resetting all drag states");
     }, []);
     const handleTabClick = useCallback((tab) => {
         // console.log("TabBar: handleTabClick called with tab:", tab.title, tab.id);
