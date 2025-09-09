@@ -40,7 +40,27 @@ export function PageSelector({ availablePages, openTabPaths, onPageSelect, isOpe
     // 중복 허용 페이지는 항상 표시, 아닌 경우 이미 열린 탭 제외
     const selectablePages = availablePages.filter((page) => page.allowDuplicate || !openTabPaths.includes(page.path));
     const handlePageClick = useCallback((pageInfo) => {
-        onPageSelect(pageInfo);
+        // 중복 허용 페이지인 경우 자동으로 tab-id 생성
+        if (pageInfo.allowDuplicate) {
+            const timestamp = Date.now();
+            const randomId = Math.random().toString(36).substr(2, 5);
+            const tabIdParam = `tab-id=${timestamp}-${randomId}`;
+            let finalPath = pageInfo.path;
+            if (finalPath.includes("?")) {
+                finalPath += `&${tabIdParam}`;
+            }
+            else {
+                finalPath += `?${tabIdParam}`;
+            }
+            const pageInfoWithTabId = {
+                ...pageInfo,
+                path: finalPath,
+            };
+            onPageSelect(pageInfoWithTabId);
+        }
+        else {
+            onPageSelect(pageInfo);
+        }
         onClose();
     }, [onPageSelect, onClose]);
     const handleBackdropClick = useCallback((e) => {
