@@ -938,20 +938,14 @@ export function useTabBar({
       }
     }
 
-    // 페이지 정보를 먼저 가져와서 중복 허용 여부 확인
-    const pageInfo = getPageInfo(normalizedPathname);
+    // 현재 경로와 일치하는 탭 찾기 (분리된 유틸리티 함수 사용)
+    const matchingTab = findMatchingTab(
+      tabs,
+      currentFullPath,
+      getPathForTabComparison
+    );
 
-    // 중복 허용 페이지가 아닌 경우에만 기존 탭을 찾아서 활성화
-    let matchingTab = null;
-    if (!pageInfo.allowDuplicate) {
-      matchingTab = findMatchingTab(
-        tabs,
-        currentFullPath,
-        getPathForTabComparison
-      );
-    }
-
-    if (matchingTab && !pageInfo.allowDuplicate) {
+    if (matchingTab) {
       // 탭 클릭으로 인한 네비게이션이 아니고 경로가 다르면 제목과 경로 업데이트
       if (matchingTab.path !== currentFullPath && !isTabClickNavigation) {
         updateActiveTabTitleAndPath(currentFullPath);
@@ -961,10 +955,10 @@ export function useTabBar({
         setActiveTabId(matchingTab.id);
       }
     } else {
-      // 일치하는 탭이 없거나 중복 허용 페이지인 경우
+      // 일치하는 탭이 없는 경우
       if (autoCreateTabOnNavigation && normalizedPathname !== homePath) {
         // 자동 탭 생성이 활성화되어 있고 홈 경로가 아닌 경우 새 탭 생성
-        // pageInfo는 이미 위에서 가져왔으므로 재사용
+        const pageInfo = getPageInfo(normalizedPathname);
 
         // 중복 허용 페이지인 경우 tab-id 자동 생성
         let finalPath = currentFullPath;
