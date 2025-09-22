@@ -62,7 +62,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
                 console.log("Drag started for tab:", tab.title);
             }
         };
-        const handleDragEnd = (event) => {
+        const handleDragEnd = () => {
             // 드래그 종료 시 즉시 상태 리셋 - 클릭 반응성 향상
             // 모든 탭의 드래그 상태를 리셋하도록 변경
             setIsDragInProgress(false);
@@ -276,7 +276,7 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
                     if (tabs.length < maxTabs) {
                         setIsPageSelectorOpen(!isPageSelectorOpen);
                     }
-                }, disabled: tabs.length >= maxTabs, title: "\uC0C8 \uD0ED \uCD94\uAC00", whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 } },
+                }, disabled: tabs.length >= maxTabs, title: "\uC0C8 \uD0ED \uCD94\uAC00" },
                 React.createElement("svg", { className: styles.newTabButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                     React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 6v6m0 0v6m0-6h6m-6 0H6" })))))));
 }
