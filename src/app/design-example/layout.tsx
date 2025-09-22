@@ -687,10 +687,10 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
                 style={{
-                  height: "38px",
+                  height: "32px",
                   display: "flex",
                   alignItems: "center",
-                  minHeight: "38px",
+                  minHeight: "32px",
                 }}
                 title="디자인토큰으로 이동"
               >

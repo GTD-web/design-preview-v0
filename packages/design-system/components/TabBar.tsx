@@ -162,7 +162,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
       }
     };
 
-    const handleDragEnd = (event: any) => {
+    const handleDragEnd = () => {
       // 드래그 종료 시 즉시 상태 리셋 - 클릭 반응성 향상
       // 모든 탭의 드래그 상태를 리셋하도록 변경
       setIsDragInProgress(false);
@@ -585,8 +585,9 @@ export function TabBar({
             }}
             disabled={tabs.length >= maxTabs}
             title="새 탭 추가"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            // 호버 시 높이 변화를 방지하기 위해 scale 효과 제거
+            // whileHover={{ scale: 1.05 }}
+            // whileTap={{ scale: 0.95 }}
           >
             <svg
               className={styles.newTabButtonIcon}

@@ -1,13 +1,18 @@
 /* TabBar CSS Module - Tailwind CSS를 @apply로 변환 */
 
 .tabBarContainer {
-  @apply flex items-end bg-gray-100 border-b border-gray-300;
+  @apply flex items-center bg-gray-100 border-b border-gray-300;
   /* 드래그 중이 아니면 정상 스크롤 허용 */
   position: relative;
   overflow: hidden; /* 컨테이너 자체는 overflow 숨김 */
   min-width: 0; /* flex item이 줄어들 수 있도록 */
   padding-top: 4px; /* 탭 상단 패딩만 유지 */
-  padding-bottom: 0; /* 하단 패딩 제거 */
+  padding-bottom: 4px; /* 하단 패딩 추가로 균형 맞춤 */
+  /* 탭 추가 버튼이 컨테이너를 넘지 않도록 최소 높이 설정 */
+  min-height: 40px; /* 탭 높이 + 패딩 */
+  /* 세로 스크롤 완전 차단 */
+  overflow-y: hidden !important;
+  max-height: 40px; /* 최대 높이 제한 */
 }
 
 /* 드래그 중이 아니네 Y축 스크롤 차단 제거 */
@@ -23,7 +28,7 @@ body[data-dragging] .tabBarContainer {
 }
 
 .tabsContainer {
-  @apply flex-1 flex items-end overflow-x-auto overflow-y-hidden;
+  @apply flex-1 flex items-center overflow-x-auto overflow-y-hidden;
   -webkit-overflow-scrolling: touch;
   /* 스크롤바 스타일링 - 더 얇고 현대적으로 */
   scrollbar-width: thin;
@@ -31,6 +36,12 @@ body[data-dragging] .tabBarContainer {
   /* 스크롤바를 맨 아래에 붙이기 */
   padding-bottom: 0;
   margin-bottom: 0;
+  /* 탭과 탭 추가 버튼을 가운데 정렬 */
+  align-items: center;
+  /* 세로 스크롤 완전 차단 */
+  overflow-y: hidden !important;
+  /* 최대 높이 제한 */
+  max-height: 36px;
 }
 
 /* 드래그 중일 때만 추가 Y축 차단 */
@@ -149,6 +160,18 @@ body[data-dragging] .tabsInnerContainer {
   align-items: center;
   justify-content: center;
   line-height: 1;
+  /* 탭 높이에 맞춰 조정하여 세로 스크롤바 방지 */
+  height: 32px; /* 탭 버튼 높이와 일치 */
+  margin-top: 0;
+  margin-bottom: 0;
+  /* 탭과 동일한 위치에 정렬 */
+  align-self: center;
+  /* 호버 시에도 높이 유지 */
+  max-height: 32px;
+  /* 호버 시 transform 효과 제거하여 높이 변화 방지 */
+  transform: none !important;
+  /* 호버 시에도 컨테이너를 넘지 않도록 제한 */
+  overflow: hidden;
 }
 
 .newTabButtonDisabled {
