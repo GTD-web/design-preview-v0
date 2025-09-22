@@ -1,9 +1,13 @@
 /* TabBar CSS Module - Tailwind CSS를 @apply로 변환 */
 
 .tabBarContainer {
-  @apply flex items-end bg-gray-100 border-b border-gray-300 overflow-hidden py-1;
+  @apply flex items-end bg-gray-100 border-b border-gray-300;
   /* 드래그 중이 아니면 정상 스크롤 허용 */
   position: relative;
+  overflow: hidden; /* 컨테이너 자체는 overflow 숨김 */
+  min-width: 0; /* flex item이 줄어들 수 있도록 */
+  padding-top: 4px; /* 탭 상단 패딩만 유지 */
+  padding-bottom: 0; /* 하단 패딩 제거 */
 }
 
 /* 드래그 중이 아니네 Y축 스크롤 차단 제거 */
@@ -20,9 +24,13 @@ body[data-dragging] .tabBarContainer {
 
 .tabsContainer {
   @apply flex-1 flex items-end overflow-x-auto overflow-y-hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
+  /* 스크롤바 스타일링 - 더 얇고 현대적으로 */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+  /* 스크롤바를 맨 아래에 붙이기 */
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* 드래그 중일 때만 추가 Y축 차단 */
@@ -32,8 +40,27 @@ body[data-dragging] .tabsContainer {
   touch-action: pan-x;
 }
 
+/* 웹킷 기반 브라우저용 스크롤바 스타일링 */
 .tabsContainer::-webkit-scrollbar {
-  display: none;
+  height: 4px; /* 더 얇은 수평 스크롤바 */
+  position: absolute;
+  bottom: 0;
+}
+
+.tabsContainer::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-radius: 2px;
+  margin: 0;
+}
+
+.tabsContainer::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+  transition: background 0.2s ease;
+}
+
+.tabsContainer::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .tabsInnerContainer {
@@ -52,6 +79,10 @@ body[data-dragging] .tabsInnerContainer {
   border-top-right-radius: 6px;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+  /* 탭이 줄어들지 않도록 설정 */
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .tabButtonInactive {
@@ -86,7 +117,12 @@ body[data-dragging] .tabsInnerContainer {
 }
 
 .tabTitle {
-  @apply flex-1 text-xs font-medium truncate min-w-0;
+  @apply flex-1 text-xs font-medium min-w-0;
+  /* ellipsis 처리를 위한 스타일 */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 20px; /* 최소 너비 확보 */
 }
 
 .closeButton {

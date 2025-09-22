@@ -674,14 +674,14 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
           toggleSidebarHidden,
         }}
       >
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen overflow-x-hidden">
           {/* ChromeTabBar - 상단 고정, 사이드바보다 위에 배치 */}
-          <div className="flex-shrink-0 bg-background z-[60] relative">
-            <div className="flex items-center">
+          <div className="flex-shrink-0 bg-background z-[60] relative overflow-hidden">
+            <div className="flex items-center min-w-0">
               {/* 홈 버튼 */}
               <button
                 onClick={handleHomeClick}
-                className={`px-3 text-sm font-medium transition-colors ${
+                className={`flex-shrink-0 px-3 text-sm font-medium transition-colors ${
                   isHomeButtonActive
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -701,7 +701,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               </button>
 
               {/* 탭바 */}
-              <div className="flex-1">
+              <div className="flex-1 min-w-0 overflow-hidden">
                 <TabBar
                   tabs={tabs}
                   activeTabId={activeTabId}

@@ -5,6 +5,12 @@
   --tab-bar-height: 40px;
 }
 
+/* 페이지 전체 가로 스크롤 방지 */
+html,
+body {
+  overflow-x: hidden;
+}
+
 /* TabBar 스크롤바 숨김 스타일 */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
