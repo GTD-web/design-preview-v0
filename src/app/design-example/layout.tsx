@@ -20,6 +20,8 @@ import {
   Button,
   DesignSettingsProvider,
   useDesignSettings,
+  TextHeading,
+  TextValue,
 } from "@/packages/design-system";
 import { PageInfo, useTabBar } from "@/packages/design-system/hooks";
 
@@ -33,6 +35,179 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
+
+// 커스텀 알림 컴포넌트
+function CustomNotificationPopup({
+  isOpen,
+  onClose,
+  position,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  position: { bottom: string; left: string };
+}) {
+  // 커스텀 알림 데이터
+  const notifications = [
+    {
+      id: 1,
+      title: "새로운 업데이트",
+      message: "디자인 시스템이 업데이트되었습니다.",
+      time: "5분 전",
+      isRead: false,
+      type: "system",
+    },
+    {
+      id: 2,
+      title: "프로젝트 완료",
+      message: "대시보드 프로젝트가 완료되었습니다.",
+      time: "1시간 전",
+      isRead: true,
+      type: "project",
+    },
+    {
+      id: 3,
+      title: "팀 초대",
+      message: "새로운 팀원이 초대되었습니다.",
+      time: "2시간 전",
+      isRead: true,
+      type: "team",
+    },
+  ];
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <div
+        className="fixed bg-surface rounded-lg shadow-2xl border w-96 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out z-50"
+        style={position}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex flex-col h-full">
+          <div className="p-4 border-b">
+            <div className="flex items-center justify-between">
+              <TextHeading
+                size="lg"
+                weight="semibold"
+                className="text-foreground"
+              >
+                알림 센터
+              </TextHeading>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={onClose}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {notifications.length === 0 ? (
+              <div className="p-8 text-center">
+                <TextValue size="sm" color="muted">
+                  알림이 없습니다.
+                </TextValue>
+              </div>
+            ) : (
+              <div className="p-2">
+                {notifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    className={`p-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-surface/80 mb-2 ${
+                      !notification.isRead
+                        ? "bg-blue-50 border-l-4 border-blue-500"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <TextHeading
+                            size="sm"
+                            weight="medium"
+                            className="text-foreground"
+                          >
+                            {notification.title}
+                          </TextHeading>
+                          <span
+                            className={`px-2 py-1 text-xs rounded-full ${
+                              notification.type === "system"
+                                ? "bg-blue-100 text-blue-800"
+                                : notification.type === "project"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-purple-100 text-purple-800"
+                            }`}
+                          >
+                            {notification.type === "system"
+                              ? "시스템"
+                              : notification.type === "project"
+                              ? "프로젝트"
+                              : "팀"}
+                          </span>
+                        </div>
+                        <TextValue size="sm" color="muted" className="mb-2">
+                          {notification.message}
+                        </TextValue>
+                        <TextValue size="xs" color="muted">
+                          {notification.time}
+                        </TextValue>
+                      </div>
+                      {!notification.isRead && (
+                        <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="p-4 border-t">
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1"
+                onClick={() => {
+                  console.log("모든 알림 읽음 처리");
+                  onClose();
+                }}
+              >
+                모두 읽음
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => {
+                  console.log("알림 설정");
+                  onClose();
+                }}
+              >
+                설정
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 // 사이드바 메뉴 데이터 정의
 const sidebarMenuGroups = [
@@ -752,6 +927,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               showSettings={true}
               isHoverEnabled={isHoverEnabled}
               onToggleHover={handleHoverToggle}
+              customNotificationComponent={CustomNotificationPopup}
               onMenuClick={(path, title, icon) => {
                 // 디자인토큰(루트 페이지) 클릭 시에는 홈 버튼 활성화만 처리
                 if (path === "/design-example") {
