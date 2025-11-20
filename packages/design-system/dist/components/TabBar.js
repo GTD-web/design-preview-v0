@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, } from "@dnd-kit/core";
 import { SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy, useSortable, } from "@dnd-kit/sortable";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { PageSelector } from "./PageSelector";
 import styles from "./TabBar.module.css";
 // Y축 움직임을 완전히 차단하는 강력한 modifier
 const restrictToHorizontalAxisStrict = ({ transform }) => {
@@ -154,8 +153,7 @@ function HomeButton({ isActive = false, onClick, icon, label = "홈", }) {
 /**
  * TabBar 컴포넌트 - 브라우저 탭과 유사한 동작을 제공하는 탭 바
  */
-export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages = [], maxTabs = 10, className = "", showNewTabButton = true, showHomeButton = false, onHomeClick, homeButtonActive = false, homeButtonIcon, homeButtonLabel = "홈", }) {
-    const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
+export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, maxTabs = 10, className = "", showNewTabButton = true, showHomeButton = false, onHomeClick, homeButtonActive = false, homeButtonIcon, homeButtonLabel = "홈", renderNewTabButton, }) {
     // 드래그 앤 드롭 센서 설정 - 클릭 우선, 드래그는 의도적으로 길게 눌렀을 때만
     const sensors = useSensors(useSensor(PointerSensor, {
         activationConstraint: {
@@ -251,18 +249,8 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
             onTabClose(tabId);
         }
     }, [onTabClose]);
-    const handlePageSelect = useCallback((pageInfo) => {
-        onPageSelect?.(pageInfo);
-    }, [onPageSelect]);
-    const openTabPaths = tabs.map((tab) => tab.path);
     // CSS 모듈 클래스 조합
     const containerClass = [styles.tabBarContainer, className]
-        .filter(Boolean)
-        .join(" ");
-    const newTabButtonClass = [
-        styles.newTabButton,
-        tabs.length >= maxTabs ? styles.newTabButtonDisabled : "",
-    ]
         .filter(Boolean)
         .join(" ");
     return (React.createElement("div", { className: containerClass },
@@ -271,14 +259,11 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
             React.createElement("div", { className: styles.tabsInnerContainer },
                 React.createElement(DndContext, { sensors: sensors, collisionDetection: closestCenter, onDragStart: handleDragStart, onDragEnd: handleDragEnd, onDragCancel: handleDragCancel, modifiers: [restrictToHorizontalAxisStrict, restrictToWindowEdges] },
                     React.createElement(SortableContext, { items: tabs.map((tab) => tab.id), strategy: horizontalListSortingStrategy }, tabs.map((tab) => (React.createElement(Tab, { key: tab.id, tab: tab, isActive: tab.id === activeTabId, onTabClick: handleTabClick, onTabClose: handleTabClose }))))))),
-        showNewTabButton && (React.createElement(PageSelector, { availablePages: availablePages, openTabPaths: openTabPaths, onPageSelect: handlePageSelect, isOpen: isPageSelectorOpen, onClose: () => setIsPageSelectorOpen(false) },
-            React.createElement(motion.button, { className: newTabButtonClass, onClick: () => {
-                    if (tabs.length < maxTabs) {
-                        setIsPageSelectorOpen(!isPageSelectorOpen);
-                    }
-                }, disabled: tabs.length >= maxTabs, title: "\uC0C8 \uD0ED \uCD94\uAC00" },
-                React.createElement("svg", { className: styles.newTabButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
-                    React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M12 6v6m0 0v6m0-6h6m-6 0H6" })))))));
+        showNewTabButton && renderNewTabButton && (React.createElement(React.Fragment, null, renderNewTabButton({
+            isDisabled: tabs.length >= maxTabs,
+            tabCount: tabs.length,
+            maxTabs: maxTabs,
+        })))));
 }
 /**
  * TabBar 스타일 상수 - 필요시 외부에서 참조 가능

@@ -16,7 +16,6 @@ export { DayPicker } from "./components/DayPicker";
 export { DayRangePicker } from "./components/DayRangePicker";
 export { TabBar } from "./components/TabBar";
 export { ChromeTabBar, } from "./components/ChromeTabBar";
-export { PageSelector, } from "./components/PageSelector";
 export { TabInstanceExample } from "./components/TabInstanceExample";
 // Hooks
 export { useDesignSettings, DesignSettingsProvider, } from "./hooks/useDesignSettings";

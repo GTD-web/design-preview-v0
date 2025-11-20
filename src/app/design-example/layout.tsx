@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import ClientOnly from "@/components/ClientOnly";
 import Loading from "../loading";
 import { TabBar } from "@/packages/design-system/components/TabBar";
+import { PageSelector } from "./PageSelector";
 import { LayoutContainer } from "@/packages/design-system/components/LayoutContainer";
 import { DesignSettings } from "@/packages/design-system/components/DesignSettings";
 import { CompactSidebar } from "@/packages/design-system/components/CompactSidebar";
@@ -365,7 +366,25 @@ export const useSidebarContext = () => {
   return context;
 };
 
-// 전체 앱 페이지 매핑 생성 (모든 페이지 포함)
+/**
+ * 전체 앱 페이지 매핑 생성 (모든 페이지 포함)
+ *
+ * 각 페이지에 category 필드를 추가하면 PageSelector에서 카테고리별로 그룹화됩니다.
+ *
+ * 카테고리 설정 방법:
+ * 1. PageInfo 객체에 category: "카테고리명" 추가
+ * 2. 같은 category 값을 가진 페이지들이 자동으로 그룹화됨
+ * 3. category를 지정하지 않으면 "기타" 카테고리로 분류됨
+ *
+ * 예시:
+ * {
+ *   path: "/example",
+ *   title: "예시 페이지",
+ *   category: "명세서",  // 이 값으로 그룹화
+ *   icon: <SomeIcon />,
+ *   closable: true,
+ * }
+ */
 const createAllPagesMapping = (): Record<string, PageInfo> => {
   const mapping: Record<string, PageInfo> = {};
 
@@ -373,6 +392,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/"] = {
     path: "/",
     title: "디자인 시스템 홈",
+    category: "메인", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -394,6 +414,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/component-library"] = {
     path: "/component-library",
     title: "컴포넌트 라이브러리",
+    category: "디자인시스템", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -415,6 +436,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/colors"] = {
     path: "/colors",
     title: "색상 가이드",
+    category: "디자인시스템", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -437,6 +459,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/design-example"] = {
     path: "/design-example",
     title: "디자인토큰",
+    category: "디자인시스템", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -464,6 +487,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/design-example/dashboard"] = {
     path: "/design-example/dashboard",
     title: "대시보드",
+    category: "예시페이지", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -486,6 +510,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/design-example/ecommerce"] = {
     path: "/design-example/ecommerce",
     title: "이커머스",
+    category: "예시페이지", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -508,6 +533,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/design-example/analytics"] = {
     path: "/design-example/analytics",
     title: "분석",
+    category: "데이터", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -530,6 +556,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/design-example/task-management"] = {
     path: "/design-example/task-management",
     title: "업무관리",
+    category: "업무", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -551,6 +578,7 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
   mapping["/design-example/user-profile"] = {
     path: "/design-example/user-profile",
     title: "사용자 프로필",
+    category: "사용자", // 카테고리 추가
     icon: (
       <svg
         className="w-4 h-4"
@@ -563,6 +591,189 @@ const createAllPagesMapping = (): Record<string, PageInfo> => {
           strokeLinejoin="round"
           strokeWidth={1.5}
           d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  // 추가 예시 페이지들 - 카테고리 분류를 더 명확하게 보여주기 위한 예시
+  mapping["/design-example/card-statement"] = {
+    path: "/design-example/card-statement",
+    title: "이용내역 명세서",
+    category: "명세서",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  mapping["/design-example/payment-statement"] = {
+    path: "/design-example/payment-statement",
+    title: "결제내역 조회",
+    category: "명세서",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  mapping["/design-example/card-management"] = {
+    path: "/design-example/card-management",
+    title: "카드 관리",
+    category: "카드",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  mapping["/design-example/card-benefits"] = {
+    path: "/design-example/card-benefits",
+    title: "카드 혜택",
+    category: "카드",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  mapping["/design-example/account-info"] = {
+    path: "/design-example/account-info",
+    title: "계좌 정보",
+    category: "금융",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  mapping["/design-example/transfer"] = {
+    path: "/design-example/transfer",
+    title: "계좌 이체",
+    category: "금융",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  mapping["/design-example/settings"] = {
+    path: "/design-example/settings",
+    title: "설정",
+    category: "사용자",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+    ),
+    closable: true,
+  };
+
+  mapping["/design-example/notifications"] = {
+    path: "/design-example/notifications",
+    title: "알림 설정",
+    category: "사용자",
+    icon: (
+      <svg
+        className="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
         />
       </svg>
     ),
@@ -599,6 +810,10 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // 초기 상태: 펼쳐진 사이드바
   const [sidebarHidden, setSidebarHidden] = useState(false); // 사이드바 완전 숨김 상태
   const [isHoverEnabled, setIsHoverEnabled] = useState(false);
+
+  // PageSelector 상태 관리
+  const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -625,25 +840,66 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
   // TabBar용 기본 페이지 정보 리졸버
   const defaultPageInfoResolver = useCallback(
     (path: string, homePath: string): PageInfo => {
-      // 기본값 생성 시 더 명확한 제목 생성
+      // 기본값 생성 시 더 명확한 제목과 카테고리 생성
       let defaultTitle = "페이지";
+      let defaultCategory = "기타";
 
       if (path.includes("/design-example/")) {
         const segment = path.split("/design-example/")[1];
-        if (segment === "dashboard") defaultTitle = "대시보드";
-        else if (segment === "ecommerce") defaultTitle = "이커머스";
-        else if (segment === "analytics") defaultTitle = "분석";
-        else if (segment === "task-management") defaultTitle = "업무관리";
-        else if (segment === "user-profile") defaultTitle = "사용자 프로필";
-        else if (segment) defaultTitle = segment;
+        if (segment === "dashboard") {
+          defaultTitle = "대시보드";
+          defaultCategory = "예시페이지";
+        } else if (segment === "ecommerce") {
+          defaultTitle = "이커머스";
+          defaultCategory = "예시페이지";
+        } else if (segment === "analytics") {
+          defaultTitle = "분석";
+          defaultCategory = "데이터";
+        } else if (segment === "task-management") {
+          defaultTitle = "업무관리";
+          defaultCategory = "업무";
+        } else if (segment === "user-profile") {
+          defaultTitle = "사용자 프로필";
+          defaultCategory = "사용자";
+        } else if (segment === "card-statement") {
+          defaultTitle = "이용내역 명세서";
+          defaultCategory = "명세서";
+        } else if (segment === "payment-statement") {
+          defaultTitle = "결제내역 조회";
+          defaultCategory = "명세서";
+        } else if (segment === "card-management") {
+          defaultTitle = "카드 관리";
+          defaultCategory = "카드";
+        } else if (segment === "card-benefits") {
+          defaultTitle = "카드 혜택";
+          defaultCategory = "카드";
+        } else if (segment === "account-info") {
+          defaultTitle = "계좌 정보";
+          defaultCategory = "금융";
+        } else if (segment === "transfer") {
+          defaultTitle = "계좌 이체";
+          defaultCategory = "금융";
+        } else if (segment === "settings") {
+          defaultTitle = "설정";
+          defaultCategory = "사용자";
+        } else if (segment === "notifications") {
+          defaultTitle = "알림 설정";
+          defaultCategory = "사용자";
+        } else if (segment) {
+          defaultTitle = segment;
+        }
       } else if (path === "/design-example") {
         defaultTitle = "디자인토큰";
+        defaultCategory = "디자인시스템";
       } else if (path === "/") {
         defaultTitle = "홈";
+        defaultCategory = "메인";
       } else if (path === "/component-library") {
         defaultTitle = "컴포넌트 라이브러리";
+        defaultCategory = "디자인시스템";
       } else if (path === "/colors") {
         defaultTitle = "색상 가이드";
+        defaultCategory = "디자인시스템";
       }
 
       // 중복 허용 페이지 확인
@@ -656,6 +912,7 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
         title: defaultTitle,
         closable: path !== homePath,
         allowDuplicate,
+        category: defaultCategory,
       };
     },
     []
@@ -883,13 +1140,56 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                   onTabClick={handleTabClick}
                   onTabClose={(tabId) => removeTab(tabId)}
                   onTabReorder={reorderTabs}
-                  onPageSelect={(pageInfo) => addTab(pageInfo)}
-                  availablePages={Object.values(allPagesMapping)}
                   showNewTabButton={true}
                   maxTabs={50}
                   showHomeButton={false}
                   homeButtonActive={isHomeButtonActive}
                   onHomeClick={handleHomeClick}
+                  renderNewTabButton={({ isDisabled, maxTabs }) => (
+                    <PageSelector
+                      availablePages={Object.values(allPagesMapping)}
+                      openTabPaths={tabs.map((tab) => tab.path)}
+                      onPageSelect={(pageInfo) => {
+                        addTab(pageInfo);
+                        setIsPageSelectorOpen(false);
+                      }}
+                      isOpen={isPageSelectorOpen}
+                      onClose={() => setIsPageSelectorOpen(false)}
+                    >
+                      <button
+                        className={`flex-shrink-0 h-8 w-8 flex items-center justify-center rounded transition-colors ${
+                          isDisabled
+                            ? "text-muted-foreground/30 cursor-not-allowed"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        }`}
+                        onClick={() => {
+                          if (!isDisabled) {
+                            setIsPageSelectorOpen(!isPageSelectorOpen);
+                          }
+                        }}
+                        disabled={isDisabled}
+                        title={
+                          isDisabled
+                            ? `최대 탭 개수(${maxTabs})에 도달했습니다`
+                            : "새 탭 추가"
+                        }
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
+                        </svg>
+                      </button>
+                    </PageSelector>
+                  )}
                 />
               </div>
             </div>

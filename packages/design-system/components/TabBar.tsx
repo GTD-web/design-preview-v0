@@ -19,8 +19,6 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import type { Modifier } from "@dnd-kit/core";
-import { PageSelector } from "./PageSelector";
-import type { PageInfo } from "../hooks";
 import styles from "./TabBar.module.css";
 
 // Y축 움직임을 완전히 차단하는 강력한 modifier
@@ -61,10 +59,6 @@ export interface TabBarProps {
   onTabReorder?: (activeId: string, overId: string) => void;
   /** 새 탭 추가 시 호출되는 콜백 (기본 홈페이지로) */
   onNewTab?: () => void;
-  /** 페이지 선택해서 탭 추가 시 호출되는 콜백 */
-  onPageSelect?: (pageInfo: PageInfo) => void;
-  /** 사용 가능한 모든 페이지 목록 */
-  availablePages?: PageInfo[];
   /** 최대 탭 개수 */
   maxTabs?: number;
   /** 추가 클래스명 */
@@ -83,6 +77,18 @@ export interface TabBarProps {
   homeButtonIcon?: React.ReactNode;
   /** 홈 버튼 텍스트/라벨 */
   homeButtonLabel?: string;
+  /**
+   * 새 탭 버튼 커스텀 렌더링 함수
+   * 사용하는 쪽에서 PageSelector 등의 컴포넌트를 직접 구성하여 전달 가능
+   * @param isDisabled - 최대 탭 개수 도달 여부
+   * @param tabCount - 현재 탭 개수
+   * @param maxTabs - 최대 탭 개수
+   */
+  renderNewTabButton?: (props: {
+    isDisabled: boolean;
+    tabCount: number;
+    maxTabs: number;
+  }) => React.ReactNode;
 }
 
 /**
@@ -354,8 +360,6 @@ export function TabBar({
   onTabClick,
   onTabClose,
   onTabReorder,
-  onPageSelect,
-  availablePages = [],
   maxTabs = 10,
   className = "",
   showNewTabButton = true,
@@ -364,9 +368,8 @@ export function TabBar({
   homeButtonActive = false,
   homeButtonIcon,
   homeButtonLabel = "홈",
+  renderNewTabButton,
 }: TabBarProps) {
-  const [isPageSelectorOpen, setIsPageSelectorOpen] = useState(false);
-
   // 드래그 앤 드롭 센서 설정 - 클릭 우선, 드래그는 의도적으로 길게 눌렀을 때만
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -506,23 +509,8 @@ export function TabBar({
     [onTabClose]
   );
 
-  const handlePageSelect = useCallback(
-    (pageInfo: PageInfo) => {
-      onPageSelect?.(pageInfo);
-    },
-    [onPageSelect]
-  );
-
-  const openTabPaths = tabs.map((tab) => tab.path);
-
   // CSS 모듈 클래스 조합
   const containerClass = [styles.tabBarContainer, className]
-    .filter(Boolean)
-    .join(" ");
-  const newTabButtonClass = [
-    styles.newTabButton,
-    tabs.length >= maxTabs ? styles.newTabButtonDisabled : "",
-  ]
     .filter(Boolean)
     .join(" ");
 
@@ -568,42 +556,14 @@ export function TabBar({
       </div>
 
       {/* 새 탭 버튼 */}
-      {showNewTabButton && (
-        <PageSelector
-          availablePages={availablePages}
-          openTabPaths={openTabPaths}
-          onPageSelect={handlePageSelect}
-          isOpen={isPageSelectorOpen}
-          onClose={() => setIsPageSelectorOpen(false)}
-        >
-          <motion.button
-            className={newTabButtonClass}
-            onClick={() => {
-              if (tabs.length < maxTabs) {
-                setIsPageSelectorOpen(!isPageSelectorOpen);
-              }
-            }}
-            disabled={tabs.length >= maxTabs}
-            title="새 탭 추가"
-            // 호버 시 높이 변화를 방지하기 위해 scale 효과 제거
-            // whileHover={{ scale: 1.05 }}
-            // whileTap={{ scale: 0.95 }}
-          >
-            <svg
-              className={styles.newTabButtonIcon}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              />
-            </svg>
-          </motion.button>
-        </PageSelector>
+      {showNewTabButton && renderNewTabButton && (
+        <>
+          {renderNewTabButton({
+            isDisabled: tabs.length >= maxTabs,
+            tabCount: tabs.length,
+            maxTabs: maxTabs,
+          })}
+        </>
       )}
     </div>
   );

@@ -36,10 +36,6 @@ export {
   ChromeTabBar,
   type ChromeTabBarProps,
 } from "./components/ChromeTabBar";
-export {
-  PageSelector,
-  type PageSelectorProps,
-} from "./components/PageSelector";
 export { TabInstanceExample } from "./components/TabInstanceExample";
 
 // Hooks

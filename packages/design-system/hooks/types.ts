@@ -12,6 +12,8 @@ export interface PageInfo {
   closable?: boolean;
   /** 중복 탭 허용 여부 (기본값: false) */
   allowDuplicate?: boolean;
+  /** 페이지가 속한 카테고리 */
+  category?: string;
 }
 
 /**

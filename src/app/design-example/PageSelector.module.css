@@ -12,7 +12,7 @@
 .popover {
   @apply fixed bg-white border rounded-lg shadow-2xl overflow-hidden;
   z-index: 999;
-  width: 384px;
+  width: 640px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 120px);
   top: 60px;
@@ -31,6 +31,80 @@
   @apply text-sm font-semibold text-gray-900;
 }
 
+/* 2단 레이아웃 */
+.twoColumnLayout {
+  @apply flex;
+  height: 440px;
+}
+
+/* 왼쪽 카테고리 컬럼 */
+.categoryColumn {
+  @apply border-r bg-blue-50;
+  width: 180px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* 스크롤바 스타일링 */
+.categoryColumn::-webkit-scrollbar {
+  width: 6px;
+}
+
+.categoryColumn::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.categoryColumn::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.categoryColumn::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.categoryItem {
+  @apply w-full flex items-center justify-between px-4 py-3 text-left border-none bg-transparent cursor-pointer transition-all duration-150;
+  border-left: 3px solid transparent;
+}
+
+.categoryItem:hover {
+  @apply bg-blue-100;
+}
+
+.categoryItemActive {
+  @apply bg-blue-600 text-white font-medium;
+  border-left-color: #1e40af;
+}
+
+.categoryItemActive:hover {
+  @apply bg-blue-600;
+}
+
+.categoryTitle {
+  @apply text-sm;
+}
+
+.categoryItemActive .categoryTitle {
+  @apply font-semibold;
+}
+
+.categoryArrow {
+  @apply w-4 h-4 flex-shrink-0 transition-transform duration-150;
+  opacity: 0.6;
+}
+
+.categoryItemActive .categoryArrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* 오른쪽 페이지 컬럼 */
+.pageColumn {
+  @apply flex-1 bg-white;
+  overflow: hidden;
+}
+
 .closeButton {
   @apply h-6 w-6 p-0 text-gray-600 hover:text-gray-900 bg-transparent border-none rounded-md cursor-pointer transition-colors duration-200;
   display: flex;
@@ -47,7 +121,7 @@
 }
 
 .scrollArea {
-  @apply max-h-80 overflow-y-auto;
+  @apply h-full overflow-y-auto;
 }
 
 .pageList {
@@ -101,6 +175,11 @@
 
 .emptyState {
   @apply p-8 text-center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
 }
 
 .emptyStateIcon {
@@ -126,3 +205,4 @@
 .footerText {
   @apply text-xs text-gray-600 text-center;
 }
+

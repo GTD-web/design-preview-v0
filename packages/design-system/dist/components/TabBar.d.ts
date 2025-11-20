@@ -1,5 +1,4 @@
 import React from "react";
-import type { PageInfo } from "../hooks";
 /**
  * 탭 아이템 타입 정의
  */
@@ -26,10 +25,6 @@ export interface TabBarProps {
     onTabReorder?: (activeId: string, overId: string) => void;
     /** 새 탭 추가 시 호출되는 콜백 (기본 홈페이지로) */
     onNewTab?: () => void;
-    /** 페이지 선택해서 탭 추가 시 호출되는 콜백 */
-    onPageSelect?: (pageInfo: PageInfo) => void;
-    /** 사용 가능한 모든 페이지 목록 */
-    availablePages?: PageInfo[];
     /** 최대 탭 개수 */
     maxTabs?: number;
     /** 추가 클래스명 */
@@ -48,11 +43,23 @@ export interface TabBarProps {
     homeButtonIcon?: React.ReactNode;
     /** 홈 버튼 텍스트/라벨 */
     homeButtonLabel?: string;
+    /**
+     * 새 탭 버튼 커스텀 렌더링 함수
+     * 사용하는 쪽에서 PageSelector 등의 컴포넌트를 직접 구성하여 전달 가능
+     * @param isDisabled - 최대 탭 개수 도달 여부
+     * @param tabCount - 현재 탭 개수
+     * @param maxTabs - 최대 탭 개수
+     */
+    renderNewTabButton?: (props: {
+        isDisabled: boolean;
+        tabCount: number;
+        maxTabs: number;
+    }) => React.ReactNode;
 }
 /**
  * TabBar 컴포넌트 - 브라우저 탭과 유사한 동작을 제공하는 탭 바
  */
-export declare function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, onPageSelect, availablePages, maxTabs, className, showNewTabButton, showHomeButton, onHomeClick, homeButtonActive, homeButtonIcon, homeButtonLabel, }: TabBarProps): React.JSX.Element;
+export declare function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder, maxTabs, className, showNewTabButton, showHomeButton, onHomeClick, homeButtonActive, homeButtonIcon, homeButtonLabel, renderNewTabButton, }: TabBarProps): React.JSX.Element;
 /**
  * TabBar 스타일 상수 - 필요시 외부에서 참조 가능
  */

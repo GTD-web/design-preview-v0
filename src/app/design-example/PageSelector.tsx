@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { PageInfo } from "../hooks";
+import type { PageInfo } from "@/packages/design-system/hooks";
 import styles from "./PageSelector.module.css";
 
 /**
@@ -128,10 +128,46 @@ export function PageSelector({
   onClose,
   children,
 }: PageSelectorProps) {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   // 중복 허용 페이지는 항상 표시, 아닌 경우 이미 열린 탭 제외
   const selectablePages = availablePages.filter(
     (page) => page.allowDuplicate || !openTabPaths.includes(page.path)
   );
+
+  // 카테고리별로 페이지 그룹핑
+  const categorizedPages = useMemo(() => {
+    const grouped: Record<string, PageInfo[]> = {};
+
+    selectablePages.forEach((page) => {
+      const category = page.category || "기타";
+      if (!grouped[category]) {
+        grouped[category] = [];
+      }
+      grouped[category].push(page);
+    });
+
+    return grouped;
+  }, [selectablePages]);
+
+  // 카테고리 목록 추출
+  const categories = useMemo(() => {
+    return Object.keys(categorizedPages).sort();
+  }, [categorizedPages]);
+
+  // 선택창이 열릴 때 첫 번째 카테고리 자동 선택
+  React.useEffect(() => {
+    if (isOpen && categories.length > 0 && !selectedCategory) {
+      setSelectedCategory(categories[0]);
+    }
+  }, [isOpen, categories, selectedCategory]);
+
+  // 선택창이 닫힐 때 선택 초기화
+  React.useEffect(() => {
+    if (!isOpen) {
+      setSelectedCategory(null);
+    }
+  }, [isOpen]);
 
   const handlePageClick = useCallback(
     (pageInfo: PageInfo) => {
@@ -211,58 +247,90 @@ export function PageSelector({
                     </svg>
                   </button>
                 </div>
-                <p className={styles.headerDescription}>
-                  {selectablePages.length}개의 페이지를 추가할 수 있습니다
-                  {availablePages.some((page) => page.allowDuplicate) &&
-                    " (일부 페이지는 중복 열기 가능)"}
-                </p>
               </div>
 
-              {/* 페이지 목록 */}
-              <div className={styles.scrollArea}>
-                {selectablePages.length > 0 ? (
-                  <div className={styles.pageList}>
-                    {selectablePages.map((page) => (
-                      <PageItem
-                        key={page.path}
-                        page={page}
-                        onPageClick={handlePageClick}
-                      />
+              {/* 2단 레이아웃 */}
+              {selectablePages.length > 0 ? (
+                <div className={styles.twoColumnLayout}>
+                  {/* 왼쪽: 카테고리 메뉴 */}
+                  <div className={styles.categoryColumn}>
+                    {categories.map((category) => (
+                      <button
+                        key={category}
+                        className={`${styles.categoryItem} ${
+                          selectedCategory === category
+                            ? styles.categoryItemActive
+                            : ""
+                        }`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        <span className={styles.categoryTitle}>{category}</span>
+                        <svg
+                          className={styles.categoryArrow}
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </button>
                     ))}
                   </div>
-                ) : (
-                  <div className={styles.emptyState}>
-                    <div className={styles.emptyStateIcon}>
-                      <svg
-                        className={styles.emptyStateIconSvg}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                    </div>
-                    <p className={styles.emptyStateTitle}>
-                      추가할 수 있는 페이지가 없습니다
-                    </p>
-                    <p className={styles.emptyStateDescription}>
-                      모든 페이지가 이미 탭으로 열려있습니다
-                      {availablePages.some((page) => page.allowDuplicate) &&
-                        " (중복 열기 가능한 페이지는 없습니다)"}
-                    </p>
-                  </div>
-                )}
-              </div>
 
-              {/* 푸터 */}
-              {selectablePages.length > 0 && (
-                <div className={styles.footer}>
-                  <p className={styles.footerText}>클릭하여 새 탭으로 추가</p>
+                  {/* 오른쪽: 선택된 카테고리의 페이지 목록 */}
+                  <div className={styles.pageColumn}>
+                    <div className={styles.scrollArea}>
+                      {selectedCategory &&
+                      categorizedPages[selectedCategory] ? (
+                        <div className={styles.pageList}>
+                          {categorizedPages[selectedCategory].map((page) => (
+                            <PageItem
+                              key={page.path}
+                              page={page}
+                              onPageClick={handlePageClick}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className={styles.emptyState}>
+                          <p className={styles.emptyStateTitle}>
+                            카테고리를 선택하세요
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyStateIcon}>
+                    <svg
+                      className={styles.emptyStateIconSvg}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <p className={styles.emptyStateTitle}>
+                    추가할 수 있는 페이지가 없습니다
+                  </p>
+                  <p className={styles.emptyStateDescription}>
+                    모든 페이지가 이미 탭으로 열려있습니다
+                    {availablePages.some((page) => page.allowDuplicate) &&
+                      " (중복 열기 가능한 페이지는 없습니다)"}
+                  </p>
                 </div>
               )}
             </motion.div>
@@ -272,3 +340,4 @@ export function PageSelector({
     </div>
   );
 }
+
