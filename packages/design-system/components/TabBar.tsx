@@ -552,19 +552,19 @@ export function TabBar({
               ))}
             </SortableContext>
           </DndContext>
+
+          {/* 새 탭 버튼 - 마지막 탭 바로 옆에 위치 */}
+          {showNewTabButton && renderNewTabButton && (
+            <>
+              {renderNewTabButton({
+                isDisabled: tabs.length >= maxTabs,
+                tabCount: tabs.length,
+                maxTabs: maxTabs,
+              })}
+            </>
+          )}
         </div>
       </div>
-
-      {/* 새 탭 버튼 */}
-      {showNewTabButton && renderNewTabButton && (
-        <>
-          {renderNewTabButton({
-            isDisabled: tabs.length >= maxTabs,
-            tabCount: tabs.length,
-            maxTabs: maxTabs,
-          })}
-        </>
-      )}
     </div>
   );
 }

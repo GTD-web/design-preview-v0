@@ -258,12 +258,12 @@ export function TabBar({ tabs, activeTabId, onTabClick, onTabClose, onTabReorder
         React.createElement("div", { className: styles.tabsContainer },
             React.createElement("div", { className: styles.tabsInnerContainer },
                 React.createElement(DndContext, { sensors: sensors, collisionDetection: closestCenter, onDragStart: handleDragStart, onDragEnd: handleDragEnd, onDragCancel: handleDragCancel, modifiers: [restrictToHorizontalAxisStrict, restrictToWindowEdges] },
-                    React.createElement(SortableContext, { items: tabs.map((tab) => tab.id), strategy: horizontalListSortingStrategy }, tabs.map((tab) => (React.createElement(Tab, { key: tab.id, tab: tab, isActive: tab.id === activeTabId, onTabClick: handleTabClick, onTabClose: handleTabClose }))))))),
-        showNewTabButton && renderNewTabButton && (React.createElement(React.Fragment, null, renderNewTabButton({
-            isDisabled: tabs.length >= maxTabs,
-            tabCount: tabs.length,
-            maxTabs: maxTabs,
-        })))));
+                    React.createElement(SortableContext, { items: tabs.map((tab) => tab.id), strategy: horizontalListSortingStrategy }, tabs.map((tab) => (React.createElement(Tab, { key: tab.id, tab: tab, isActive: tab.id === activeTabId, onTabClick: handleTabClick, onTabClose: handleTabClose }))))),
+                showNewTabButton && renderNewTabButton && (React.createElement(React.Fragment, null, renderNewTabButton({
+                    isDisabled: tabs.length >= maxTabs,
+                    tabCount: tabs.length,
+                    maxTabs: maxTabs,
+                })))))));
 }
 /**
  * TabBar 스타일 상수 - 필요시 외부에서 참조 가능
