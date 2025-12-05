@@ -1,6 +1,7 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, } from "@dnd-kit/core";
 import { SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy, useSortable, } from "@dnd-kit/sortable";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
@@ -15,6 +16,128 @@ const restrictToHorizontalAxisStrict = ({ transform }) => {
         scaleY: 1,
     };
 };
+/**
+ * useTabManager - 탭 상태 관리 및 자동 탭 추가/활성화 hook
+ *
+ * 링크로 접속했을 때 자동으로 탭을 추가하거나 활성화합니다.
+ *
+ * @example
+ * ```tsx
+ * const { tabs, activeTabId, handleTabClick, handleTabClose, handleTabReorder } = useTabManager({
+ *   initialTabs: [{ id: "home", title: "홈", path: "/" }],
+ *   maxTabs: 10,
+ *   getTabFromPath: (path) => ({
+ *     title: path === "/" ? "홈" : path.split("/").pop() || "페이지",
+ *     path: path,
+ *     closable: path !== "/",
+ *   }),
+ *   homePath: "/",
+ * });
+ *
+ * return <TabBar
+ *   tabs={tabs}
+ *   activeTabId={activeTabId}
+ *   onTabClick={handleTabClick}
+ *   onTabClose={handleTabClose}
+ *   onTabReorder={handleTabReorder}
+ * />;
+ * ```
+ */
+export function useTabManager({ initialTabs = [], maxTabs = 10, getTabFromPath, homePath = "/", } = {}) {
+    const pathname = usePathname();
+    const [tabs, setTabs] = useState(initialTabs);
+    const [activeTabId, setActiveTabId] = useState(initialTabs.find((tab) => tab.path === pathname)?.id);
+    // 경로 변경 시 자동으로 탭 추가/활성화
+    useEffect(() => {
+        if (!pathname)
+            return;
+        // 홈 경로는 탭으로 관리하지 않음 (선택사항)
+        if (pathname === homePath && homePath !== undefined) {
+            setActiveTabId(undefined);
+            return;
+        }
+        // 이미 존재하는 탭인지 확인
+        const existingTab = tabs.find((tab) => tab.path === pathname);
+        if (existingTab) {
+            // 이미 존재하면 활성화
+            setActiveTabId(existingTab.id);
+        }
+        else {
+            // 존재하지 않으면 새 탭 추가
+            if (tabs.length >= maxTabs) {
+                console.warn(`최대 탭 개수(${maxTabs})에 도달했습니다.`);
+                return;
+            }
+            // getTabFromPath가 제공되면 사용, 아니면 기본 탭 생성
+            const newTabData = getTabFromPath
+                ? getTabFromPath(pathname)
+                : {
+                    title: pathname.split("/").filter(Boolean).pop() || "새 페이지",
+                    path: pathname,
+                    closable: true,
+                };
+            if (!newTabData)
+                return;
+            const newTab = {
+                id: `tab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                ...newTabData,
+            };
+            setTabs((prevTabs) => [...prevTabs, newTab]);
+            setActiveTabId(newTab.id);
+        }
+    }, [pathname, tabs, maxTabs, getTabFromPath, homePath]);
+    // 탭 클릭 핸들러
+    const handleTabClick = useCallback((tab) => {
+        setActiveTabId(tab.id);
+        // 라우터를 사용하는 경우 부모 컴포넌트에서 처리
+        // router.push(tab.path);
+    }, []);
+    // 탭 닫기 핸들러
+    const handleTabClose = useCallback((tabId) => {
+        setTabs((prevTabs) => {
+            const newTabs = prevTabs.filter((tab) => tab.id !== tabId);
+            // 닫힌 탭이 활성 탭이었다면 다른 탭을 활성화
+            if (activeTabId === tabId && newTabs.length > 0) {
+                const closedTabIndex = prevTabs.findIndex((tab) => tab.id === tabId);
+                const newActiveTab = newTabs[Math.max(0, closedTabIndex - 1)] || newTabs[0];
+                setActiveTabId(newActiveTab.id);
+                // router.push(newActiveTab.path); // 부모에서 처리
+            }
+            else if (newTabs.length === 0) {
+                setActiveTabId(undefined);
+            }
+            return newTabs;
+        });
+    }, [activeTabId]);
+    // 탭 순서 변경 핸들러
+    const handleTabReorder = useCallback((activeId, overId) => {
+        setTabs((prevTabs) => {
+            const activeIndex = prevTabs.findIndex((tab) => tab.id === activeId);
+            const overIndex = prevTabs.findIndex((tab) => tab.id === overId);
+            if (activeIndex === -1 || overIndex === -1)
+                return prevTabs;
+            const newTabs = [...prevTabs];
+            const [movedTab] = newTabs.splice(activeIndex, 1);
+            newTabs.splice(overIndex, 0, movedTab);
+            return newTabs;
+        });
+    }, []);
+    // 새 탭 추가 (홈으로)
+    const handleNewTab = useCallback(() => {
+        // 부모 컴포넌트에서 홈으로 이동하도록 처리
+        // router.push(homePath);
+    }, []);
+    return {
+        tabs,
+        activeTabId,
+        setTabs,
+        setActiveTabId,
+        handleTabClick,
+        handleTabClose,
+        handleTabReorder,
+        handleNewTab,
+    };
+}
 function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
     const [isHovering, setIsHovering] = useState(false);
     const [isDragInProgress, setIsDragInProgress] = useState(false);

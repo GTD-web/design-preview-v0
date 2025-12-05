@@ -10,6 +10,56 @@ export interface TabItem {
     closable?: boolean;
 }
 /**
+ * useTabManager hook 옵션
+ */
+export interface UseTabManagerOptions {
+    /** 초기 탭 목록 */
+    initialTabs?: TabItem[];
+    /** 최대 탭 개수 */
+    maxTabs?: number;
+    /** 경로에서 탭 정보를 생성하는 함수 */
+    getTabFromPath?: (path: string) => Omit<TabItem, "id"> | null;
+    /** 홈 경로 (이 경로일 때는 탭을 추가하지 않음) */
+    homePath?: string;
+}
+/**
+ * useTabManager - 탭 상태 관리 및 자동 탭 추가/활성화 hook
+ *
+ * 링크로 접속했을 때 자동으로 탭을 추가하거나 활성화합니다.
+ *
+ * @example
+ * ```tsx
+ * const { tabs, activeTabId, handleTabClick, handleTabClose, handleTabReorder } = useTabManager({
+ *   initialTabs: [{ id: "home", title: "홈", path: "/" }],
+ *   maxTabs: 10,
+ *   getTabFromPath: (path) => ({
+ *     title: path === "/" ? "홈" : path.split("/").pop() || "페이지",
+ *     path: path,
+ *     closable: path !== "/",
+ *   }),
+ *   homePath: "/",
+ * });
+ *
+ * return <TabBar
+ *   tabs={tabs}
+ *   activeTabId={activeTabId}
+ *   onTabClick={handleTabClick}
+ *   onTabClose={handleTabClose}
+ *   onTabReorder={handleTabReorder}
+ * />;
+ * ```
+ */
+export declare function useTabManager({ initialTabs, maxTabs, getTabFromPath, homePath, }?: UseTabManagerOptions): {
+    tabs: TabItem[];
+    activeTabId: string;
+    setTabs: React.Dispatch<React.SetStateAction<TabItem[]>>;
+    setActiveTabId: React.Dispatch<React.SetStateAction<string>>;
+    handleTabClick: (tab: TabItem) => void;
+    handleTabClose: (tabId: string) => void;
+    handleTabReorder: (activeId: string, overId: string) => void;
+    handleNewTab: () => void;
+};
+/**
  * TabBar 컴포넌트 Props 인터페이스
  */
 export interface TabBarProps {
