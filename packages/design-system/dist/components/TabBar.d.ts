@@ -17,27 +17,39 @@ export interface UseTabManagerOptions {
     initialTabs?: TabItem[];
     /** 최대 탭 개수 */
     maxTabs?: number;
-    /** 경로에서 탭 정보를 생성하는 함수 */
-    getTabFromPath?: (path: string) => Omit<TabItem, "id"> | null;
+    /** 경로에서 탭 정보를 생성하는 함수 (fullPath는 쿼리 파라미터 포함) */
+    getTabFromPath?: (pathname: string, fullPath: string) => Omit<TabItem, "id"> | null;
     /** 홈 경로 (이 경로일 때는 탭을 추가하지 않음) */
     homePath?: string;
+    /**
+     * 특정 경로가 여러 탭을 허용할지 결정하는 함수
+     * true를 반환하면 같은 경로에 여러 탭이 열릴 수 있음 (쿼리 파라미터가 달라도 새 탭 생성)
+     * false를 반환하면 같은 경로는 하나의 탭만 유지하고 쿼리 파라미터만 업데이트
+     * @default () => false
+     */
+    shouldAllowMultipleTabs?: (pathname: string, fullPath: string) => boolean;
 }
 /**
  * useTabManager - 탭 상태 관리 및 자동 탭 추가/활성화 hook
  *
  * 링크로 접속했을 때 자동으로 탭을 추가하거나 활성화합니다.
+ * 쿼리 파라미터가 포함된 URL도 지원하며, 같은 경로의 탭은 쿼리 파라미터만 업데이트합니다.
  *
  * @example
  * ```tsx
  * const { tabs, activeTabId, handleTabClick, handleTabClose, handleTabReorder } = useTabManager({
  *   initialTabs: [{ id: "home", title: "홈", path: "/" }],
  *   maxTabs: 10,
- *   getTabFromPath: (path) => ({
- *     title: path === "/" ? "홈" : path.split("/").pop() || "페이지",
- *     path: path,
- *     closable: path !== "/",
+ *   getTabFromPath: (pathname, fullPath) => ({
+ *     title: pathname === "/" ? "홈" : pathname.split("/").pop() || "페이지",
+ *     path: fullPath, // 쿼리 파라미터 포함
+ *     closable: pathname !== "/",
  *   }),
  *   homePath: "/",
+ *   shouldAllowMultipleTabs: (pathname) => {
+ *     // 특정 페이지는 여러 탭 허용
+ *     return pathname.startsWith("/detail/");
+ *   },
  * });
  *
  * return <TabBar
@@ -49,7 +61,7 @@ export interface UseTabManagerOptions {
  * />;
  * ```
  */
-export declare function useTabManager({ initialTabs, maxTabs, getTabFromPath, homePath, }?: UseTabManagerOptions): {
+export declare function useTabManager({ initialTabs, maxTabs, getTabFromPath, homePath, shouldAllowMultipleTabs, }?: UseTabManagerOptions): {
     tabs: TabItem[];
     activeTabId: string;
     setTabs: React.Dispatch<React.SetStateAction<TabItem[]>>;

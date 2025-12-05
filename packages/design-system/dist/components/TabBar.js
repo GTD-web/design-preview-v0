@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, } from "@dnd-kit/core";
 import { SortableContext, sortableKeyboardCoordinates, horizontalListSortingStrategy, useSortable, } from "@dnd-kit/sortable";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
@@ -20,18 +20,23 @@ const restrictToHorizontalAxisStrict = ({ transform }) => {
  * useTabManager - 탭 상태 관리 및 자동 탭 추가/활성화 hook
  *
  * 링크로 접속했을 때 자동으로 탭을 추가하거나 활성화합니다.
+ * 쿼리 파라미터가 포함된 URL도 지원하며, 같은 경로의 탭은 쿼리 파라미터만 업데이트합니다.
  *
  * @example
  * ```tsx
  * const { tabs, activeTabId, handleTabClick, handleTabClose, handleTabReorder } = useTabManager({
  *   initialTabs: [{ id: "home", title: "홈", path: "/" }],
  *   maxTabs: 10,
- *   getTabFromPath: (path) => ({
- *     title: path === "/" ? "홈" : path.split("/").pop() || "페이지",
- *     path: path,
- *     closable: path !== "/",
+ *   getTabFromPath: (pathname, fullPath) => ({
+ *     title: pathname === "/" ? "홈" : pathname.split("/").pop() || "페이지",
+ *     path: fullPath, // 쿼리 파라미터 포함
+ *     closable: pathname !== "/",
  *   }),
  *   homePath: "/",
+ *   shouldAllowMultipleTabs: (pathname) => {
+ *     // 특정 페이지는 여러 탭 허용
+ *     return pathname.startsWith("/detail/");
+ *   },
  * });
  *
  * return <TabBar
@@ -43,37 +48,87 @@ const restrictToHorizontalAxisStrict = ({ transform }) => {
  * />;
  * ```
  */
-export function useTabManager({ initialTabs = [], maxTabs = 10, getTabFromPath, homePath = "/", } = {}) {
+export function useTabManager({ initialTabs = [], maxTabs = 10, getTabFromPath, homePath = "/", shouldAllowMultipleTabs = () => false, } = {}) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [tabs, setTabs] = useState(initialTabs);
-    const [activeTabId, setActiveTabId] = useState(initialTabs.find((tab) => tab.path === pathname)?.id);
-    // 경로 변경 시 자동으로 탭 추가/활성화
+    const [activeTabId, setActiveTabId] = useState(initialTabs.find((tab) => {
+        const tabPathname = tab.path.split("?")[0];
+        return tabPathname === pathname;
+    })?.id);
+    // 경로 변경 시 자동으로 탭 추가/활성화/업데이트
     useEffect(() => {
         if (!pathname)
             return;
+        // 전체 경로 생성 (쿼리 파라미터 포함)
+        const search = searchParams?.toString();
+        const fullPath = search ? `${pathname}?${search}` : pathname;
         // 홈 경로는 탭으로 관리하지 않음 (선택사항)
         if (pathname === homePath && homePath !== undefined) {
             setActiveTabId(undefined);
             return;
         }
-        // 이미 존재하는 탭인지 확인
-        const existingTab = tabs.find((tab) => tab.path === pathname);
-        if (existingTab) {
-            // 이미 존재하면 활성화
-            setActiveTabId(existingTab.id);
+        // pathname이 같은 탭 찾기 (쿼리 파라미터는 무시)
+        const existingTabWithSamePathname = tabs.find((tab) => {
+            const tabPathname = tab.path.split("?")[0];
+            return tabPathname === pathname;
+        });
+        // 여러 탭을 허용하는 페이지인지 확인
+        const allowMultipleTabs = shouldAllowMultipleTabs(pathname, fullPath);
+        if (existingTabWithSamePathname && !allowMultipleTabs) {
+            // 같은 pathname의 탭이 있고, 여러 탭을 허용하지 않는 경우
+            // 기존 탭의 쿼리 파라미터를 업데이트하고 활성화
+            setTabs((prevTabs) => prevTabs.map((tab) => {
+                const tabPathname = tab.path.split("?")[0];
+                if (tabPathname === pathname) {
+                    return { ...tab, path: fullPath };
+                }
+                return tab;
+            }));
+            setActiveTabId(existingTabWithSamePathname.id);
+        }
+        else if (allowMultipleTabs) {
+            // 여러 탭을 허용하는 페이지인 경우, 전체 경로(쿼리 파라미터 포함)로 비교
+            const existingTabWithExactPath = tabs.find((tab) => tab.path === fullPath);
+            if (existingTabWithExactPath) {
+                // 완전히 같은 경로의 탭이 있으면 활성화
+                setActiveTabId(existingTabWithExactPath.id);
+            }
+            else {
+                // 없으면 새 탭 추가
+                if (tabs.length >= maxTabs) {
+                    console.warn(`최대 탭 개수(${maxTabs})에 도달했습니다.`);
+                    return;
+                }
+                const newTabData = getTabFromPath
+                    ? getTabFromPath(pathname, fullPath)
+                    : {
+                        title: pathname.split("/").filter(Boolean).pop() || "새 페이지",
+                        path: fullPath,
+                        closable: true,
+                    };
+                if (!newTabData)
+                    return;
+                const newTab = {
+                    id: `tab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    ...newTabData,
+                };
+                setTabs((prevTabs) => [...prevTabs, newTab]);
+                setActiveTabId(newTab.id);
+            }
         }
         else {
-            // 존재하지 않으면 새 탭 추가
+            // 같은 pathname의 탭이 없고, 여러 탭을 허용하지 않는 경우
+            // 새 탭 추가
             if (tabs.length >= maxTabs) {
                 console.warn(`최대 탭 개수(${maxTabs})에 도달했습니다.`);
                 return;
             }
-            // getTabFromPath가 제공되면 사용, 아니면 기본 탭 생성
             const newTabData = getTabFromPath
-                ? getTabFromPath(pathname)
+                ? getTabFromPath(pathname, fullPath)
                 : {
                     title: pathname.split("/").filter(Boolean).pop() || "새 페이지",
-                    path: pathname,
+                    path: fullPath,
                     closable: true,
                 };
             if (!newTabData)
@@ -85,7 +140,8 @@ export function useTabManager({ initialTabs = [], maxTabs = 10, getTabFromPath, 
             setTabs((prevTabs) => [...prevTabs, newTab]);
             setActiveTabId(newTab.id);
         }
-    }, [pathname, tabs, maxTabs, getTabFromPath, homePath]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathname, searchParams, maxTabs, getTabFromPath, homePath]);
     // 탭 클릭 핸들러
     const handleTabClick = useCallback((tab) => {
         setActiveTabId(tab.id);
