@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, Variants } from "framer-motion";
+import { Newspaper, ExternalLink } from "lucide-react";
 import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
@@ -80,6 +81,8 @@ export interface CompactSidebarBaseProps {
   showModeToggle?: boolean;
   /** 알림 아이콘 표시 여부 */
   showNotification?: boolean;
+  /** 공지사항 아이콘 표시 여부 */
+  showAnnouncement?: boolean;
   /** 설정 아이콘 표시 여부 */
   showSettings?: boolean;
   /** 호버 모드 활성화 여부 */
@@ -132,6 +135,10 @@ export interface CompactSidebarExpandedProps
   width?: string;
   /** 호버 토글 함수 */
   onToggleHover?: () => void;
+  /** 공지사항 children */
+  announcementChildren?: React.ReactNode;
+  /** 공지사항 바로가기 클릭 핸들러 */
+  onAnnouncementLinkClick?: () => void;
 }
 
 /**
@@ -181,6 +188,8 @@ interface CompactSidebarProps {
   showModeToggle?: boolean;
   /** 알림 아이콘 표시 여부 */
   showNotification?: boolean;
+  /** 공지사항 아이콘 표시 여부 */
+  showAnnouncement?: boolean;
   /** 설정 아이콘 표시 여부 */
   showSettings?: boolean;
   /** 사이드바 접기 아이콘 (펼쳐진 상태에서 표시) */
@@ -203,6 +212,10 @@ interface CompactSidebarProps {
     onClose: () => void;
     position: { bottom: string; left: string };
   }>;
+  /** 공지사항 children */
+  announcementChildren?: React.ReactNode;
+  /** 공지사항 바로가기 클릭 핸들러 */
+  onAnnouncementLinkClick?: () => void;
 }
 
 /**
@@ -296,11 +309,10 @@ function NotificationPopup({
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-surface/80 ${
-                      !notification.isRead
-                        ? "bg-blue-50 border-l-4 border-blue-500"
-                        : ""
-                    }`}
+                    className={`p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-surface/80 ${!notification.isRead
+                      ? "bg-blue-50 border-l-4 border-blue-500"
+                      : ""
+                      }`}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
@@ -340,6 +352,96 @@ function NotificationPopup({
             >
               모든 알림 읽음 처리
             </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/**
+ * 공지사항 팝업 컴포넌트
+ */
+function AnnouncementPopup({
+  isOpen,
+  onClose,
+  position,
+  children,
+  onAnnouncementLinkClick,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  position: { bottom: string; left: string };
+  children?: React.ReactNode;
+  onAnnouncementLinkClick?: () => void;
+}) {
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <div
+        className="fixed bg-surface rounded-lg shadow-2xl border w-96 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out z-50 announcement-popup"
+        style={position}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex flex-col h-full">
+          <div className="p-4 border-b">
+            <div className="flex items-center justify-between">
+              <TextHeading
+                size="lg"
+                weight="semibold"
+                className="text-foreground"
+              >
+                공지사항
+              </TextHeading>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => {
+                    onAnnouncementLinkClick?.();
+                  }}
+                  title="공지사항 바로가기"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={onClose}
+                  title="닫기"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {children ? (
+              <>{children}</>
+            ) : (
+              <div className="p-8 text-center">
+                <TextValue size="sm" color="muted">
+                  공지사항이 없습니다.
+                </TextValue>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -645,10 +747,9 @@ export function CompactSidebarCollapsed({
                         }}
                         className={`
                           group flex items-center justify-center h-[30px] w-[30px] rounded-lg transition-all duration-200 ease-in-out mx-auto relative
-                          ${
-                            activePath === item.path
-                              ? "bg-neutral-800 /*dark:bg-neutral-700*/"
-                              : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"
+                          ${activePath === item.path
+                            ? "bg-neutral-800 /*dark:bg-neutral-700*/"
+                            : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"
                           }
                         `}
                         title={item.title}
@@ -656,10 +757,9 @@ export function CompactSidebarCollapsed({
                         <div
                           className={`
                             flex items-center justify-center w-4 h-4 transition-all duration-200 ease-in-out
-                            ${
-                              activePath === item.path
-                                ? "text-white"
-                                : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"
+                            ${activePath === item.path
+                              ? "text-white"
+                              : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"
                             }
                           `}
                         >
@@ -947,16 +1047,26 @@ export function CompactSidebarExpanded({
   user,
   onLogout,
   showNotification = true,
+  showAnnouncement = true,
   showSettings: _showSettings = true, // eslint-disable-line @typescript-eslint/no-unused-vars
   onMenuClick,
   customNotificationComponent,
+  announcementChildren,
+  onAnnouncementLinkClick,
 }: CompactSidebarExpandedProps) {
   const router = useRouter();
   const { isLoaded } = useSidebarIcons();
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+  const [showAnnouncementPopup, setShowAnnouncementPopup] = useState(false);
 
   const handleNotificationClick = () => {
     setShowNotificationPopup(!showNotificationPopup);
+    setShowAnnouncementPopup(false); // 공지사항 팝업 닫기
+  };
+
+  const handleAnnouncementClick = () => {
+    setShowAnnouncementPopup(!showAnnouncementPopup);
+    setShowNotificationPopup(false); // 알림 팝업 닫기
   };
 
   // 팝업 외부 클릭 시 닫기
@@ -966,13 +1076,16 @@ export function CompactSidebarExpanded({
       if (showNotificationPopup && !target.closest(".notification-popup")) {
         setShowNotificationPopup(false);
       }
+      if (showAnnouncementPopup && !target.closest(".announcement-popup")) {
+        setShowAnnouncementPopup(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showNotificationPopup]);
+  }, [showNotificationPopup, showAnnouncementPopup]);
 
   // 애니메이션 variants 정의 (opacity 제거)
   const expandedContentVariants: Variants = {
@@ -1041,10 +1154,9 @@ export function CompactSidebarExpanded({
                         }}
                         className={`
                           group flex items-center gap-3 w-full px-3 py-1 h-[30px] rounded-lg transition-all duration-200 ease-in-out overflow-hidden
-                          ${
-                            activePath === item.path
-                              ? "bg-neutral-800 /*dark:bg-neutral-700*/"
-                              : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"
+                          ${activePath === item.path
+                            ? "bg-neutral-800 /*dark:bg-neutral-700*/"
+                            : "text-neutral-600 /*dark:text-neutral-400*/ hover:bg-neutral-100 /*dark:hover:bg-neutral-800*/"
                           }
                         `}
                         variants={itemVariants}
@@ -1052,10 +1164,9 @@ export function CompactSidebarExpanded({
                         <div
                           className={`
                             flex items-center justify-center w-4 h-4 transition-all duration-200 ease-in-out flex-shrink-0
-                            ${
-                              activePath === item.path
-                                ? "text-white"
-                                : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"
+                            ${activePath === item.path
+                              ? "text-white"
+                              : "text-neutral-500 group-hover:text-neutral-700 /*dark:text-neutral-400 dark:group-hover:text-neutral-300*/"
                             }
                           `}
                         >
@@ -1063,11 +1174,10 @@ export function CompactSidebarExpanded({
                         </div>
                         <div className="flex items-center justify-between flex-1 min-w-0">
                           <span
-                            className={`font-medium transition-all duration-200 ease-in-out truncate ${
-                              activePath === item.path
-                                ? "text-white"
-                                : "text-neutral-600 /*dark:text-neutral-400*/"
-                            }`}
+                            className={`font-medium transition-all duration-200 ease-in-out truncate ${activePath === item.path
+                              ? "text-white"
+                              : "text-neutral-600 /*dark:text-neutral-400*/"
+                              }`}
                           >
                             {item.title}
                           </span>
@@ -1129,6 +1239,22 @@ export function CompactSidebarExpanded({
                         strokeLinejoin="round"
                       />
                     </svg>
+                  </Button>
+                )}
+
+                {/* 공지사항 버튼 */}
+                {showAnnouncement && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAnnouncementClick();
+                    }}
+                    title="공지사항"
+                  >
+                    <Newspaper className="w-4 h-4" />
                   </Button>
                 )}
 
@@ -1217,6 +1343,19 @@ export function CompactSidebarExpanded({
         />
       )}
 
+      {/* 공지사항 팝업 */}
+      <AnnouncementPopup
+        isOpen={showAnnouncementPopup}
+        onClose={() => setShowAnnouncementPopup(false)}
+        position={{
+          bottom: "1rem",
+          left: "calc(16rem + 1rem)", // 알림 팝업과 동일한 위치
+        }}
+        onAnnouncementLinkClick={onAnnouncementLinkClick}
+      >
+        {announcementChildren}
+      </AnnouncementPopup>
+
       {/* 설정 팝업 - 주석 처리됨 */}
       {/* <SettingsPopup
         isOpen={showSettingsPopup}
@@ -1255,6 +1394,7 @@ export function CompactSidebar({
   user,
   onLogout,
   showNotification = true,
+  showAnnouncement = true,
   showSettings = true,
   logoUrl,
   logoText = "디자인시스템",
@@ -1265,6 +1405,8 @@ export function CompactSidebar({
   hoverInActiveIcon,
   onMenuClick,
   customNotificationComponent,
+  announcementChildren,
+  onAnnouncementLinkClick,
 }: CompactSidebarProps) {
   const { isLoaded } = useSidebarIcons();
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -1376,10 +1518,10 @@ export function CompactSidebar({
           transform: isHidden
             ? "translateX(-100%)"
             : isLargeScreen
-            ? "translateX(0)"
-            : isOpen
-            ? "translateX(0)"
-            : "translateX(-100%)",
+              ? "translateX(0)"
+              : isOpen
+                ? "translateX(0)"
+                : "translateX(-100%)",
           transition: "transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
           willChange: "transform",
           width: isCollapsed ? "5rem" : "16rem",
@@ -1415,6 +1557,7 @@ export function CompactSidebar({
                 user={user}
                 onLogout={onLogout}
                 showNotification={showNotification}
+                showAnnouncement={showAnnouncement}
                 showSettings={showSettings}
                 width={collapsedWidth}
                 onToggleExpand={onToggleCollapse}
@@ -1452,6 +1595,7 @@ export function CompactSidebar({
                 user={user}
                 onLogout={onLogout}
                 showNotification={showNotification}
+                showAnnouncement={showAnnouncement}
                 showSettings={showSettings}
                 width={width}
                 onToggleCollapse={onToggleCollapse}
@@ -1461,6 +1605,8 @@ export function CompactSidebar({
                 hoverInActiveIcon={hoverInActiveIcon}
                 onMenuClick={onMenuClick}
                 customNotificationComponent={customNotificationComponent}
+                announcementChildren={announcementChildren}
+                onAnnouncementLinkClick={onAnnouncementLinkClick}
               />
             </motion.div>
           )}

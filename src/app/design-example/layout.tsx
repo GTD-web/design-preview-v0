@@ -129,11 +129,10 @@ function CustomNotificationPopup({
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-surface/80 mb-2 ${
-                      !notification.isRead
-                        ? "bg-blue-50 border-l-4 border-blue-500"
-                        : ""
-                    }`}
+                    className={`p-4 rounded-lg cursor-pointer transition-all duration-200 hover:bg-surface/80 mb-2 ${!notification.isRead
+                      ? "bg-blue-50 border-l-4 border-blue-500"
+                      : ""
+                      }`}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
@@ -146,19 +145,18 @@ function CustomNotificationPopup({
                             {notification.title}
                           </TextHeading>
                           <span
-                            className={`px-2 py-1 text-xs rounded-full ${
-                              notification.type === "system"
-                                ? "bg-blue-100 text-blue-800"
-                                : notification.type === "project"
+                            className={`px-2 py-1 text-xs rounded-full ${notification.type === "system"
+                              ? "bg-blue-100 text-blue-800"
+                              : notification.type === "project"
                                 ? "bg-green-100 text-green-800"
                                 : "bg-purple-100 text-purple-800"
-                            }`}
+                              }`}
                           >
                             {notification.type === "system"
                               ? "시스템"
                               : notification.type === "project"
-                              ? "프로젝트"
-                              : "팀"}
+                                ? "프로젝트"
+                                : "팀"}
                           </span>
                         </div>
                         <TextValue size="sm" color="muted" className="mb-2">
@@ -1113,11 +1111,10 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
               {/* 홈 버튼 */}
               <button
                 onClick={handleHomeClick}
-                className={`flex-shrink-0 px-3 text-sm font-medium transition-colors ${
-                  isHomeButtonActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
+                className={`flex-shrink-0 px-3 text-sm font-medium transition-colors ${isHomeButtonActive
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
                 style={{
                   height: "32px",
                   display: "flex",
@@ -1157,11 +1154,10 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                       onClose={() => setIsPageSelectorOpen(false)}
                     >
                       <button
-                        className={`flex-shrink-0 h-8 w-8 flex items-center justify-center rounded transition-colors ${
-                          isDisabled
-                            ? "text-muted-foreground/30 cursor-not-allowed"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                        }`}
+                        className={`flex-shrink-0 h-8 w-8 flex items-center justify-center rounded transition-colors ${isDisabled
+                          ? "text-muted-foreground/30 cursor-not-allowed"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                          }`}
                         onClick={() => {
                           if (!isDisabled) {
                             setIsPageSelectorOpen(!isPageSelectorOpen);
@@ -1334,8 +1330,8 @@ function DesignExampleContent({ children }: { children: React.ReactNode }) {
                 </svg>
               }
 
-              // 사이드바 아이콘은 이제 설정에서 사용자가 직접 선택할 수 있습니다
-              // collapseIcon과 expandIcon props는 필요시에만 사용하세요
+            // 사이드바 아이콘은 이제 설정에서 사용자가 직접 선택할 수 있습니다
+            // collapseIcon과 expandIcon props는 필요시에만 사용하세요
             />
 
             {/* 메인 콘텐츠 */}

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { Newspaper, ExternalLink } from "lucide-react";
 import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
@@ -73,6 +74,29 @@ function NotificationPopup({ isOpen, onClose, position, }) {
                             console.log("모든 알림 읽음 처리");
                             onClose();
                         } }, "\uBAA8\uB4E0 \uC54C\uB9BC \uC77D\uC74C \uCC98\uB9AC"))))));
+}
+/**
+ * 공지사항 팝업 컴포넌트
+ */
+function AnnouncementPopup({ isOpen, onClose, position, children, onAnnouncementLinkClick, }) {
+    if (!isOpen)
+        return null;
+    return (React.createElement(React.Fragment, null,
+        React.createElement("div", { className: "fixed bg-surface rounded-lg shadow-2xl border w-96 max-h-[80vh] overflow-hidden transform transition-all duration-300 ease-in-out z-50 announcement-popup", style: position, onClick: (e) => e.stopPropagation() },
+            React.createElement("div", { className: "flex flex-col h-full" },
+                React.createElement("div", { className: "p-4 border-b" },
+                    React.createElement("div", { className: "flex items-center justify-between" },
+                        React.createElement(TextHeading, { size: "lg", weight: "semibold", className: "text-foreground" }, "\uACF5\uC9C0\uC0AC\uD56D"),
+                        React.createElement("div", { className: "flex items-center gap-1" },
+                            React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0", onClick: () => {
+                                    onAnnouncementLinkClick?.();
+                                }, title: "\uACF5\uC9C0\uC0AC\uD56D \uBC14\uB85C\uAC00\uAE30" },
+                                React.createElement(ExternalLink, { className: "w-4 h-4" })),
+                            React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0", onClick: onClose, title: "\uB2EB\uAE30" },
+                                React.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+                                    React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" })))))),
+                React.createElement("div", { className: "flex-1 overflow-y-auto" }, children ? (React.createElement(React.Fragment, null, children)) : (React.createElement("div", { className: "p-8 text-center" },
+                    React.createElement(TextValue, { size: "sm", color: "muted" }, "\uACF5\uC9C0\uC0AC\uD56D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."))))))));
 }
 /**
  * 설정 팝업 컴포넌트 - 주석 처리됨
@@ -395,13 +419,19 @@ export function CompactSidebarCollapsed({ logoUrl, logoTextShort = "DS", activeP
 /**
  * 펼쳐진 컴팩트 사이드바 컴포넌트 (헤더 없음)
  */
-export function CompactSidebarExpanded({ activePath = "", menuGroups, width = "w-64", className = "", user, onLogout, showNotification = true, showSettings: _showSettings = true, // eslint-disable-line @typescript-eslint/no-unused-vars
-onMenuClick, customNotificationComponent, }) {
+export function CompactSidebarExpanded({ activePath = "", menuGroups, width = "w-64", className = "", user, onLogout, showNotification = true, showAnnouncement = true, showSettings: _showSettings = true, // eslint-disable-line @typescript-eslint/no-unused-vars
+onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLinkClick, }) {
     const router = useRouter();
     const { isLoaded } = useSidebarIcons();
     const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+    const [showAnnouncementPopup, setShowAnnouncementPopup] = useState(false);
     const handleNotificationClick = () => {
         setShowNotificationPopup(!showNotificationPopup);
+        setShowAnnouncementPopup(false); // 공지사항 팝업 닫기
+    };
+    const handleAnnouncementClick = () => {
+        setShowAnnouncementPopup(!showAnnouncementPopup);
+        setShowNotificationPopup(false); // 알림 팝업 닫기
     };
     // 팝업 외부 클릭 시 닫기
     useEffect(() => {
@@ -410,12 +440,15 @@ onMenuClick, customNotificationComponent, }) {
             if (showNotificationPopup && !target.closest(".notification-popup")) {
                 setShowNotificationPopup(false);
             }
+            if (showAnnouncementPopup && !target.closest(".announcement-popup")) {
+                setShowAnnouncementPopup(false);
+            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [showNotificationPopup]);
+    }, [showNotificationPopup, showAnnouncementPopup]);
     // 애니메이션 variants 정의 (opacity 제거)
     const expandedContentVariants = {
         hidden: {},
@@ -482,6 +515,11 @@ onMenuClick, customNotificationComponent, }) {
                                 }, title: "\uC54C\uB9BC" },
                                 React.createElement("svg", { width: "16", height: "16", fill: "none", viewBox: "0 0 20 20" },
                                     React.createElement("path", { d: "M10 18a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2Zm6-4V9a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" })))),
+                            showAnnouncement && (React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200", onClick: (e) => {
+                                    e.stopPropagation();
+                                    handleAnnouncementClick();
+                                }, title: "\uACF5\uC9C0\uC0AC\uD56D" },
+                                React.createElement(Newspaper, { className: "w-4 h-4" }))),
                             React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0 text-danger hover:text-danger hover:bg-danger/10 transition-all duration-200", onClick: (e) => {
                                     e.stopPropagation();
                                     onLogout?.();
@@ -498,7 +536,11 @@ onMenuClick, customNotificationComponent, }) {
         })) : (React.createElement(NotificationPopup, { isOpen: showNotificationPopup, onClose: () => setShowNotificationPopup(false), position: {
                 bottom: "1rem",
                 left: "calc(16rem + 1rem)",
-            } }))));
+            } })),
+        React.createElement(AnnouncementPopup, { isOpen: showAnnouncementPopup, onClose: () => setShowAnnouncementPopup(false), position: {
+                bottom: "1rem",
+                left: "calc(16rem + 1rem)", // 알림 팝업과 동일한 위치
+            }, onAnnouncementLinkClick: onAnnouncementLinkClick }, announcementChildren)));
 }
 /**
  * 컴팩트 사이드바 컴포넌트 (통합) - 헤더 없는 버전
@@ -511,7 +553,7 @@ onMenuClick, customNotificationComponent, }) {
  * - 30px 메뉴 아이템 크기
  * - 헤더 영역 없음
  */
-export function CompactSidebar({ isOpen = true, onClose, isCollapsed = false, isHidden = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, showNotification = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, customNotificationComponent, }) {
+export function CompactSidebar({ isOpen = true, onClose, isCollapsed = false, isHidden = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, showNotification = true, showAnnouncement = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLinkClick, }) {
     const { isLoaded } = useSidebarIcons();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [hoverTimeoutId, setHoverTimeoutId] = useState(null);
@@ -612,7 +654,7 @@ export function CompactSidebar({ isOpen = true, onClose, isCollapsed = false, is
                     height: "100%",
                     willChange: "transform, opacity",
                 } },
-                React.createElement(CompactSidebarCollapsed, { logoUrl: logoUrl, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, showNotification: showNotification, showSettings: showSettings, width: collapsedWidth, onToggleExpand: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, onMenuClick: onMenuClick, customNotificationComponent: customNotificationComponent }))) : (React.createElement(motion.div, { key: "expanded", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
+                React.createElement(CompactSidebarCollapsed, { logoUrl: logoUrl, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, showNotification: showNotification, showAnnouncement: showAnnouncement, showSettings: showSettings, width: collapsedWidth, onToggleExpand: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, onMenuClick: onMenuClick, customNotificationComponent: customNotificationComponent }))) : (React.createElement(motion.div, { key: "expanded", initial: { x: -80, opacity: 0 }, animate: { x: 0, opacity: 1 }, exit: { x: -80, opacity: 0 }, transition: {
                     duration: 0.2,
                     ease: "easeOut",
                 }, style: {
@@ -622,5 +664,5 @@ export function CompactSidebar({ isOpen = true, onClose, isCollapsed = false, is
                     height: "100%",
                     willChange: "transform, opacity",
                 } },
-                React.createElement(CompactSidebarExpanded, { logoUrl: logoUrl, logoText: logoText, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, showNotification: showNotification, showSettings: showSettings, width: width, onToggleCollapse: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, hoverActiveIcon: hoverActiveIcon, hoverInActiveIcon: hoverInActiveIcon, onMenuClick: onMenuClick, customNotificationComponent: customNotificationComponent })))))));
+                React.createElement(CompactSidebarExpanded, { logoUrl: logoUrl, logoText: logoText, logoTextShort: logoTextShort, activePath: activePath, menuGroups: menuGroups, className: className, user: user, onLogout: onLogout, showNotification: showNotification, showAnnouncement: showAnnouncement, showSettings: showSettings, width: width, onToggleCollapse: onToggleCollapse, isHoverEnabled: isHoverEnabled, onToggleHover: handleToggleHover, hoverActiveIcon: hoverActiveIcon, hoverInActiveIcon: hoverInActiveIcon, onMenuClick: onMenuClick, customNotificationComponent: customNotificationComponent, announcementChildren: announcementChildren, onAnnouncementLinkClick: onAnnouncementLinkClick })))))));
 }
