@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Newspaper, ExternalLink } from "lucide-react";
 import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
@@ -90,7 +89,8 @@ function AnnouncementPopup({ isOpen, onClose, position, children, onAnnouncement
                             React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0", onClick: () => {
                                     onAnnouncementLinkClick?.();
                                 }, title: "\uACF5\uC9C0\uC0AC\uD56D \uBC14\uB85C\uAC00\uAE30" },
-                                React.createElement(ExternalLink, { className: "w-4 h-4" })),
+                                React.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+                                    React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" }))),
                             React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0", onClick: onClose, title: "\uB2EB\uAE30" },
                                 React.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                                     React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" })))))),
@@ -416,7 +416,7 @@ export function CompactSidebarCollapsed({ logoUrl, logoTextShort = "DS", activeP
 /**
  * 펼쳐진 컴팩트 사이드바 컴포넌트 (헤더 없음)
  */
-export function CompactSidebarExpanded({ activePath = "", menuGroups, width = "w-64", className = "", user, onLogout, showNotification = true, showAnnouncement = true, showSettings: _showSettings = true, // eslint-disable-line @typescript-eslint/no-unused-vars
+export function CompactSidebarExpanded({ activePath = "", menuGroups, width = "w-64", className = "", user, onLogout, showNotification = true, showAnnouncement = false, showSettings: _showSettings = true, // eslint-disable-line @typescript-eslint/no-unused-vars
 onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLinkClick, }) {
     const router = useRouter();
     const { isLoaded } = useSidebarIcons();
@@ -516,7 +516,8 @@ onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLi
                                     e.stopPropagation();
                                     handleAnnouncementClick();
                                 }, title: "\uACF5\uC9C0\uC0AC\uD56D" },
-                                React.createElement(Newspaper, { className: "w-4 h-4" }))),
+                                React.createElement("svg", { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+                                    React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" })))),
                             React.createElement(Button, { variant: "ghost", size: "sm", className: "h-8 w-8 p-0 text-danger hover:text-danger hover:bg-danger/10 transition-all duration-200", onClick: (e) => {
                                     e.stopPropagation();
                                     onLogout?.();
@@ -550,7 +551,7 @@ onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLi
  * - 30px 메뉴 아이템 크기
  * - 헤더 영역 없음
  */
-export function CompactSidebar({ isOpen = true, onClose, isCollapsed = false, isHidden = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, showNotification = true, showAnnouncement = true, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLinkClick, }) {
+export function CompactSidebar({ isOpen = true, onClose, isCollapsed = false, isHidden = false, onToggleCollapse, activePath = "", menuGroups, width = "w-64", collapsedWidth = "w-20", className = "", user, onLogout, showNotification = true, showAnnouncement = false, showSettings = true, logoUrl, logoText = "디자인시스템", logoTextShort = "DS", isHoverEnabled = false, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLinkClick, }) {
     const { isLoaded } = useSidebarIcons();
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [hoverTimeoutId, setHoverTimeoutId] = useState(null);
