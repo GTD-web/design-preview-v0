@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { Newspaper, ExternalLink } from "lucide-react";
 import TextHeading from "./TextHeading";
 import { TextValue } from "./Text";
 import { VStack, VSpace } from "./Stack";
@@ -404,7 +403,19 @@ function AnnouncementPopup({
                   }}
                   title="공지사항 바로가기"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
                 </Button>
                 <Button
                   variant="ghost"
@@ -1044,7 +1055,7 @@ export function CompactSidebarExpanded({
   user,
   onLogout,
   showNotification = true,
-  showAnnouncement = true,
+  showAnnouncement = false,
   showSettings: _showSettings = true, // eslint-disable-line @typescript-eslint/no-unused-vars
   onMenuClick,
   customNotificationComponent,
@@ -1251,7 +1262,19 @@ export function CompactSidebarExpanded({
                     }}
                     title="공지사항"
                   >
-                    <Newspaper className="w-4 h-4" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+                      />
+                    </svg>
                   </Button>
                 )}
 
@@ -1391,7 +1414,7 @@ export function CompactSidebar({
   user,
   onLogout,
   showNotification = true,
-  showAnnouncement = true,
+  showAnnouncement = false,
   showSettings = true,
   logoUrl,
   logoText = "디자인시스템",
