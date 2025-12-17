@@ -480,12 +480,20 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
 
         {/* 닫기 버튼 */}
         {tab.closable !== false && (
-          <button
+          <div
             className={closeButtonClass}
             onClick={handleCloseClick}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
             title="탭 닫기"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleCloseClick(e as any);
+              }
+            }}
             style={{
               opacity: isHovering || isActive ? 1 : 0.7,
               transform: `scale(${isHovering ? 1.1 : 1})`,
@@ -495,6 +503,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
               // 다른 요소와의 상호작용 방지
               zIndex: 10,
               position: "relative",
+              cursor: "pointer",
             }}
           >
             <svg
@@ -510,7 +519,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }: TabProps) {
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-          </button>
+          </div>
         )}
       </button>
     </div>

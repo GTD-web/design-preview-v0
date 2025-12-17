@@ -290,7 +290,12 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
             }, ...listeners },
             tab.icon && React.createElement("div", { className: styles.tabIcon }, tab.icon),
             React.createElement("span", { className: styles.tabTitle }, tab.title),
-            tab.closable !== false && (React.createElement("button", { className: closeButtonClass, onClick: handleCloseClick, onMouseEnter: () => setIsHovering(true), onMouseLeave: () => setIsHovering(false), title: "\uD0ED \uB2EB\uAE30", style: {
+            tab.closable !== false && (React.createElement("div", { className: closeButtonClass, onClick: handleCloseClick, onMouseEnter: () => setIsHovering(true), onMouseLeave: () => setIsHovering(false), title: "\uD0ED \uB2EB\uAE30", role: "button", tabIndex: 0, onKeyDown: (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleCloseClick(e);
+                    }
+                }, style: {
                     opacity: isHovering || isActive ? 1 : 0.7,
                     transform: `scale(${isHovering ? 1.1 : 1})`,
                     transition: "opacity 0.15s, transform 0.15s",
@@ -299,6 +304,7 @@ function SortableTab({ tab, isActive, onTabClick, onTabClose }) {
                     // 다른 요소와의 상호작용 방지
                     zIndex: 10,
                     position: "relative",
+                    cursor: "pointer",
                 } },
                 React.createElement("svg", { className: styles.closeButtonIcon, fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
                     React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" })))))));
