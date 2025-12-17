@@ -410,7 +410,6 @@ faviconResolver, } = {}) {
     ]);
     // TabBar 컴포넌트용 탭 클릭 핸들러
     const handleTabClick = useCallback((tab) => {
-        console.log("useChromeTabBar: Tab clicked:", tab.title, tab.id);
         activateTab(tab.id);
     }, [activateTab]);
     // 초기화

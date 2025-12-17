@@ -70,7 +70,6 @@ function NotificationPopup({ isOpen, onClose, position, }) {
                         !notification.isRead && (React.createElement("div", { className: "w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" }))))))))),
                 React.createElement("div", { className: "p-4 border-t" },
                     React.createElement(Button, { variant: "ghost", size: "sm", className: "w-full", onClick: () => {
-                            console.log("모든 알림 읽음 처리");
                             onClose();
                         } }, "\uBAA8\uB4E0 \uC54C\uB9BC \uC77D\uC74C \uCC98\uB9AC"))))));
 }
@@ -367,7 +366,6 @@ export function CompactSidebarCollapsed({ logoUrl, logoTextShort = "DS", activeP
                                     React.createElement(TextValue, { size: "sm", color: "muted" }, user?.email || "user@example.com")),
                                 React.createElement("div", { className: "space-y-2" },
                                     showNotification && (React.createElement(Button, { variant: "ghost", size: "lg", className: "w-full text-left text-foreground hover:bg-surface/80", onClick: () => {
-                                            console.log("알림 클릭");
                                             setShowProfilePopup(false);
                                         } },
                                         React.createElement("div", { className: "flex items-center w-full" },
@@ -375,7 +373,6 @@ export function CompactSidebarCollapsed({ logoUrl, logoTextShort = "DS", activeP
                                                 React.createElement("path", { d: "M10 18a2 2 0 0 0 2-2H8a2 2 0 0 0 2 2Zm6-4V9a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z", stroke: "currentColor", strokeWidth: "1.5", strokeLinecap: "round", strokeLinejoin: "round" })),
                                             React.createElement("span", { className: "text-left" }, "\uC54C\uB9BC")))),
                                     showSettings && (React.createElement(Button, { variant: "ghost", size: "lg", className: "w-full text-left text-foreground hover:bg-surface/80", onClick: () => {
-                                            console.log("설정 클릭");
                                             setShowProfilePopup(false);
                                         } },
                                         React.createElement("div", { className: "flex items-center w-full" },

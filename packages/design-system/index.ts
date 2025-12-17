@@ -36,7 +36,6 @@ export {
   ChromeTabBar,
   type ChromeTabBarProps,
 } from "./components/ChromeTabBar";
-export { TabInstanceExample } from "./components/TabInstanceExample";
 
 // Hooks
 export {

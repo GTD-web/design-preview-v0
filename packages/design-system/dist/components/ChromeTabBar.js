@@ -75,28 +75,24 @@ export function ChromeTabBar({ tabs = [], onTabClick, onTabClose, onTabReorder, 
     const handleTabClick = useCallback((tabId) => {
         const tab = tabs.find((t) => t.id === tabId);
         if (tab && onTabClick) {
-            console.log("ChromeTabBar: Tab clicked:", tab.title, tab.id);
             onTabClick(tab);
         }
     }, [tabs, onTabClick]);
     // 탭 닫기 핸들러 (onTabClose는 tabId를 받음)
     const handleTabClose = useCallback((tabId) => {
         if (onTabClose) {
-            console.log("ChromeTabBar: Tab closed:", tabId);
             onTabClose(tabId);
         }
     }, [onTabClose]);
     // 탭 순서 변경 핸들러
     const handleTabReorder = useCallback((tabId, fromIndex, toIndex) => {
         if (onTabReorder) {
-            console.log("ChromeTabBar: Tab reordered:", tabId, fromIndex, "->", toIndex);
             onTabReorder(fromIndex, toIndex);
         }
     }, [onTabReorder]);
     // 새 탭 버튼 클릭 핸들러
     const handleNewTabClick = useCallback(() => {
         if (tabs.length < maxTabs && onNewTab) {
-            console.log("ChromeTabBar: New tab requested");
             onNewTab();
         }
     }, [tabs.length, maxTabs, onNewTab]);

@@ -138,7 +138,6 @@ export function ChromeTabBar({
     (tabId: string) => {
       const tab = tabs.find((t) => t.id === tabId);
       if (tab && onTabClick) {
-        console.log("ChromeTabBar: Tab clicked:", tab.title, tab.id);
         onTabClick(tab);
       }
     },
@@ -149,7 +148,6 @@ export function ChromeTabBar({
   const handleTabClose = useCallback(
     (tabId: string) => {
       if (onTabClose) {
-        console.log("ChromeTabBar: Tab closed:", tabId);
         onTabClose(tabId);
       }
     },
@@ -160,13 +158,6 @@ export function ChromeTabBar({
   const handleTabReorder = useCallback(
     (tabId: string, fromIndex: number, toIndex: number) => {
       if (onTabReorder) {
-        console.log(
-          "ChromeTabBar: Tab reordered:",
-          tabId,
-          fromIndex,
-          "->",
-          toIndex
-        );
         onTabReorder(fromIndex, toIndex);
       }
     },
@@ -176,7 +167,6 @@ export function ChromeTabBar({
   // 새 탭 버튼 클릭 핸들러
   const handleNewTabClick = useCallback(() => {
     if (tabs.length < maxTabs && onNewTab) {
-      console.log("ChromeTabBar: New tab requested");
       onNewTab();
     }
   }, [tabs.length, maxTabs, onNewTab]);

@@ -334,7 +334,6 @@ function NotificationPopup({
               size="sm"
               className="w-full"
               onClick={() => {
-                console.log("모든 알림 읽음 처리");
                 onClose();
               }}
             >
@@ -838,7 +837,6 @@ export function CompactSidebarCollapsed({
                           size="lg"
                           className="w-full text-left text-foreground hover:bg-surface/80"
                           onClick={() => {
-                            console.log("알림 클릭");
                             setShowProfilePopup(false);
                           }}
                         >
@@ -869,7 +867,6 @@ export function CompactSidebarCollapsed({
                           size="lg"
                           className="w-full text-left text-foreground hover:bg-surface/80"
                           onClick={() => {
-                            console.log("설정 클릭");
                             setShowProfilePopup(false);
                           }}
                         >

@@ -571,7 +571,6 @@ export function useChromeTabBar({
   // TabBar 컴포넌트용 탭 클릭 핸들러
   const handleTabClick = useCallback(
     (tab: ChromeTabItem) => {
-      console.log("useChromeTabBar: Tab clicked:", tab.title, tab.id);
       activateTab(tab.id);
     },
     [activateTab]

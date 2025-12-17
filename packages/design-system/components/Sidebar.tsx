@@ -385,7 +385,6 @@ export function SidebarCollapsed({
                           size="lg"
                           className="w-full text-left text-foreground hover:bg-surface/80"
                           onClick={() => {
-                            console.log("알림 클릭");
                             setShowProfilePopup(false);
                           }}
                         >
@@ -416,7 +415,6 @@ export function SidebarCollapsed({
                           size="lg"
                           className="w-full text-left text-foreground hover:bg-surface/80"
                           onClick={() => {
-                            console.log("설정 클릭");
                             setShowProfilePopup(false);
                           }}
                         >
@@ -793,7 +791,6 @@ export function SidebarExpanded({
                     className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200"
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("알림 클릭");
                     }}
                     title="알림"
                   >
@@ -816,7 +813,6 @@ export function SidebarExpanded({
                     className="h-8 w-8 p-0 text-muted hover:text-foreground hover:bg-surface/80 transition-all duration-200"
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("설정 클릭");
                     }}
                     title="설정"
                   >
