@@ -53,6 +53,8 @@ export interface CompactSidebarBaseProps {
     showModeToggle?: boolean;
     /** 알림 아이콘 표시 여부 */
     showNotification?: boolean;
+    /** 공지사항 아이콘 표시 여부 */
+    showAnnouncement?: boolean;
     /** 설정 아이콘 표시 여부 */
     showSettings?: boolean;
     /** 호버 모드 활성화 여부 */
@@ -98,6 +100,10 @@ export interface CompactSidebarExpandedProps extends Omit<CompactSidebarBaseProp
     width?: string;
     /** 호버 토글 함수 */
     onToggleHover?: () => void;
+    /** 공지사항 children */
+    announcementChildren?: React.ReactNode;
+    /** 공지사항 바로가기 클릭 핸들러 */
+    onAnnouncementLinkClick?: () => void;
 }
 /**
  * CompactSidebar 컴포넌트 Props 인터페이스
@@ -146,6 +152,8 @@ interface CompactSidebarProps {
     showModeToggle?: boolean;
     /** 알림 아이콘 표시 여부 */
     showNotification?: boolean;
+    /** 공지사항 아이콘 표시 여부 */
+    showAnnouncement?: boolean;
     /** 설정 아이콘 표시 여부 */
     showSettings?: boolean;
     /** 사이드바 접기 아이콘 (펼쳐진 상태에서 표시) */
@@ -171,6 +179,10 @@ interface CompactSidebarProps {
             left: string;
         };
     }>;
+    /** 공지사항 children */
+    announcementChildren?: React.ReactNode;
+    /** 공지사항 바로가기 클릭 핸들러 */
+    onAnnouncementLinkClick?: () => void;
 }
 /**
  * 설정 팝업 컴포넌트 - 주석 처리됨
@@ -182,8 +194,8 @@ export declare function CompactSidebarCollapsed({ logoUrl, logoTextShort, active
 /**
  * 펼쳐진 컴팩트 사이드바 컴포넌트 (헤더 없음)
  */
-export declare function CompactSidebarExpanded({ activePath, menuGroups, width, className, user, onLogout, showNotification, showSettings, // eslint-disable-line @typescript-eslint/no-unused-vars
-onMenuClick, customNotificationComponent, }: CompactSidebarExpandedProps): React.JSX.Element;
+export declare function CompactSidebarExpanded({ activePath, menuGroups, width, className, user, onLogout, showNotification, showAnnouncement, showSettings, // eslint-disable-line @typescript-eslint/no-unused-vars
+onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLinkClick, }: CompactSidebarExpandedProps): React.JSX.Element;
 /**
  * 컴팩트 사이드바 컴포넌트 (통합) - 헤더 없는 버전
  *
@@ -195,5 +207,5 @@ onMenuClick, customNotificationComponent, }: CompactSidebarExpandedProps): React
  * - 30px 메뉴 아이템 크기
  * - 헤더 영역 없음
  */
-export declare function CompactSidebar({ isOpen, onClose, isCollapsed, isHidden, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, showNotification, showSettings, logoUrl, logoText, logoTextShort, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, customNotificationComponent, }: CompactSidebarProps): React.JSX.Element;
+export declare function CompactSidebar({ isOpen, onClose, isCollapsed, isHidden, onToggleCollapse, activePath, menuGroups, width, collapsedWidth, className, user, onLogout, showNotification, showAnnouncement, showSettings, logoUrl, logoText, logoTextShort, isHoverEnabled, onToggleHover, hoverActiveIcon, hoverInActiveIcon, onMenuClick, customNotificationComponent, announcementChildren, onAnnouncementLinkClick, }: CompactSidebarProps): React.JSX.Element;
 export {};
